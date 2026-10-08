@@ -73,7 +73,9 @@ sleep 1
 if [ -d "$EXTENSIONS/InkDeck/app" ]; then
     cp -r "$EXTENSIONS/InkDeck/app" "$BACKUP" || fail "nie udalo sie zrobic kopii aplikacji"
 fi
-cp "$UNPACK/documents/InkDeck.sh" "$DOCS/InkDeck.sh" || fail
+if [ ! -f "$DOCS/InkDeck.sh" ] || ! cmp -s "$UNPACK/documents/InkDeck.sh" "$DOCS/InkDeck.sh"; then
+    cp "$UNPACK/documents/InkDeck.sh" "$DOCS/InkDeck.sh" || fail "nie udalo sie zapisac launchera"
+fi
 mkdir -p "$EXTENSIONS/InkDeck/bin" || fail
 cp -r "$UNPACK/extensions/InkDeck/." "$EXTENSIONS/InkDeck/" || fail "nie udalo sie skopiowac modulu extensions"
 rm -f "$EXTENSIONS/InkDeck/filebrowser/index.html"

@@ -1,4 +1,4 @@
-INKDECK 3.5.1 — INSTALACJA
+INKDECK 3.5.2 — INSTALACJA
 
 1. Podłącz Kindle do komputera przewodem USB.
 2. Skopiuj foldery „documents” i „extensions” z paczki do głównego katalogu Kindle.
