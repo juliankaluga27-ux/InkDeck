@@ -9,7 +9,10 @@ OLD_TARGET_DIR="/var/local/mesquite/com.codex.inkdeck"
 DB="/var/local/appreg.db"
 APP_ID="com.codex.inkdeck"
 UPDATER_ID="com.codex.inkdeck.updater"
+FILES_START_ID="com.codex.inkdeck.files.start"
+FILES_STOP_ID="com.codex.inkdeck.files.stop"
 [ -d "$SOURCE_DIR" ] && [ -f "$SOURCE_DIR/index.html" ] || exit 1
+chmod 755 "/mnt/us/extensions/InkDeck/bin/"*.sh "/mnt/us/extensions/InkDeck/filebrowser/cgi-bin/"*.sh >/dev/null 2>&1
 lipc-set-prop com.lab126.appmgrd stop app://$APP_ID >/dev/null 2>&1
 sleep 1
 rm -rf "$TARGET_DIR"
@@ -41,6 +44,14 @@ INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$UPDATER_ID','li
 INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$UPDATER_ID','command','/bin/sh /mnt/us/extensions/InkDeck/bin/update.sh');
 INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$UPDATER_ID','supportedOrientation','U');
 INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$UPDATER_ID','unloadPolicy','unloadOnPause');
+INSERT OR IGNORE INTO handlerIds(handlerId) VALUES('$FILES_START_ID');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$FILES_START_ID','lipcId','$FILES_START_ID');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$FILES_START_ID','command','/bin/sh /mnt/us/extensions/InkDeck/bin/filebrowser-start.sh');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$FILES_START_ID','unloadPolicy','unloadOnPause');
+INSERT OR IGNORE INTO handlerIds(handlerId) VALUES('$FILES_STOP_ID');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$FILES_STOP_ID','lipcId','$FILES_STOP_ID');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$FILES_STOP_ID','command','/bin/sh /mnt/us/extensions/InkDeck/bin/filebrowser-stop.sh');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$FILES_STOP_ID','unloadPolicy','unloadOnPause');
 EOF
 rm -f "/mnt/us/documents/InkDeck Update 2.7.sh"
 rm -f "/mnt/us/documents/InkDeck Update 2.8.sh"
@@ -53,5 +64,10 @@ rm -f "/mnt/us/documents/InkDeck Update 3.4.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.4.1.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.4.2.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.4.3.sh"
+rm -f "/mnt/us/documents/InkDeck-update-status.txt"
+rm -f "/mnt/us/documents/InkDeck-filebrowser-status.txt"
+rm -f "/mnt/us/INSTRUKCJA.txt"
+rm -f "/mnt/us/ODINSTALUJ/Uninstall InkDeck.sh"
+rmdir "/mnt/us/ODINSTALUJ" >/dev/null 2>&1
 nohup lipc-set-prop com.lab126.appmgrd start app://$APP_ID >/dev/null 2>&1 &
 exit 0

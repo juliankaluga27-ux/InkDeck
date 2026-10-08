@@ -1,9 +1,9 @@
-INKDECK 3.4.3 — INSTALACJA
+INKDECK 3.5 — INSTALACJA
 
 1. Podłącz Kindle do komputera przewodem USB.
 2. Skopiuj foldery „documents” i „extensions” z paczki do głównego katalogu Kindle.
 3. Zgódź się na zastąpienie starego folderu InkDeck.
-4. Odłącz Kindle i uruchom z biblioteki „InkDeck Update 3.4.3”.
+4. Odłącz Kindle i uruchom z biblioteki „InkDeck”.
 
 NAJWAŻNIEJSZE POPRAWKI
 

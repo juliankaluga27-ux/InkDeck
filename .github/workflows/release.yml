@@ -17,12 +17,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p release
-          cp -a documents extensions ODINSTALUJ INSTRUKCJA.txt release/
+          mkdir -p release/documents
+          cp -a documents/InkDeck documents/InkDeck.sh release/documents/
+          cp -a extensions release/
           tar -czf InkDeck-update.tar.gz -C release .
           sha256sum InkDeck-update.tar.gz > InkDeck-update.tar.gz.sha256
           cd release
-          zip -r ../InkDeck-${GITHUB_REF_NAME#v}.zip documents extensions ODINSTALUJ INSTRUKCJA.txt
+          zip -r ../InkDeck-${GITHUB_REF_NAME#v}.zip documents extensions
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:

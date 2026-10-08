@@ -8,7 +8,7 @@ ARCHIVE="$STAGE/InkDeck-update.tar.gz"
 CHECKSUM="$STAGE/InkDeck-update.tar.gz.sha256"
 UNPACK="$STAGE/unpacked"
 BACKUP="$DOCS/InkDeck.backup"
-LOG="$DOCS/InkDeck-update-status.txt"
+LOG="$EXTENSIONS/InkDeck/update-status.txt"
 BASE_URL="https://github.com/$REPO/releases/latest/download"
 
 status() {
@@ -28,7 +28,7 @@ fail() {
     reason="${1:-nieznany blad}"
     printf 'InkDeck: aktualizacja nieudana: %s\n' "$reason" > "$LOG"
     if command -v eips >/dev/null 2>&1; then
-        eips 1 38 "InkDeck: blad aktualizacji. Sprawdz plik statusu." >/dev/null 2>&1
+        eips 1 38 "InkDeck: blad aktualizacji. Sprawdz extensions/InkDeck/update-status.txt" >/dev/null 2>&1
     fi
     cleanup
     exit 1
@@ -81,9 +81,8 @@ cp -r "$UNPACK/documents/InkDeck" "$DOCS/InkDeck" || {
 }
 cp "$UNPACK/documents/InkDeck.sh" "$DOCS/InkDeck.sh" || fail
 mkdir -p "$EXTENSIONS/InkDeck/bin" || fail
-cp "$UNPACK/extensions/InkDeck/menu.json" "$EXTENSIONS/InkDeck/menu.json" || fail
-cp "$UNPACK/extensions/InkDeck/bin/update.sh" "$EXTENSIONS/InkDeck/bin/update.sh" || fail
-chmod 755 "$EXTENSIONS/InkDeck/bin/update.sh" "$DOCS/InkDeck.sh" >/dev/null 2>&1
+cp -r "$UNPACK/extensions/InkDeck/." "$EXTENSIONS/InkDeck/" || fail "nie udalo sie skopiowac modulu extensions"
+chmod 755 "$EXTENSIONS/InkDeck/bin/"*.sh "$EXTENSIONS/InkDeck/filebrowser/cgi-bin/"*.sh "$DOCS/InkDeck.sh" >/dev/null 2>&1
 
 sh "$DOCS/InkDeck.sh" || {
     rm -rf "$DOCS/InkDeck"

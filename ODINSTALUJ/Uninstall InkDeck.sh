@@ -5,6 +5,8 @@
 
 APP_ID="com.codex.inkdeck"
 UPDATER_ID="com.codex.inkdeck.updater"
+FILES_START_ID="com.codex.inkdeck.files.start"
+FILES_STOP_ID="com.codex.inkdeck.files.stop"
 TARGET_DIR="/var/local/mesquite/com.codex.inkdeck"
 TARGET_DIR_V27="/var/local/mesquite/com.codex.inkdeck-v27"
 TARGET_DIR_V28="/var/local/mesquite/com.codex.inkdeck-v28"
@@ -29,5 +31,9 @@ DELETE FROM properties WHERE handlerId='$APP_ID';
 DELETE FROM handlerIds WHERE handlerId='$APP_ID';
 DELETE FROM properties WHERE handlerId='$UPDATER_ID';
 DELETE FROM handlerIds WHERE handlerId='$UPDATER_ID';
+DELETE FROM properties WHERE handlerId='$FILES_START_ID';
+DELETE FROM handlerIds WHERE handlerId='$FILES_START_ID';
+DELETE FROM properties WHERE handlerId='$FILES_STOP_ID';
+DELETE FROM handlerIds WHERE handlerId='$FILES_STOP_ID';
 EOF
 exit 0
