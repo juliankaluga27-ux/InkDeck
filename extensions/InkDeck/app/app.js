@@ -102,7 +102,7 @@
   document.getElementById('tttTwo').onclick = function () { tttVsAI = false; this.className = 'selected'; document.getElementById('tttAI').className = ''; newTtt(); };
   document.getElementById('tttAI').className = 'selected';
 
-  var mines = [], mineOpen = [], mineFlag = [], mineOver = false, minePressAt = 0, minePressIndex = -1, mineLastFlagAt = 0, mineLastFlagIndex = -1, mineIgnoreMouseUntil = 0, mineSize = 10, mineCount = 10, mineStarted = false, mineSeconds = 0, mineClock = null;
+  var mines = [], mineOpen = [], mineFlag = [], mineOver = false, mineFlagMode = false, minePressAt = 0, minePressIndex = -1, mineLastFlagAt = 0, mineLastFlagIndex = -1, mineIgnoreMouseUntil = 0, mineHandledUntil = 0, mineSize = 10, mineCount = 10, mineStarted = false, mineSeconds = 0, mineClock = null;
   function mineStatusText(message) {
     var flags = 0, i, min, sec;
     for (i = 0; i < mineFlag.length; i++) if (mineFlag[i]) flags++;
@@ -143,6 +143,27 @@
     else { reveal(i); for (k = 0; k < mines.length; k++) if (mineOpen[k]) opened++; if (opened === mines.length - mineCount) { mineOver = true; if(mineClock){clearInterval(mineClock);mineClock=null;} mineStatusText('WYGRANA!  ' + mineSeconds + ' s'); } }
     renderMine();
   }
+  function mineToggleFlag(i) {
+    var now = new Date().getTime();
+    if (mineOver || mineOpen[i]) return;
+    mineFlag[i] = !mineFlag[i]; mineLastFlagIndex = i; mineLastFlagAt = now; mineHandledUntil = now + 700;
+    mineStatusText(); renderMine();
+  }
+  function minePressStart(el, e, touch) {
+    var now = new Date().getTime();
+    if (!touch && now < mineIgnoreMouseUntil) return false;
+    if (touch) mineIgnoreMouseUntil = now + 1800;
+    minePressAt = now; minePressIndex = parseInt(el.getAttribute('data-i'), 10);
+    if (e && e.preventDefault) e.preventDefault(); return false;
+  }
+  function minePressEnd(el, e, touch) {
+    var now = new Date().getTime(), n = minePressIndex >= 0 ? minePressIndex : parseInt(el.getAttribute('data-i'), 10), held = now - minePressAt;
+    minePressIndex = -1;
+    if (!touch && now < mineIgnoreMouseUntil) return false;
+    if (now < mineHandledUntil) return false;
+    if (mineFlagMode || held >= 600) mineToggleFlag(n); else mineTap(n);
+    if (e && e.preventDefault) e.preventDefault(); return false;
+  }
   function renderMine() {
     var b = document.getElementById('mineBoard'), i, c, rect=b.getBoundingClientRect(),top=rect.top>50?rect.top:145,available=Math.min(window.innerWidth-18,window.innerHeight-top-12),cell = Math.max(16,Math.floor((available-10) / mineSize));
     b.innerHTML = '';
@@ -151,18 +172,19 @@
       c = document.createElement('div'); c.className = 'mineCell' + (mineOpen[i] ? ' open' : '') + (mineFlag[i] ? ' flag' : '') + (mineOpen[i] && mines[i] ? ' mine' : '') + (mineOpen[i] && !mines[i] && nearby(i) ? ' n' + nearby(i) : ''); c.setAttribute('data-i', i);
       c.style.width = cell + 'px'; c.style.height = cell + 'px'; c.style.lineHeight = (cell - 4) + 'px'; c.style.fontSize = Math.max(18, Math.floor(cell * 0.45)) + 'px';
       c.innerHTML = mineFlag[i] ? '⚑' : (mineOpen[i] ? (mines[i] ? '✹' : (nearby(i) || '')) : '');
-      c.ontouchstart = function(e){mineIgnoreMouseUntil=new Date().getTime()+1500;minePressAt=new Date().getTime();minePressIndex=parseInt(this.getAttribute('data-i'),10);if(e&&e.preventDefault)e.preventDefault();return false;};
-      c.ontouchend = function(e){var now=new Date().getTime(),n=minePressIndex,held=now-minePressAt;minePressIndex=-1;if(n>=0&&!(n===mineLastFlagIndex&&now-mineLastFlagAt<1000)){if(held>=600){if(!mineOpen[n]){mineFlag[n]=!mineFlag[n];mineLastFlagIndex=n;mineLastFlagAt=now;mineStatusText();renderMine();}}else mineTap(n);}if(e&&e.preventDefault)e.preventDefault();return false;};
+      c.ontouchstart = function(e){return minePressStart(this,e,true);};
+      c.ontouchend = function(e){return minePressEnd(this,e,true);};
       c.ontouchcancel = function(e){minePressIndex=-1;if(e&&e.preventDefault)e.preventDefault();return false;};
-      c.onmousedown = function(){if(new Date().getTime()<mineIgnoreMouseUntil)return false;minePressAt=new Date().getTime();minePressIndex=parseInt(this.getAttribute('data-i'),10);return false;};
-      c.onmouseup = function(){var now=new Date().getTime(),n,held;if(now<mineIgnoreMouseUntil)return false;n=minePressIndex;held=now-minePressAt;minePressIndex=-1;if(n>=0){if(held>=600){if(!mineOpen[n]){mineFlag[n]=!mineFlag[n];mineLastFlagIndex=n;mineLastFlagAt=now;mineStatusText();renderMine();}}else mineTap(n);}return false;};
-      c.oncontextmenu = function(e){var now=new Date().getTime(),n=parseInt(this.getAttribute('data-i'),10);if(!(n===mineLastFlagIndex&&now-mineLastFlagAt<1000)&&!mineOpen[n]){mineFlag[n]=!mineFlag[n];mineLastFlagIndex=n;mineLastFlagAt=now;mineStatusText();renderMine();}if(e&&e.preventDefault)e.preventDefault();return false;};
+      c.onmousedown = function(e){return minePressStart(this,e,false);};
+      c.onmouseup = function(e){return minePressEnd(this,e,false);};
+      c.oncontextmenu = function(e){mineToggleFlag(parseInt(this.getAttribute('data-i'),10));if(e&&e.preventDefault)e.preventDefault();return false;};
       b.appendChild(c);
     }
   }
   document.getElementById('mineNew').onclick = newMine;
   document.getElementById('mineSize').onchange = newMine;
   document.getElementById('mineCount').onchange = newMine;
+  document.getElementById('mineFlagMode').onclick = function(){mineFlagMode=!mineFlagMode;this.innerHTML=mineFlagMode?'TRYB: FLAGOWANIE':'TRYB: ODKRYWANIE';this.className=mineFlagMode?'selected':'';};
 
   var grid = [], score = 0;
   function addTile() { var e = [], i; for (i = 0; i < 16; i++) if (!grid[i]) e.push(i); if (e.length) grid[e[Math.floor(Math.random()*e.length)]] = Math.random() < 0.9 ? 2 : 4; }
@@ -244,7 +266,7 @@
   function engineEval(b){var val={p:100,n:320,b:330,r:500,q:900,k:20000},s=0,i,p,x,y;for(i=0;i<64;i++)if(b[i]){p=b[i];x=i%8;y=Math.floor(i/8);s+=(chessColor(p)==='b'?1:-1)*(val[p.toLowerCase()]+Math.floor(8-Math.abs(3.5-x)-Math.abs(3.5-y)));}return s;}
   function engineSearch(b,color,depth,alpha,beta){var moves=chessAll(color,b),i,v,best=color==='b'?-999999:999999;if(!depth||!moves.length)return engineEval(b);for(i=0;i<moves.length;i++){v=engineSearch(engineBoardMove(b,moves[i]),color==='b'?'w':'b',depth-1,alpha,beta);if(color==='b'){if(v>best)best=v;if(best>alpha)alpha=best;}else{if(v<best)best=v;if(best<beta)beta=best;}if(beta<=alpha)break;}return best;}
   function chessAIMove(){var all=chessAll('b',chess),pick,i,scored=[],level=document.getElementById('chessLevel').value,depth=level==='master'?4:(level==='medium'||level==='hard'?3:(level==='easy'?2:1)),mistake=level==='veryeasy'?.7:(level==='easy'?.3:(level==='medium'?.08:(level==='hard'?.02:0))),score;if(!all.length)return;for(i=0;i<all.length;i++){score=engineSearch(engineBoardMove(chess,all[i]),'w',depth-1,-999999,999999);scored.push({move:all[i],score:score});}scored.sort(function(a,b){return b.score-a.score;});pick=Math.random()<mistake?scored[Math.floor(Math.random()*Math.min(scored.length,6))].move:scored[0].move;chessLastFrom=pick.from;chessLastTo=pick.to;chessDo(pick.from,pick.to);}
-  function renderChess(){var b=document.getElementById('chessBoard'),i,c,m=[],j,p,cell=fitGrid(b,8,8,190,8,0),piece=Math.max(30,cell-12),style=document.getElementById('chessStyle').value,letters={K:'K',Q:'H',R:'W',B:'G',N:'S',P:'P',k:'K',q:'H',r:'W',b:'G',n:'S',p:'P'};if(chessSelected>=0)m=chessMoves(chessSelected,chess);b.innerHTML='';for(i=0;i<64;i++){c=document.createElement('div');c.className='boardCell'+(((Math.floor(i/8)+i%8)%2)?' dark':'')+(i===chessSelected?' selected':'')+(i===chessLastFrom?' lastFrom':'')+(i===chessLastTo?' lastTo':'');c.style.width=cell+'px';c.style.height=cell+'px';c.style.lineHeight=(cell-2)+'px';for(j=0;j<m.length;j++)if(m[j]===i)c.className+=' target';c.setAttribute('data-i',i);p=chess[i];c.innerHTML=p?'<span class="chessPiece '+(chessColor(p)==='b'?'black':'')+'" style="width:'+piece+'px;height:'+piece+'px;line-height:'+(piece-6)+'px;font-size:'+Math.max(24,Math.floor(piece*0.68))+'px;margin-top:'+Math.max(3,Math.floor((cell-piece)/2))+'px">'+(style==='letters'?letters[p]:chessGlyph[p])+'</span>':'';c.onclick=function(){chessTap(parseInt(this.getAttribute('data-i'),10));};b.appendChild(c);}}
+  function renderChess(){var b=document.getElementById('chessBoard'),i,c,m=[],j,p,cell=fitGrid(b,8,8,190,8,0),piece=Math.max(30,cell-12),style=document.getElementById('chessStyle').value,letters={K:'K',Q:'H',R:'W',B:'G',N:'S',P:'P',k:'K',q:'H',r:'W',b:'G',n:'S',p:'P'},simple={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};if(chessSelected>=0)m=chessMoves(chessSelected,chess);b.innerHTML='';for(i=0;i<64;i++){c=document.createElement('div');c.className='boardCell'+(((Math.floor(i/8)+i%8)%2)?' dark':'')+(i===chessSelected?' selected':'')+(i===chessLastFrom?' lastFrom':'')+(i===chessLastTo?' lastTo':'');c.style.width=cell+'px';c.style.height=cell+'px';c.style.lineHeight=(cell-2)+'px';for(j=0;j<m.length;j++)if(m[j]===i)c.className+=' target';c.setAttribute('data-i',i);p=chess[i];c.innerHTML=p?'<span class="chessPiece '+(style==='simple'?'simplePiece ':'')+(chessColor(p)==='b'?'black':'')+'" style="width:'+piece+'px;height:'+piece+'px;line-height:'+(piece-6)+'px;font-size:'+Math.max(24,Math.floor(piece*0.68))+'px;margin-top:'+Math.max(3,Math.floor((cell-piece)/2))+'px">'+(style==='letters'?letters[p]:(style==='simple'?simple[p]:chessGlyph[p]))+'</span>':'';c.onclick=function(){chessTap(parseInt(this.getAttribute('data-i'),10));};b.appendChild(c);}}
   function newChess(){var row='rnbqkbnr',i,seconds=parseInt(document.getElementById('chessTime').value,10)||0;stopChessClock();chessClockStarted=false;chessWhiteTime=seconds;chessBlackTime=seconds;chess=[];chessHistory=[];chessEnPassant=-1;chessLastFrom=-1;chessLastTo=-1;chessCastle={wK:true,wQ:true,bK:true,bQ:true};for(i=0;i<64;i++)chess[i]='';for(i=0;i<8;i++){chess[i]=row.charAt(i);chess[8+i]='p';chess[48+i]='P';chess[56+i]=row.charAt(i).toUpperCase();}chessTurn='w';chessSelected=-1;chessOver=false;document.getElementById('chessStatus').innerHTML='RUCH: BIAŁE';renderChessClock();renderChess();}
   document.getElementById('chessNew').onclick=newChess;
   document.getElementById('chessAI').onclick=function(){chessVsAI=true;this.className='selected';document.getElementById('chessTwo').className='';newChess();};
@@ -332,11 +354,11 @@
   var todos=[];function todoLoad(){try{todos=JSON.parse(localStorage.getItem('inkdeck_todos')||'[]');}catch(e){todos=[];}todoRender();}function todoSave(){localStorage.setItem('inkdeck_todos',JSON.stringify(todos));todoRender();}function todoRender(){var box=document.getElementById('todoList'),i,row,btn;box.innerHTML='';for(i=0;i<todos.length;i++){row=document.createElement('div');row.className='todoRow'+(todos[i].done?' done':'');row.appendChild(document.createTextNode(todos[i].text));btn=document.createElement('button');btn.innerHTML=todos[i].done?'COFNIJ':'GOTOWE';btn.setAttribute('data-i',i);btn.onclick=function(){var n=parseInt(this.getAttribute('data-i'),10);todos[n].done=!todos[n].done;todoSave();};row.appendChild(btn);box.appendChild(row);}}
   document.getElementById('todoAdd').onclick=function(){var input=document.getElementById('todoInput'),v=input.value;if(v){todos.push({text:v,done:false});input.value='';todoSave();}};document.getElementById('todoClear').onclick=function(){var keep=[],i;for(i=0;i<todos.length;i++)if(!todos[i].done)keep.push(todos[i]);todos=keep;todoSave();};
 
-  var calcValue='',calcChars=['C','DEL','(',')','7','8','9','/','4','5','6','*','1','2','3','-','0','.','=','+'],calcSci=['sin','cos','tan','√','x²','1/x','log','ln','π','e','%','±'],calcBox=document.getElementById('calcKeys'),calcSciBox=document.getElementById('calcScientific'),ck,cb;
+  var calcValue='',calcChars=['C','DEL','%','/','7','8','9','*','4','5','6','-','1','2','3','+','±','0','.','='],calcSci=['(',')','sin','cos','tan','√','x²','1/x','log','ln','π','e'],calcBox=document.getElementById('calcKeys'),calcSciBox=document.getElementById('calcScientific'),ck,cb;
   function calcNumber(){var n;try{if(!/^[0-9+\-*/. ()]+$/.test(calcValue))throw 0;n=eval(calcValue);if(typeof n!=='number'||!isFinite(n))throw 0;return n;}catch(e){return null;}}
   function calcShow(){document.getElementById('calcDisplay').value=calcValue||'0';}
   function calcPress(v){var n;if(v==='C')calcValue='';else if(v==='DEL')calcValue=calcValue.slice(0,-1);else if(v==='='){n=calcNumber();calcValue=n===null?'BŁĄD':String(n);}else if(v==='π')calcValue+=(Math.PI);else if(v==='e')calcValue+=(Math.E);else if(v==='±'){n=calcNumber();calcValue=n===null?'BŁĄD':String(-n);}else if(v==='%'){n=calcNumber();calcValue=n===null?'BŁĄD':String(n/100);}else if(v==='sin'||v==='cos'||v==='tan'||v==='√'||v==='x²'||v==='1/x'||v==='log'||v==='ln'){n=calcNumber();if(n===null)calcValue='BŁĄD';else if(v==='sin')calcValue=String(Math.sin(n*Math.PI/180));else if(v==='cos')calcValue=String(Math.cos(n*Math.PI/180));else if(v==='tan')calcValue=String(Math.tan(n*Math.PI/180));else if(v==='√')calcValue=n<0?'BŁĄD':String(Math.sqrt(n));else if(v==='x²')calcValue=String(n*n);else if(v==='1/x')calcValue=n===0?'BŁĄD':String(1/n);else if(v==='log')calcValue=n<=0?'BŁĄD':String(Math.log(n)/Math.LN10);else calcValue=n<=0?'BŁĄD':String(Math.log(n));}else{if(calcValue==='BŁĄD')calcValue='';calcValue+=v;}calcShow();}
-  function makeCalcButton(box,v){var b=document.createElement('button');b.innerHTML=v;b.setAttribute('data-v',v);b.onclick=function(){calcPress(this.getAttribute('data-v'));};box.appendChild(b);}
+  function makeCalcButton(box,v){var b=document.createElement('button'),labels={'DEL':'⌫','/':'÷','*':'×','-':'−'};b.innerHTML=labels[v]||v;b.setAttribute('data-v',v);b.onclick=function(){calcPress(this.getAttribute('data-v'));};box.appendChild(b);}
   for(ck=0;ck<calcChars.length;ck++)makeCalcButton(calcBox,calcChars[ck]);for(ck=0;ck<calcSci.length;ck++)makeCalcButton(calcSciBox,calcSci[ck]);
   document.getElementById('calcMode').onclick=function(){var hidden=calcSciBox.className.indexOf('hidden')>=0;calcSciBox.className=hidden?'calcScientific':'calcScientific hidden';this.innerHTML=hidden?'ZWYKŁY':'NAUKOWY';};calcShow();
 
@@ -345,7 +367,7 @@
   document.getElementById('filesStatus').onclick=loadFileServerStatus;
   document.getElementById('filesStop').onclick=function(){try{if(window.kindle&&kindle.appmgr)kindle.appmgr.start('app://com.codex.inkdeck.files.stop');}catch(e){}setTimeout(loadFileServerStatus,700);};
 
-  var inkDeckVersion='3.5.2',latestReleaseUrl='https://api.github.com/repos/juliankaluga27-ux/InkDeck/releases/latest';
+  var inkDeckVersion='3.5.3',latestReleaseUrl='https://api.github.com/repos/juliankaluga27-ux/InkDeck/releases/latest';
   document.getElementById('updateCheck').onclick=function(){var status=document.getElementById('updateStatus'),xhr=new XMLHttpRequest();status.innerHTML='Sprawdzanie GitHuba...';try{xhr.open('GET',latestReleaseUrl,true);xhr.timeout=20000;xhr.onreadystatechange=function(){var data,tag;if(xhr.readyState!==4)return;if(xhr.status>=200&&xhr.status<300){try{data=JSON.parse(xhr.responseText);tag=String(data.tag_name||'').replace(/^v/,'');status.innerHTML=tag&&tag!==inkDeckVersion?'Dostępna wersja: '+tag+'. Możesz ją zainstalować.':'Masz najnowszą wersję: '+inkDeckVersion+'.';}catch(e){status.innerHTML='GitHub odpowiedział, ale nie udało się odczytać wersji.';}}else status.innerHTML='Nie udało się połączyć z GitHubem. Sprawdź Wi-Fi.';};xhr.ontimeout=function(){status.innerHTML='Przekroczono czas połączenia. Sprawdź Wi-Fi.';};xhr.send(null);}catch(e){status.innerHTML='Sprawdzanie nie jest obsługiwane przez ten firmware. Instalator nadal może zadziałać.';}};
   document.getElementById('updateInstall').onclick=function(){var status=document.getElementById('updateStatus');if(!window.confirm||window.confirm('Pobrać i zainstalować najnowszy InkDeck z GitHuba?')){status.innerHTML='Uruchamiam aktualizator. Nie wyłączaj Kindle.';try{if(window.kindle&&kindle.appmgr){kindle.appmgr.start('app://com.codex.inkdeck.updater');setTimeout(function(){status.innerHTML='Aktualizator został uruchomiony.';},800);return;}}catch(e){}status.innerHTML='Nie znaleziono modułu aktualizacji. Zainstaluj pełną paczkę z folderem extensions.';}};
 
