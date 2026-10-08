@@ -3,7 +3,7 @@
 REPO="juliankaluga27-ux/InkDeck"
 DOCS="/mnt/us/documents"
 EXTENSIONS="/mnt/us/extensions"
-STAGE="$DOCS/.inkdeck-update-$$"
+STAGE="/tmp/inkdeck-update-$$"
 ARCHIVE="$STAGE/InkDeck-update.tar.gz"
 CHECKSUM="$STAGE/InkDeck-update.tar.gz.sha256"
 UNPACK="$STAGE/unpacked"
@@ -20,7 +20,7 @@ status() {
 
 cleanup() {
     case "$STAGE" in
-        "$DOCS"/.inkdeck-update-*) rm -rf "$STAGE" ;;
+        /tmp/inkdeck-update-*) rm -rf "$STAGE" ;;
     esac
 }
 

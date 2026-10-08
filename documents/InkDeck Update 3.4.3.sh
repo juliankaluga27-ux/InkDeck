@@ -1,5 +1,5 @@
 #!/bin/sh
-# Name: InkDeck Update 3.4.2
+# Name: InkDeck Update 3.4.3
 # Author: Codex
 # Icon: /mnt/us/documents/InkDeck/assets/inkdeck-logo.png
 # DontUseFBInk
@@ -50,5 +50,6 @@ rm -f "/mnt/us/documents/InkDeck Update 3.2.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.3.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.4.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.4.1.sh"
-nohup sh -c 'sleep 2; rm -f "/mnt/us/documents/InkDeck Update 3.4.2.sh"; lipc-set-prop com.lab126.appmgrd start app://com.codex.inkdeck' >/dev/null 2>&1 &
+rm -f "/mnt/us/documents/InkDeck Update 3.4.2.sh"
+nohup sh -c 'sleep 2; rm -f "/mnt/us/documents/InkDeck Update 3.4.3.sh"; lipc-set-prop com.lab126.appmgrd start app://com.codex.inkdeck' >/dev/null 2>&1 &
 exit 0
