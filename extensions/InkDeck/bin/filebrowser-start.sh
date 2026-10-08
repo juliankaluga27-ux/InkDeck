@@ -44,8 +44,8 @@ if ! kill -0 "$serverpid" 2>/dev/null; then
     exit 1
 fi
 
-printf 'OTWORZ NA TELEFONIE: http://%s:%s\nPIN: %s\nPliki trafia do documents/Uploads.\n' "$ipaddr" "$PORT" "$pin" > "$STATUS"
+printf 'OTWORZ NA TELEFONIE: http://%s:%s/cgi-bin/home.sh\nPIN: %s\nPliki trafia do documents/Uploads.\n' "$ipaddr" "$PORT" "$pin" > "$STATUS"
 if command -v eips >/dev/null 2>&1; then
-    eips 1 36 "Pliki: http://$ipaddr:$PORT  PIN: $pin" >/dev/null 2>&1
+    eips 1 36 "Pliki: http://$ipaddr:$PORT/cgi-bin/home.sh  PIN: $pin" >/dev/null 2>&1
 fi
 exit 0

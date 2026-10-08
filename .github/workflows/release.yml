@@ -18,9 +18,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release/documents
-          cp -a documents/InkDeck documents/InkDeck.sh release/documents/
+          cp -a documents/InkDeck.sh release/documents/
           cp -a extensions release/
-          tar -czf InkDeck-update.tar.gz -C release .
+          mkdir -p update-release/documents
+          cp -a documents/InkDeck.sh update-release/documents/
+          cp -a extensions update-release/
+          cp -a extensions/InkDeck/app update-release/documents/InkDeck
+          mv update-release/documents/InkDeck/main.page update-release/documents/InkDeck/index.html
+          tar -czf InkDeck-update.tar.gz -C update-release .
           sha256sum InkDeck-update.tar.gz > InkDeck-update.tar.gz.sha256
           cd release
           zip -r ../InkDeck-${GITHUB_REF_NAME#v}.zip documents extensions

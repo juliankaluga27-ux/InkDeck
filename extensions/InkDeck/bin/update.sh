@@ -7,7 +7,7 @@ STAGE="/tmp/inkdeck-update-$$"
 ARCHIVE="$STAGE/InkDeck-update.tar.gz"
 CHECKSUM="$STAGE/InkDeck-update.tar.gz.sha256"
 UNPACK="$STAGE/unpacked"
-BACKUP="$DOCS/InkDeck.backup"
+BACKUP="$STAGE/app-backup"
 LOG="$EXTENSIONS/InkDeck/update-status.txt"
 BASE_URL="https://github.com/$REPO/releases/latest/download"
 
@@ -61,8 +61,8 @@ fi
 (cd "$STAGE" && sha256sum -c "InkDeck-update.tar.gz.sha256") >/dev/null 2>&1 || fail "paczka nie przeszla kontroli SHA-256"
 tar -xzf "$ARCHIVE" -C "$UNPACK" || fail "nie udalo sie rozpakowac paczki"
 
-[ -f "$UNPACK/documents/InkDeck/index.html" ] || fail "brak index.html"
-[ -f "$UNPACK/documents/InkDeck/app.js" ] || fail "brak app.js"
+[ -f "$UNPACK/extensions/InkDeck/app/main.page" ] || fail "brak strony aplikacji"
+[ -f "$UNPACK/extensions/InkDeck/app/app.js" ] || fail "brak app.js"
 [ -f "$UNPACK/documents/InkDeck.sh" ] || fail "brak launchera"
 [ -f "$UNPACK/extensions/InkDeck/bin/update.sh" ] || fail "brak modulu aktualizacji"
 
@@ -70,27 +70,22 @@ status "InkDeck: instalowanie..."
 lipc-set-prop com.lab126.appmgrd stop app://com.codex.inkdeck >/dev/null 2>&1
 sleep 1
 
-rm -rf "$BACKUP"
-if [ -d "$DOCS/InkDeck" ]; then
-    mv "$DOCS/InkDeck" "$BACKUP" || fail
+if [ -d "$EXTENSIONS/InkDeck/app" ]; then
+    cp -r "$EXTENSIONS/InkDeck/app" "$BACKUP" || fail "nie udalo sie zrobic kopii aplikacji"
 fi
-cp -r "$UNPACK/documents/InkDeck" "$DOCS/InkDeck" || {
-    rm -rf "$DOCS/InkDeck"
-    [ -d "$BACKUP" ] && mv "$BACKUP" "$DOCS/InkDeck"
-    fail
-}
 cp "$UNPACK/documents/InkDeck.sh" "$DOCS/InkDeck.sh" || fail
 mkdir -p "$EXTENSIONS/InkDeck/bin" || fail
 cp -r "$UNPACK/extensions/InkDeck/." "$EXTENSIONS/InkDeck/" || fail "nie udalo sie skopiowac modulu extensions"
+rm -f "$EXTENSIONS/InkDeck/filebrowser/index.html"
+rm -f "$EXTENSIONS/InkDeck/app/plugins/README.txt"
 chmod 755 "$EXTENSIONS/InkDeck/bin/"*.sh "$EXTENSIONS/InkDeck/filebrowser/cgi-bin/"*.sh "$DOCS/InkDeck.sh" >/dev/null 2>&1
 
 sh "$DOCS/InkDeck.sh" || {
-    rm -rf "$DOCS/InkDeck"
-    [ -d "$BACKUP" ] && mv "$BACKUP" "$DOCS/InkDeck"
+    rm -rf "$EXTENSIONS/InkDeck/app"
+    [ -d "$BACKUP" ] && cp -r "$BACKUP" "$EXTENSIONS/InkDeck/app"
     fail
 }
 
-rm -rf "$BACKUP"
 status "InkDeck: aktualizacja zakonczona."
 cleanup
 exit 0

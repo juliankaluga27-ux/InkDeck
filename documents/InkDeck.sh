@@ -1,9 +1,9 @@
 #!/bin/sh
 # Name: InkDeck
 # Author: Codex
-# Icon: /mnt/us/documents/InkDeck/assets/inkdeck-logo.png
+# Icon: /mnt/us/extensions/InkDeck/app/assets/inkdeck-logo.png
 # DontUseFBInk
-SOURCE_DIR="/mnt/us/documents/InkDeck"
+SOURCE_DIR="/mnt/us/extensions/InkDeck/app"
 TARGET_DIR="/var/local/mesquite/com.codex.inkdeck-v33"
 OLD_TARGET_DIR="/var/local/mesquite/com.codex.inkdeck"
 DB="/var/local/appreg.db"
@@ -11,8 +11,12 @@ APP_ID="com.codex.inkdeck"
 UPDATER_ID="com.codex.inkdeck.updater"
 FILES_START_ID="com.codex.inkdeck.files.start"
 FILES_STOP_ID="com.codex.inkdeck.files.stop"
-[ -d "$SOURCE_DIR" ] && [ -f "$SOURCE_DIR/index.html" ] || exit 1
+[ -d "$SOURCE_DIR" ] && [ -f "$SOURCE_DIR/main.page" ] || exit 1
 chmod 755 "/mnt/us/extensions/InkDeck/bin/"*.sh "/mnt/us/extensions/InkDeck/filebrowser/cgi-bin/"*.sh >/dev/null 2>&1
+if [ -d "/mnt/us/documents/InkDeck/plugins" ]; then
+    mkdir -p "$SOURCE_DIR/plugins"
+    cp -r "/mnt/us/documents/InkDeck/plugins/." "$SOURCE_DIR/plugins/" >/dev/null 2>&1
+fi
 lipc-set-prop com.lab126.appmgrd stop app://$APP_ID >/dev/null 2>&1
 sleep 1
 rm -rf "$TARGET_DIR"
@@ -24,6 +28,7 @@ rm -rf "/var/local/mesquite/com.codex.inkdeck-v301"
 rm -rf "/var/local/mesquite/com.codex.inkdeck-v31"
 rm -rf "/var/local/mesquite/com.codex.inkdeck-v32"
 cp -r "$SOURCE_DIR" "$TARGET_DIR" || exit 1
+mv "$TARGET_DIR/main.page" "$TARGET_DIR/index.html" || exit 1
 : > "$TARGET_DIR/plugins-loader.js"
 for plugin in "$SOURCE_DIR"/plugins/*/plugin.js; do
     [ -f "$plugin" ] || continue
@@ -69,5 +74,6 @@ rm -f "/mnt/us/documents/InkDeck-filebrowser-status.txt"
 rm -f "/mnt/us/INSTRUKCJA.txt"
 rm -f "/mnt/us/ODINSTALUJ/Uninstall InkDeck.sh"
 rmdir "/mnt/us/ODINSTALUJ" >/dev/null 2>&1
+rm -rf "/mnt/us/documents/InkDeck"
 nohup lipc-set-prop com.lab126.appmgrd start app://$APP_ID >/dev/null 2>&1 &
 exit 0
