@@ -2,7 +2,7 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.4.1**
+Current version: **3.4.2**
 
 ## Features
 
@@ -14,10 +14,10 @@ Current version: **3.4.1**
 
 ## Installation
 
-1. Download `InkDeck-3.4.1.zip` from the newest GitHub release.
+1. Download `InkDeck-3.4.2.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
-4. Run **InkDeck Update 3.4.1** from the library. This one-time installer removes itself after installation.
+4. Run **InkDeck Update 3.4.2** from the library. This one-time installer removes itself after installation.
 
 The `documents` directory contains the Mesquite application. The `extensions/InkDeck` directory contains the updater backend and an optional KUAL menu entry. Updates can normally be started from **Tools → Updates** inside InkDeck.
 

@@ -176,6 +176,11 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .wordleCell.bad { color: #777; border-color: #777; }
 .wordleKeys { width: 98%; margin: 6px auto; text-align: center; }
 .wordleKeys button { min-width: 48px; height: 48px; margin: 2px; padding: 2px; font-size: 17px; font-weight: bold; }
+.wordleControls { width: 98%; min-height: 52px; margin: 3px auto; text-align: center; }
+.wordleControls select, .wordleControls button { height: 46px; margin: 2px 5px; padding: 4px 8px; border: 3px solid #000; background: #fff; font-size: 16px; font-weight: bold; }
+.wordleControls span { display: inline-block; min-width: 155px; font-size: 18px; font-weight: bold; }
+#lifeStatus { min-width: 145px; font-size: 22px; }
+#life .bar button { min-width: 84px; padding: 2px 5px; font-size: 14px; }
 .pluginToggle { min-width: 78px !important; font-size: 14px; }
 .pluginBadge { display: inline-block; float: right; padding: 3px 6px; border: 2px solid #000; font-size: 12px; }
 .updateBox { width: 92%; margin: 45px auto; padding: 28px; border: 5px double #000; text-align: center; }
