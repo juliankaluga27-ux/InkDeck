@@ -1,0 +1,22 @@
+INKDECK 3.4 — INSTALACJA
+
+1. Podłącz Kindle do komputera przewodem USB.
+2. Skopiuj foldery „documents” i „extensions” z paczki do głównego katalogu Kindle.
+3. Zgódź się na zastąpienie starego folderu InkDeck.
+4. Odłącz Kindle i uruchom z biblioteki „InkDeck Update 3.4”.
+
+NAJWAŻNIEJSZE POPRAWKI
+
+- Saper rozpoznaje długość przytrzymania po puszczeniu palca. Przytrzymanie co najmniej 0,6 sekundy ustawia flagę.
+- Szachy: zegar jest dostępny wyłącznie w trybie „2 OSOBY”. Można wybrać bez zegara, 3, 5 lub 10 minut.
+- 2048 dopasowuje planszę tak, aby wszystkie cztery przyciski kierunków mieściły się na ekranie.
+- Szkicownik odbiera ruch bezpośrednio z płótna i łączy kolejne punkty w ciągłą kreskę.
+- KindleWriter ma niższe pole edycji, przewijaną listę dokumentów i nieprzycinane przyciski.
+
+Aktualizator po instalacji usuwa swoją ikonę oraz stare aktualizatory.
+
+PÓŹNIEJSZE AKTUALIZACJE Z GITHUBA
+
+W InkDeck otwórz NARZĘDZIA → AKTUALIZACJE. Możesz sprawdzić wersję i uruchomić
+pobieranie. Moduł w extensions/InkDeck sprawdza sumę SHA-256 i zachowuje kopię
+starej wersji do czasu pomyślnego zakończenia instalacji.

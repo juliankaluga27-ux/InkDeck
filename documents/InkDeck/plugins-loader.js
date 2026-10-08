@@ -1,0 +1,1 @@
+/* Ten plik jest automatycznie budowany przez InkDeck.sh z folderu plugins. */
