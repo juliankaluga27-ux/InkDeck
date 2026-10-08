@@ -25,7 +25,11 @@ cleanup() {
 }
 
 fail() {
-    status "InkDeck: aktualizacja nieudana. Szczegoly: documents/InkDeck-update-status.txt"
+    reason="${1:-nieznany blad}"
+    printf 'InkDeck: aktualizacja nieudana: %s\n' "$reason" > "$LOG"
+    if command -v eips >/dev/null 2>&1; then
+        eips 1 38 "InkDeck: blad aktualizacji. Sprawdz plik statusu." >/dev/null 2>&1
+    fi
     cleanup
     exit 1
 }
@@ -44,23 +48,23 @@ download() {
     return 1
 }
 
-mkdir -p "$STAGE" "$UNPACK" || fail
+mkdir -p "$STAGE" "$UNPACK" || fail "nie mozna utworzyc katalogu roboczego"
 status "InkDeck: pobieranie aktualizacji..."
-download "$BASE_URL/InkDeck-update.tar.gz" "$ARCHIVE" || fail
-download "$BASE_URL/InkDeck-update.tar.gz.sha256" "$CHECKSUM" || fail
+download "$BASE_URL/InkDeck-update.tar.gz" "$ARCHIVE" || fail "nie udalo sie pobrac paczki; sprawdz Wi-Fi i date Kindle"
+download "$BASE_URL/InkDeck-update.tar.gz.sha256" "$CHECKSUM" || fail "nie udalo sie pobrac sumy SHA-256"
 
 if ! command -v sha256sum >/dev/null 2>&1; then
     status "InkDeck: brak sha256sum — aktualizacja przerwana."
     cleanup
     exit 1
 fi
-(cd "$STAGE" && sha256sum -c "InkDeck-update.tar.gz.sha256") >/dev/null 2>&1 || fail
-tar -xzf "$ARCHIVE" -C "$UNPACK" || fail
+(cd "$STAGE" && sha256sum -c "InkDeck-update.tar.gz.sha256") >/dev/null 2>&1 || fail "paczka nie przeszla kontroli SHA-256"
+tar -xzf "$ARCHIVE" -C "$UNPACK" || fail "nie udalo sie rozpakowac paczki"
 
-[ -f "$UNPACK/documents/InkDeck/index.html" ] || fail
-[ -f "$UNPACK/documents/InkDeck/app.js" ] || fail
-[ -f "$UNPACK/documents/InkDeck.sh" ] || fail
-[ -f "$UNPACK/extensions/InkDeck/bin/update.sh" ] || fail
+[ -f "$UNPACK/documents/InkDeck/index.html" ] || fail "brak index.html"
+[ -f "$UNPACK/documents/InkDeck/app.js" ] || fail "brak app.js"
+[ -f "$UNPACK/documents/InkDeck.sh" ] || fail "brak launchera"
+[ -f "$UNPACK/extensions/InkDeck/bin/update.sh" ] || fail "brak modulu aktualizacji"
 
 status "InkDeck: instalowanie..."
 lipc-set-prop com.lab126.appmgrd stop app://com.codex.inkdeck >/dev/null 2>&1

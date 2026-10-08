@@ -50,5 +50,6 @@ rm -f "/mnt/us/documents/InkDeck Update 3.1.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.2.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.3.sh"
 rm -f "/mnt/us/documents/InkDeck Update 3.4.sh"
+rm -f "/mnt/us/documents/InkDeck Update 3.4.1.sh"
 nohup lipc-set-prop com.lab126.appmgrd start app://$APP_ID >/dev/null 2>&1 &
 exit 0
