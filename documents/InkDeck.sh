@@ -31,6 +31,7 @@ chessincrement=0
 chessstyle=symbols
 checkersmode=ai
 checkerslevel=medium
+checkersrules=polish
 checkersstyle=round
 connectmode=ai
 connectlevel=medium
@@ -155,6 +156,8 @@ checkerslevel easy
 checkerslevel medium
 checkerslevel hard
 checkerslevel master
+checkersrules polish
+checkersrules english
 checkersstyle round
 checkersstyle flat
 connectmode ai
