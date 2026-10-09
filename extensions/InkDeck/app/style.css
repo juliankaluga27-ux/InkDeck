@@ -148,8 +148,9 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .gameControls select { width: 145px; height: 50px; margin: 0 2px; border: 3px solid #000; background: #fff; font-size: 16px; }
 .chessClockPanel { width: 98%; height: 54px; margin: 2px auto; text-align: center; white-space: nowrap; }
 .chessClockPanel select, .chessClockPanel span { display: inline-block; height: 48px; margin: 0 2px; padding: 8px 6px; border: 3px solid #000; background: #fff; font-size: 17px; font-weight: bold; vertical-align: top; }
-.chessClockPanel select { width: 180px; }
-.chessClockPanel span { min-width: 145px; }
+.chessClockPanel select { width: 155px; }
+.chessClockPanel #chessIncrement { width: 100px; }
+.chessClockPanel span { min-width: 125px; }
 .chessClockPanel span.activeClock { color: #fff; background: #000; }
 .closeSettings { display: block; width: 180px; height: 50px; margin: 0 auto 14px; background: #000; color: #fff; font-size: 19px; font-weight: bold; }
 #settingsCloseGlobal { position: fixed; z-index: 200; right: 16px; top: 78px; width: 260px; height: 58px; border: 4px solid #000; background: #000; color: #fff; font-size: 18px; font-weight: bold; }
