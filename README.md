@@ -2,7 +2,7 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.6.0**
+Current version: **3.7.0**
 
 ## Features
 
@@ -10,11 +10,13 @@ Current version: **3.6.0**
 - tools: KindleWriter, sketchpad, task list, scientific calculator and Wi-Fi file upload;
 - plugin support;
 - optional chess clock for two-player games;
+- configurable time increment after every move in two-player chess;
+- persistent game settings and difficulty levels stored in `extensions/InkDeck/data/settings.txt`;
 - update checking and installation from GitHub.
 
 ## Installation
 
-1. Download `InkDeck-3.6.0.zip` from the newest GitHub release.
+1. Download `InkDeck-3.7.0.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
