@@ -15,8 +15,10 @@ if [ -f "$PIDFILE" ]; then
     rm -f "$PIDFILE"
 fi
 
-if ! busybox --list 2>/dev/null | grep -q '^httpd$'; then
-    printf 'BLAD: ten Kindle nie ma serwera BusyBox httpd.\n' > "$STATUS"
+PYTHON=""
+if command -v python3 >/dev/null 2>&1; then PYTHON="$(command -v python3)"; elif command -v python >/dev/null 2>&1; then PYTHON="$(command -v python)"; fi
+if [ -z "$PYTHON" ] && ! busybox --list 2>/dev/null | grep -q '^httpd$'; then
+    printf 'BLAD: brak Python i BusyBox httpd. Ten firmware nie ma dostepnego serwera HTTP.\n' > "$STATUS"
     exit 1
 fi
 
@@ -34,7 +36,11 @@ if [ -z "$ipaddr" ]; then
     exit 1
 fi
 
-busybox httpd -f -p "$PORT" -h "$ROOT" >/tmp/inkdeck-filebrowser.log 2>&1 &
+if [ -n "$PYTHON" ]; then
+    "$PYTHON" "$ROOT/server.py" >/tmp/inkdeck-filebrowser.log 2>&1 &
+else
+    busybox httpd -f -p "$PORT" -h "$ROOT" >/tmp/inkdeck-filebrowser.log 2>&1 &
+fi
 serverpid=$!
 printf '%s' "$serverpid" > "$PIDFILE"
 sleep 1

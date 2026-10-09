@@ -21,8 +21,7 @@ case "$KEY:$VALUE" in
     checkerslevel:veryeasy|checkerslevel:easy|checkerslevel:medium|checkerslevel:hard|checkerslevel:master|\
     checkersrules:polish|checkersrules:english|\
     checkersstyle:round|checkersstyle:flat|\
-    connectmode:ai|connectmode:two|\
-    connectlevel:veryeasy|connectlevel:easy|connectlevel:medium|connectlevel:hard|connectlevel:master|\
+    sudokulevel:1|sudokulevel:2|sudokulevel:3|sudokulevel:4|sudokulevel:5|sudokulevel:6|\
     lifegoal:0|lifegoal:10|lifegoal:25|lifegoal:50|lifegoal:100|\
     lifepreset:empty|lifepreset:glider|lifepreset:beacon|lifepreset:pulsar|lifepreset:random|\
     wordlelevel:easy|wordlelevel:medium|wordlelevel:hard|\

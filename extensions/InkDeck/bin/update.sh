@@ -63,8 +63,11 @@ tar -xzf "$ARCHIVE" -C "$UNPACK" || fail "nie udalo sie rozpakowac paczki"
 
 [ -f "$UNPACK/extensions/InkDeck/app/main.page" ] || fail "brak strony aplikacji"
 [ -f "$UNPACK/extensions/InkDeck/app/app.js" ] || fail "brak app.js"
+[ -f "$UNPACK/extensions/InkDeck/app/new-games.js" ] || fail "brak pliku nowych gier"
+[ -f "$UNPACK/extensions/InkDeck/filebrowser/server.py" ] || fail "brak alternatywnego serwera plikow"
 [ -f "$UNPACK/documents/InkDeck.sh" ] || fail "brak launchera"
 [ -f "$UNPACK/extensions/InkDeck/bin/update.sh" ] || fail "brak modulu aktualizacji"
+sh -n "$UNPACK/documents/InkDeck.sh" || fail "launcher ma blad skladni"
 
 status "InkDeck: instalowanie..."
 lipc-set-prop com.lab126.appmgrd stop app://com.codex.inkdeck >/dev/null 2>&1
@@ -80,6 +83,7 @@ mkdir -p "$EXTENSIONS/InkDeck/bin" || fail
 cp -r "$UNPACK/extensions/InkDeck/." "$EXTENSIONS/InkDeck/" || fail "nie udalo sie skopiowac modulu extensions"
 rm -f "$EXTENSIONS/InkDeck/filebrowser/index.html"
 rm -f "$EXTENSIONS/InkDeck/app/plugins/README.txt"
+rm -rf "$EXTENSIONS/InkDeck/app/plugins/PRZYKLAD"
 chmod 755 "$EXTENSIONS/InkDeck/bin/"*.sh "$EXTENSIONS/InkDeck/filebrowser/cgi-bin/"*.sh "$DOCS/InkDeck.sh" >/dev/null 2>&1
 
 sh "$DOCS/InkDeck.sh" || {

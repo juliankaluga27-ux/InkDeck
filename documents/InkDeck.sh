@@ -5,7 +5,8 @@
 # DontUseFBInk
 SOURCE_DIR="/mnt/us/extensions/InkDeck/app"
 TARGET_DIR="/var/local/mesquite/com.codex.inkdeck-v33"
-OLD_TARGET_DIR="/var/local/mesquite/com.codex.inkdeck"
+STAGED_DIR="${TARGET_DIR}.new.$$"
+PREVIOUS_DIR="${TARGET_DIR}.previous"
 DB="/var/local/appreg.db"
 APP_ID="com.codex.inkdeck"
 UPDATER_ID="com.codex.inkdeck.updater"
@@ -13,6 +14,7 @@ FILES_START_ID="com.codex.inkdeck.files.start"
 FILES_STOP_ID="com.codex.inkdeck.files.stop"
 SETTINGS_FILE="/mnt/us/extensions/InkDeck/data/settings.txt"
 [ -d "$SOURCE_DIR" ] && [ -f "$SOURCE_DIR/main.page" ] || exit 1
+rm -rf "$SOURCE_DIR/plugins/PRZYKLAD"
 chmod 755 "/mnt/us/extensions/InkDeck/bin/"*.sh "/mnt/us/extensions/InkDeck/filebrowser/cgi-bin/"*.sh >/dev/null 2>&1
 mkdir -p "$(dirname "$SETTINGS_FILE")"
 if [ ! -s "$SETTINGS_FILE" ]; then
@@ -33,8 +35,7 @@ checkersmode=ai
 checkerslevel=medium
 checkersrules=polish
 checkersstyle=round
-connectmode=ai
-connectlevel=medium
+sudokulevel=3
 lifegoal=25
 lifepreset=empty
 wordlelevel=medium
@@ -49,29 +50,28 @@ if [ -d "/mnt/us/documents/InkDeck/plugins" ]; then
 fi
 lipc-set-prop com.lab126.appmgrd stop app://$APP_ID >/dev/null 2>&1
 sleep 1
-rm -rf "$TARGET_DIR"
-rm -rf "$OLD_TARGET_DIR"
-rm -rf "/var/local/mesquite/com.codex.inkdeck-v27"
-rm -rf "/var/local/mesquite/com.codex.inkdeck-v28"
-rm -rf "/var/local/mesquite/com.codex.inkdeck-v30"
-rm -rf "/var/local/mesquite/com.codex.inkdeck-v301"
-rm -rf "/var/local/mesquite/com.codex.inkdeck-v31"
-rm -rf "/var/local/mesquite/com.codex.inkdeck-v32"
-cp -r "$SOURCE_DIR" "$TARGET_DIR" || exit 1
-mv "$TARGET_DIR/main.page" "$TARGET_DIR/index.html" || exit 1
-printf 'window.InkDeckSavedSettings={' > "$TARGET_DIR/settings-loader.js"
+rm -rf "$STAGED_DIR"
+cp -r "$SOURCE_DIR" "$STAGED_DIR" || exit 1
+mv "$STAGED_DIR/main.page" "$STAGED_DIR/index.html" || { rm -rf "$STAGED_DIR"; exit 1; }
+printf 'window.InkDeckSavedSettings={' > "$STAGED_DIR/settings-loader.js"
 while IFS='=' read -r setting_key setting_value; do
     case "$setting_key" in ''|*[!a-z0-9]*) continue ;; esac
     case "$setting_value" in ''|*[!a-zA-Z0-9_-]*) continue ;; esac
-    printf '"%s":"%s",' "$setting_key" "$setting_value" >> "$TARGET_DIR/settings-loader.js"
+    printf '"%s":"%s",' "$setting_key" "$setting_value" >> "$STAGED_DIR/settings-loader.js"
 done < "$SETTINGS_FILE"
-printf '"_source":"settings.txt"};\n' >> "$TARGET_DIR/settings-loader.js"
-: > "$TARGET_DIR/plugins-loader.js"
+printf '"_source":"settings.txt"};\n' >> "$STAGED_DIR/settings-loader.js"
+: > "$STAGED_DIR/plugins-loader.js"
 for plugin in "$SOURCE_DIR"/plugins/*/plugin.js; do
     [ -f "$plugin" ] || continue
-    printf '\n/* InkDeck plugin */\n' >> "$TARGET_DIR/plugins-loader.js"
-    cat "$plugin" >> "$TARGET_DIR/plugins-loader.js"
+    printf '\n/* InkDeck plugin */\n' >> "$STAGED_DIR/plugins-loader.js"
+    cat "$plugin" >> "$STAGED_DIR/plugins-loader.js"
 done
+[ -s "$STAGED_DIR/index.html" ] && [ -f "$STAGED_DIR/app.js" ] && [ -f "$STAGED_DIR/style.css" ] || { rm -rf "$STAGED_DIR"; exit 1; }
+if [ -d "$TARGET_DIR" ]; then rm -rf "$PREVIOUS_DIR"; mv "$TARGET_DIR" "$PREVIOUS_DIR" || { rm -rf "$STAGED_DIR"; exit 1; }; fi
+if ! mv "$STAGED_DIR" "$TARGET_DIR"; then
+    [ -d "$PREVIOUS_DIR" ] && mv "$PREVIOUS_DIR" "$TARGET_DIR"
+    exit 1
+fi
 sqlite3 "$DB" <<EOF
 INSERT OR IGNORE INTO interfaces(interface) VALUES('application');
 INSERT OR IGNORE INTO handlerIds(handlerId) VALUES('$APP_ID');
@@ -160,13 +160,12 @@ checkersrules polish
 checkersrules english
 checkersstyle round
 checkersstyle flat
-connectmode ai
-connectmode two
-connectlevel veryeasy
-connectlevel easy
-connectlevel medium
-connectlevel hard
-connectlevel master
+sudokulevel 1
+sudokulevel 2
+sudokulevel 3
+sudokulevel 4
+sudokulevel 5
+sudokulevel 6
 lifegoal 0
 lifegoal 10
 lifegoal 25
@@ -209,6 +208,9 @@ rm -f "/mnt/us/documents/InkDeck-filebrowser-status.txt"
 rm -f "/mnt/us/INSTRUKCJA.txt"
 rm -f "/mnt/us/ODINSTALUJ/Uninstall InkDeck.sh"
 rmdir "/mnt/us/ODINSTALUJ" >/dev/null 2>&1
-rm -rf "/mnt/us/documents/InkDeck"
+# Keep documents/InkDeck so user plugins survive subsequent launches.
+mkdir -p "/mnt/us/documents/InkDeck/plugins"
+sync
+sleep 2
 nohup lipc-set-prop com.lab126.appmgrd start app://$APP_ID >/dev/null 2>&1 &
 exit 0
