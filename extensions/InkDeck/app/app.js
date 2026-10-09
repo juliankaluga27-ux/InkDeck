@@ -5,9 +5,11 @@
   function requestFullscreen(){try{if(window.kindle&&kindle.messaging)kindle.messaging.sendStringMessage('com.lab126.mfa','switchViewMode','fullscreen');}catch(e){}}
   requestFullscreen();
   try{if(window.kindle&&kindle.appmgr)kindle.appmgr.ongo=requestFullscreen;}catch(ignoreFullscreen){}
-  var inkDeckSettings=window.InkDeckSavedSettings||{};
+  var inkDeckSettings=window.InkDeckSavedSettings||{},storedInkDeckSettings=null,storedInkDeckKey;
+  try{storedInkDeckSettings=JSON.parse(localStorage.getItem('inkdeck_settings')||'{}');}catch(ignoreStoredSettings){storedInkDeckSettings=null;}
+  if(storedInkDeckSettings)for(storedInkDeckKey in storedInkDeckSettings)if(storedInkDeckSettings.hasOwnProperty(storedInkDeckKey))inkDeckSettings[storedInkDeckKey]=storedInkDeckSettings[storedInkDeckKey];
   function settingGet(key,fallback){var value=inkDeckSettings[key];return typeof value==='string'&&value!==''?value:fallback;}
-  function settingSet(key,value){var id;value=String(value);inkDeckSettings[key]=value;try{localStorage.setItem('inkdeck_settings',JSON.stringify(inkDeckSettings));}catch(ignoreLocalSettings){}try{if(window.kindle&&kindle.appmgr){id='app://com.codex.inkdeck.setting.'+key+'.'+value;kindle.appmgr.start(id);}}catch(ignoreFileSettings){}}
+  function settingSet(key,value){value=String(value);inkDeckSettings[key]=value;try{localStorage.setItem('inkdeck_settings',JSON.stringify(inkDeckSettings));}catch(ignoreLocalSettings){}}
   function restoreSelect(id,key,fallback){var box=document.getElementById(id),value=settingGet(key,fallback),i;if(!box)return;for(i=0;i<box.options.length;i++)if(box.options[i].value===value){box.value=value;return;}box.value=fallback;}
   /* Interface language. Kept deliberately DOM-based so plugins written in Polish
      continue to work, while their visible text can opt into the same language. */
@@ -446,7 +448,7 @@
   document.getElementById('filesStatus').onclick=loadFileServerStatus;
   document.getElementById('filesStop').onclick=function(){try{if(window.kindle&&kindle.appmgr)kindle.appmgr.start('app://com.codex.inkdeck.files.stop');}catch(e){}setTimeout(loadFileServerStatus,700);};
 
-  var inkDeckVersion='3.9.0',latestReleaseUrl='https://api.github.com/repos/juliankaluga27-ux/InkDeck/releases/latest';
+  var inkDeckVersion='3.9.1',latestReleaseUrl='https://api.github.com/repos/juliankaluga27-ux/InkDeck/releases/latest';
   document.getElementById('updateCheck').onclick=function(){var status=document.getElementById('updateStatus'),xhr=new XMLHttpRequest();status.innerHTML='Sprawdzanie GitHuba...';try{xhr.open('GET',latestReleaseUrl,true);xhr.timeout=20000;xhr.onreadystatechange=function(){var data,tag;if(xhr.readyState!==4)return;if(xhr.status>=200&&xhr.status<300){try{data=JSON.parse(xhr.responseText);tag=String(data.tag_name||'').replace(/^v/,'');status.innerHTML=tag&&tag!==inkDeckVersion?'Dostępna wersja: '+tag+'. Możesz ją zainstalować.':'Masz najnowszą wersję: '+inkDeckVersion+'.';}catch(e){status.innerHTML='GitHub odpowiedział, ale nie udało się odczytać wersji.';}}else status.innerHTML='Nie udało się połączyć z GitHubem. Sprawdź Wi-Fi.';};xhr.ontimeout=function(){status.innerHTML='Przekroczono czas połączenia. Sprawdź Wi-Fi.';};xhr.send(null);}catch(e){status.innerHTML='Sprawdzanie nie jest obsługiwane przez ten firmware. Instalator nadal może zadziałać.';}};
   document.getElementById('updateInstall').onclick=function(){var status=document.getElementById('updateStatus');if(!window.confirm||window.confirm('Pobrać i zainstalować najnowszy InkDeck z GitHuba?')){status.innerHTML='Uruchamiam aktualizator. Nie wyłączaj Kindle.';try{if(window.kindle&&kindle.appmgr){kindle.appmgr.start('app://com.codex.inkdeck.updater');setTimeout(function(){status.innerHTML='Aktualizator został uruchomiony.';},800);return;}}catch(e){}status.innerHTML='Nie znaleziono modułu aktualizacji. Zainstaluj pełną paczkę z folderem extensions.';}};
 
