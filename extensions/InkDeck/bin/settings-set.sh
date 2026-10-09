@@ -19,6 +19,7 @@ case "$KEY:$VALUE" in
     chessstyle:symbols|chessstyle:simple|chessstyle:letters|\
     checkersmode:ai|checkersmode:two|\
     checkerslevel:veryeasy|checkerslevel:easy|checkerslevel:medium|checkerslevel:hard|checkerslevel:master|\
+    checkersrules:polish|checkersrules:english|\
     checkersstyle:round|checkersstyle:flat|\
     connectmode:ai|connectmode:two|\
     connectlevel:veryeasy|connectlevel:easy|connectlevel:medium|connectlevel:hard|connectlevel:master|\
