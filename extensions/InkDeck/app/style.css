@@ -185,6 +185,16 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .wordleControls { width: 98%; min-height: 52px; margin: 3px auto; text-align: center; }
 .wordleControls select, .wordleControls button { height: 46px; margin: 2px 5px; padding: 4px 8px; border: 3px solid #000; background: #fff; font-size: 16px; font-weight: bold; }
 .wordleControls span { display: inline-block; min-width: 155px; font-size: 18px; font-weight: bold; }
+.hacketTabs { width: 98%; margin: 8px auto; text-align: center; white-space: nowrap; }
+.hacketTabs button { width: 31%; height: 52px; margin: 0 1%; font-size: 16px; font-weight: bold; }
+.hacketTabs button.selected { color: #fff; background: #000; }
+.hacketContent { width: 96%; height: calc(100% - 135px); margin: 0 auto; padding: 8px 14px 80px; border: 3px solid #000; overflow-y: scroll; font-size: 18px; line-height: 1.35; }
+.hacketContent h2 { margin: 4px 0 12px; font-size: 27px; }
+.hacketContent h3 { margin: 16px 0 5px; padding-bottom: 3px; border-bottom: 2px solid #777; font-size: 21px; }
+.hacketContent p { margin: 5px 0 12px; }
+.hacketContent code { font-size: 15px; word-break: break-all; }
+.hacketCount { font-size: 15px; font-weight: normal; }
+.wordPool { font-family: monospace; font-size: 17px; line-height: 1.5; }
 #lifeStatus { min-width: 145px; font-size: 22px; }
 #life .bar button { min-width: 84px; padding: 2px 5px; font-size: 14px; }
 .pluginToggle { min-width: 78px !important; font-size: 14px; }
