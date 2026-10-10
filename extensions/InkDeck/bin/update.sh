@@ -67,6 +67,39 @@ verify_archive() {
     [ -n "$actual" ] && [ "$actual" = "$expected" ]
 }
 
+extract_archive() {
+    # Kindle firmware releases expose different tar implementations.  Some
+    # accept -z, some need gzip in a pipe, and some only expose BusyBox.
+    if tar -xzf "$ARCHIVE" -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
+        return 0
+    fi
+    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
+    if command -v gzip >/dev/null 2>&1; then
+        if gzip -dc "$ARCHIVE" 2>> "$DETAIL_LOG" | tar -xf - -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
+            return 0
+        fi
+    fi
+    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
+    if command -v busybox >/dev/null 2>&1; then
+        if busybox tar -xzf "$ARCHIVE" -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
+            return 0
+        fi
+    fi
+    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
+    if command -v python >/dev/null 2>&1; then
+        if python -c 'import sys,tarfile; tarfile.open(sys.argv[1],"r:gz").extractall(sys.argv[2])' "$ARCHIVE" "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
+            return 0
+        fi
+    fi
+    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
+    if command -v python3 >/dev/null 2>&1; then
+        if python3 -c 'import sys,tarfile; tarfile.open(sys.argv[1],"r:gz").extractall(sys.argv[2])' "$ARCHIVE" "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
+            return 0
+        fi
+    fi
+    return 1
+}
+
 mkdir -p "$STAGE" "$UNPACK" || fail "nie mozna utworzyc katalogu roboczego"
 : > "$DETAIL_LOG"
 status "InkDeck: pobieranie aktualizacji..."
@@ -75,7 +108,7 @@ download "$BASE_URL/InkDeck-update.tar.gz.sha256" "$CHECKSUM" || fail "nie udalo
 
 status "InkDeck: sprawdzanie paczki..."
 verify_archive || fail "nie mozna sprawdzic SHA-256 albo suma jest bledna"
-tar -xzf "$ARCHIVE" -C "$UNPACK" || fail "nie udalo sie rozpakowac paczki"
+extract_archive || fail "nie udalo sie rozpakowac paczki zadna metoda (tar, gzip, BusyBox ani Python)"
 
 [ -f "$UNPACK/extensions/InkDeck/app/main.page" ] || fail "brak strony aplikacji"
 [ -f "$UNPACK/extensions/InkDeck/app/app.js" ] || fail "brak app.js"

@@ -2,7 +2,7 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.10.2**
+Current version: **3.10.3**
 
 ## Features
 
@@ -15,13 +15,12 @@ Current version: **3.10.2**
 - a stronger chess bot that detects checkmate and avoids repeated positions;
 - a Mesquite-compatible continuous drawing mode in the sketchpad;
 - the hidden **Hacket** reference with Wordle pools, game rules, technical secrets and an app-wide HACKED mode;
-- integrated MultiplicatingKid.pl with shared browser accounts, scores, classes and administrator panel;
 - persistent game settings and difficulty levels stored in `extensions/InkDeck/data/settings.txt`;
 - update checking and installation from GitHub.
 
 ## Installation
 
-1. Download `InkDeck-3.10.2.zip` from the newest GitHub release.
+1. Download `InkDeck-3.10.3.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -46,7 +45,7 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.10.2**
+Aktualna wersja: **3.10.3**
 
 ## Funkcje
 
@@ -57,13 +56,12 @@ Aktualna wersja: **3.10.2**
 - poprawiony bot szachowy, który rozpoznaje mata i unika bezsensownego powtarzania pozycji;
 - szkicownik rysujący płynne linie na silniku Mesquite;
 - ukryta sekcja **Hacket** z pełnymi pulami Wordle, zasadami gier, technicznymi smaczkami i trybem HACKED działającym w każdej grze;
-- MultiplicatingKid.pl z logowaniem, wspólnymi wynikami, klasami oraz panelem administratora zsynchronizowanym z wersją przeglądarkową;
 - trwały zapis ustawień i poziomów trudności w `extensions/InkDeck/data/settings.txt`;
 - bezpieczna aktualizacja bezpośrednio z GitHuba.
 
 ## Instalacja
 
-1. Pobierz `InkDeck-3.10.2.zip` z najnowszego wydania GitHub.
+1. Pobierz `InkDeck-3.10.3.zip` z najnowszego wydania GitHub.
 2. Skopiuj foldery `documents` oraz `extensions` do głównego katalogu pamięci USB Kindle.
 3. Bezpiecznie odłącz Kindle od komputera.
 4. Uruchom **InkDeck** z biblioteki. Ten sam skrót instaluje i otwiera aplikację.
@@ -77,6 +75,14 @@ Aby ją otworzyć, na ekranie głównym dotknij szybko **7 razy napisu INKDECK**
 ## Zgodność
 
 Projekt jest przygotowany dla Kindle Basic 11. generacji / Kids z firmware 5.19.2.0.1, Véra i Mesquite. Na innych modelach układ może wymagać dopasowania.
+
+## Wydanie 3.10.3
+
+Aktualizator potrafi teraz rozpakować paczkę kilkoma metodami: bezpośrednio przez `tar`, przez `gzip`, BusyBox albo Python. Paczka aktualizacyjna jest tworzona w zgodnym formacie USTAR. Usunięto niedziałający moduł MultiplicatingKid.pl.
+
+Rozbudowano tryb HACKED. Siedem dotknięć tej samej figury włącza go tylko dla jej koloru. W szachach jedno dotknięcie szarego pola teleportuje figurę bez bicia, a dwa szybkie dotknięcia wykonują bicie figur przeciwnika stojących na prostej drodze. Ruch HACKED nie tworzy sztucznego szacha.
+
+Szkicownik odróżnia teraz zdarzenia dotykowe od syntetycznych zdarzeń myszy i interpoluje linię między kolejnymi punktami. Powiększono Sudoku i Piłkę na kartce, dodano cztery nonogramy oraz nowe układy Gry w życie. Nazwa Snake pozostaje taka sama również w polskiej wersji.
 
 ## Wydanie 3.10.2
 

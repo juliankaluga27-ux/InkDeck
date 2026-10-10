@@ -25,7 +25,8 @@ jobs:
           cp -a extensions update-release/
           cp -a extensions/InkDeck/app update-release/documents/InkDeck
           mv update-release/documents/InkDeck/main.page update-release/documents/InkDeck/index.html
-          tar -czf InkDeck-update.tar.gz -C update-release .
+          tar --format=ustar --owner=0 --group=0 --numeric-owner -cf InkDeck-update.tar -C update-release .
+          gzip -1n InkDeck-update.tar
           sha256sum InkDeck-update.tar.gz > InkDeck-update.tar.gz.sha256
           cd release
           zip -r ../InkDeck-${GITHUB_REF_NAME#v}.zip documents extensions
