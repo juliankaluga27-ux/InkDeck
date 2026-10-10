@@ -178,8 +178,10 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .wordleCell.near { background: #aaa; }
 .wordleCell.right { color: #fff; background: #000; }
 .wordleCell.bad { color: #777; border-color: #777; }
-.wordleKeys { width: 98%; margin: 6px auto; text-align: center; }
-.wordleKeys button { min-width: 48px; height: 48px; margin: 2px; padding: 2px; font-size: 17px; font-weight: bold; }
+.wordleKeys { width: 98%; max-width: 900px; margin: 10px auto; text-align: center; }
+.wordleKeyRow { display:flex; justify-content:center; gap:5px; margin:6px 0; }
+.wordleKeys button { flex:1 1 0; min-width:0; max-width:72px; height:62px; margin:0; padding:2px; font-size:24px; font-weight:900; }
+.wordleKeys button.wordleActionKey { flex:1.5 1 0; max-width:110px; font-size:20px; }
 .wordleControls { width: 98%; min-height: 52px; margin: 3px auto; text-align: center; }
 .wordleControls select, .wordleControls button { height: 46px; margin: 2px 5px; padding: 4px 8px; border: 3px solid #000; background: #fff; font-size: 16px; font-weight: bold; }
 .wordleControls span { display: inline-block; min-width: 155px; font-size: 18px; font-weight: bold; }
@@ -216,6 +218,7 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .nonogramSquare.thickRight { border-right-width:3px; }
 .nonogramSquare.thickBottom { border-bottom-width:3px; }
 .nonogramCell { display:block; min-width:0; min-height:0; margin:0; padding:0; border:0; background:#fff; font-size:20px; font-weight:bold; }.nonogramCell.filled { background:#000; color:#fff; }.nonogramCell.cross { background:#eee; }
+.nonogramCell.error { outline:3px solid #000; outline-offset:-4px; box-shadow:inset 0 0 0 3px #fff; }
 .mahjongBoard { margin:8px auto; border:3px solid #000; overflow:hidden; }
 .mahjongTile { float:left; margin:0; padding:0; border:2px solid #000; background:#fff; font-size:25px; font-weight:bold; }
 .mahjongTile.empty { border-color:#fff; color:#fff; background:#fff; }
