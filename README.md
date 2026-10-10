@@ -2,13 +2,14 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.10.4**
+Current version: **3.10.5**
 
 ## Features
 
-- games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, six-level Sudoku, Nonograms, Mahjong Connect, Ludo, Paper Soccer and Polish or English Wordle;
+- games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, six-level Sudoku, Nonograms, Mahjong Connect, Ludo, Paper Soccer and Polish or English Wordle; Memory supports up to 20 pairs, Minesweeper accepts custom dimensions, and Snake wraps at screen edges;
 - tools: KindleWriter, sketchpad, task list, scientific calculator and Wi-Fi file upload;
 - plugin support;
+- Kindle AI chat with user-provided Google Gemini or OpenAI API keys; the key stays in memory and is sent directly to the selected provider when a message is submitted;
 - optional chess clock for two-player games;
 - configurable time increment after every move in two-player chess;
 - Polish 8 × 8 checkers with backward captures and flying kings, plus classic English rules;
@@ -20,7 +21,7 @@ Current version: **3.10.4**
 
 ## Installation
 
-1. Download `InkDeck-3.10.4.zip` from the newest GitHub release.
+1. Download `InkDeck-3.10.5.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -45,11 +46,11 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.10.4**
+Aktualna wersja: **3.10.5**
 
 ## Funkcje
 
-- szachy, warcaby, Saper, 2048, kółko i krzyżyk, Pamięć, Zgaś światła, Gra w życie, Snake, sześciopoziomowe Sudoku, nonogramy, Mahjong Connect, Chińczyk, Piłka oraz polskie lub angielskie Wordle;
+- szachy, warcaby, Saper, 2048, kółko i krzyżyk, Memory, Zgaś światła, Gra w życie, Snake, sześciopoziomowe Sudoku, nonogramy, Mahjong Connect, Chińczyk, Piłka oraz polskie lub angielskie Wordle; Memory obsługuje do 20 par, Saper przyjmuje własne wymiary, a Snake zawija się na krawędziach;
 - KindleWriter, szkicownik, lista zadań, kalkulator naukowy i przesyłanie plików przez Wi-Fi;
 - szachy dla dwóch osób z zegarem i przyrostem czasu po każdym ruchu;
 - dwa warianty warcabów: **polskie 8 × 8** z biciem pionem do tyłu i latającą damką oraz **angielskie** z krótką damką;
@@ -61,7 +62,7 @@ Aktualna wersja: **3.10.4**
 
 ## Instalacja
 
-1. Pobierz `InkDeck-3.10.4.zip` z najnowszego wydania GitHub.
+1. Pobierz `InkDeck-3.10.5.zip` z najnowszego wydania GitHub.
 2. Skopiuj foldery `documents` oraz `extensions` do głównego katalogu pamięci USB Kindle.
 3. Bezpiecznie odłącz Kindle od komputera.
 4. Uruchom **InkDeck** z biblioteki. Ten sam skrót instaluje i otwiera aplikację.
@@ -75,6 +76,12 @@ Aby ją otworzyć, na ekranie głównym dotknij szybko **7 razy napisu INKDECK**
 ## Zgodność
 
 Projekt jest przygotowany dla Kindle Basic 11. generacji / Kids z firmware 5.19.2.0.1, Véra i Mesquite. Na innych modelach układ może wymagać dopasowania.
+
+## Wydanie 3.10.5
+
+Powiększono klawisze Wordle i zwiększono szerokość ich pól dotykowych. Zmieniono nazwę gry na Memory; można ustawić od 2 do 20 par. W Saperze wpisuje się własną szerokość, wysokość i liczbę min. Snake zawija się na przeciwległą krawędź planszy. W HACKED dla warcabów pojedyncze dotknięcie teleportuje pionek, a szybkie podwójne dotknięcie pola zbija przeciwników po drodze.
+
+Dodano Kindle AI z wyborem Google Gemini lub OpenAI, modelem edytowalnym przez użytkownika i rozmową w aplikacji. Potrzebny jest własny klucz API i dostęp do Wi-Fi. Klucz nie jest zapisywany w ustawieniach: pozostaje w pamięci do zamknięcia aplikacji i jest wysyłany bezpośrednio do wybranego dostawcy po naciśnięciu „Wyślij”.
 
 ## Wydanie 3.10.4
 
