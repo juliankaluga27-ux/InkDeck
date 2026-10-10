@@ -2,7 +2,7 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.10.6**
+Current version: **3.10.7**
 
 ## Features
 
@@ -21,7 +21,7 @@ Current version: **3.10.6**
 
 ## Installation
 
-1. Download `InkDeck-3.10.6.zip` from the newest GitHub release.
+1. Download `InkDeck-3.10.7.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -46,7 +46,7 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.10.6**
+Aktualna wersja: **3.10.7**
 
 ## Funkcje
 
@@ -76,6 +76,10 @@ Aby ją otworzyć, na ekranie głównym dotknij szybko **7 razy napisu INKDECK**
 ## Zgodność
 
 Projekt jest przygotowany dla Kindle Basic 11. generacji / Kids z firmware 5.19.2.0.1, Véra i Mesquite. Na innych modelach układ może wymagać dopasowania.
+
+## Wydanie 3.10.7
+
+Naprawiono błąd szybkiej zmiany liczby par lub rozpoczęcia nowej gry Memory po nietrafionym ruchu. Opóźnione schowanie kart nie modyfikuje już planszy nowej rozgrywki. Poprawiono też dopasowanie szerokości kart.
 
 ## Wydanie 3.10.6
 
