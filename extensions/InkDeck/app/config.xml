@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<widget id="com.codex.inkdeck" version="3.10.6" viewmodes="application" xmlns="http://www.w3.org/ns/widgets" xmlns:kindle="http://kindle.amazon.com/ns/widget-extensions">
+<widget id="com.codex.inkdeck" version="3.10.7" viewmodes="application" xmlns="http://www.w3.org/ns/widgets" xmlns:kindle="http://kindle.amazon.com/ns/widget-extensions">
   <access origin="https://api.openai.com" /><access origin="https://openrouter.ai" /><access origin="https://generativelanguage.googleapis.com" />
   <name xml:lang="pl">InkDeck</name><description xml:lang="pl">Gry i narzędzia offline</description><content src="index.html" />
   <kindle:chrome><kindle:asset key="configureSearchBar" value="none" /></kindle:chrome>
