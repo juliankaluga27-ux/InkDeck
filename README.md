@@ -2,7 +2,7 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.10.0**
+Current version: **3.10.1**
 
 ## Features
 
@@ -21,7 +21,7 @@ Current version: **3.10.0**
 
 ## Installation
 
-1. Download `InkDeck-3.10.0.zip` from the newest GitHub release.
+1. Download `InkDeck-3.10.1.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -46,7 +46,7 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.10.0**
+Aktualna wersja: **3.10.1**
 
 ## Funkcje
 
@@ -63,7 +63,7 @@ Aktualna wersja: **3.10.0**
 
 ## Instalacja
 
-1. Pobierz `InkDeck-3.10.0.zip` z najnowszego wydania GitHub.
+1. Pobierz `InkDeck-3.10.1.zip` z najnowszego wydania GitHub.
 2. Skopiuj foldery `documents` oraz `extensions` do głównego katalogu pamięci USB Kindle.
 3. Bezpiecznie odłącz Kindle od komputera.
 4. Uruchom **InkDeck** z biblioteki. Ten sam skrót instaluje i otwiera aplikację.
@@ -77,6 +77,10 @@ Aby ją otworzyć, na ekranie głównym dotknij szybko **7 razy napisu INKDECK**
 ## Zgodność
 
 Projekt jest przygotowany dla Kindle Basic 11. generacji / Kids z firmware 5.19.2.0.1, Véra i Mesquite. Na innych modelach układ może wymagać dopasowania.
+
+## Wydanie 3.10.1
+
+Naprawiono aktualizator na instalacjach Kindle, na których `curl` nie potrafi pobrać pliku albo nie ma polecenia `sha256sum`. Skrypt próbuje kolejno `curl` i `wget`, a sumę SHA-256 może sprawdzić przez `sha256sum`, OpenSSL lub Python. Ekran aktualizacji pokazuje teraz bieżący etap oraz konkretny komunikat błędu zapisany przez skrypt.
 
 ## Wydanie 3.10.0
 

@@ -9,6 +9,7 @@ CHECKSUM="$STAGE/InkDeck-update.tar.gz.sha256"
 UNPACK="$STAGE/unpacked"
 BACKUP="$STAGE/app-backup"
 LOG="$EXTENSIONS/InkDeck/update-status.txt"
+DETAIL_LOG="$EXTENSIONS/InkDeck/update-detail.txt"
 BASE_URL="https://github.com/$REPO/releases/latest/download"
 
 status() {
@@ -38,32 +39,48 @@ download() {
     url="$1"
     target="$2"
     if command -v curl >/dev/null 2>&1; then
-        curl --fail --location --connect-timeout 20 --max-time 180 "$url" -o "$target"
-        return $?
+        if curl --fail --location --connect-timeout 20 --max-time 180 "$url" -o "$target" >> "$DETAIL_LOG" 2>&1; then
+            return 0
+        fi
     fi
     if command -v wget >/dev/null 2>&1; then
-        wget -T 20 -O "$target" "$url"
-        return $?
+        if wget -T 20 -O "$target" "$url" >> "$DETAIL_LOG" 2>&1; then
+            return 0
+        fi
     fi
     return 1
 }
 
+verify_archive() {
+    expected="$(awk 'NR == 1 { print $1 }' "$CHECKSUM")"
+    case "$expected" in
+        ''|*[!0-9a-fA-F]*) return 1 ;;
+    esac
+    actual=""
+    if command -v sha256sum >/dev/null 2>&1; then
+        actual="$(sha256sum "$ARCHIVE" 2>/dev/null | awk '{ print $1 }')"
+    elif command -v openssl >/dev/null 2>&1; then
+        actual="$(openssl dgst -sha256 "$ARCHIVE" 2>/dev/null | awk '{ print $NF }')"
+    elif command -v python >/dev/null 2>&1; then
+        actual="$(python -c 'import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$ARCHIVE" 2>/dev/null)"
+    fi
+    [ -n "$actual" ] && [ "$actual" = "$expected" ]
+}
+
 mkdir -p "$STAGE" "$UNPACK" || fail "nie mozna utworzyc katalogu roboczego"
+: > "$DETAIL_LOG"
 status "InkDeck: pobieranie aktualizacji..."
 download "$BASE_URL/InkDeck-update.tar.gz" "$ARCHIVE" || fail "nie udalo sie pobrac paczki; sprawdz Wi-Fi i date Kindle"
 download "$BASE_URL/InkDeck-update.tar.gz.sha256" "$CHECKSUM" || fail "nie udalo sie pobrac sumy SHA-256"
 
-if ! command -v sha256sum >/dev/null 2>&1; then
-    status "InkDeck: brak sha256sum — aktualizacja przerwana."
-    cleanup
-    exit 1
-fi
-(cd "$STAGE" && sha256sum -c "InkDeck-update.tar.gz.sha256") >/dev/null 2>&1 || fail "paczka nie przeszla kontroli SHA-256"
+status "InkDeck: sprawdzanie paczki..."
+verify_archive || fail "nie mozna sprawdzic SHA-256 albo suma jest bledna"
 tar -xzf "$ARCHIVE" -C "$UNPACK" || fail "nie udalo sie rozpakowac paczki"
 
 [ -f "$UNPACK/extensions/InkDeck/app/main.page" ] || fail "brak strony aplikacji"
 [ -f "$UNPACK/extensions/InkDeck/app/app.js" ] || fail "brak app.js"
 [ -f "$UNPACK/extensions/InkDeck/app/new-games.js" ] || fail "brak pliku nowych gier"
+[ -f "$UNPACK/extensions/InkDeck/app/extra-games.js" ] || fail "brak pliku dodatkowych gier"
 [ -f "$UNPACK/extensions/InkDeck/filebrowser/server.py" ] || fail "brak alternatywnego serwera plikow"
 [ -f "$UNPACK/documents/InkDeck.sh" ] || fail "brak launchera"
 [ -f "$UNPACK/extensions/InkDeck/bin/update.sh" ] || fail "brak modulu aktualizacji"
