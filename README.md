@@ -2,11 +2,11 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.9.1**
+Current version: **3.9.2**
 
 ## Features
 
-- games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, Klondike Solitaire, six-level Sudoku, Nonograms and Polish or English Wordle;
+- games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, six-level Sudoku, Nonograms and Polish or English Wordle;
 - tools: KindleWriter, sketchpad, task list, scientific calculator and Wi-Fi file upload;
 - plugin support;
 - optional chess clock for two-player games;
@@ -20,7 +20,7 @@ Current version: **3.9.1**
 
 ## Installation
 
-1. Download `InkDeck-3.9.1.zip` from the newest GitHub release.
+1. Download `InkDeck-3.9.2.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -45,11 +45,11 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.9.1**
+Aktualna wersja: **3.9.2**
 
 ## Funkcje
 
-- szachy, warcaby, Saper, 2048, kółko i krzyżyk, Pamięć, Zgaś światła, Gra w życie, Snake, pasjans Klondike, sześciopoziomowe Sudoku, nonogramy i polskie lub angielskie Wordle;
+- szachy, warcaby, Saper, 2048, kółko i krzyżyk, Pamięć, Zgaś światła, Gra w życie, Snake, sześciopoziomowe Sudoku, nonogramy i polskie lub angielskie Wordle;
 - KindleWriter, szkicownik, lista zadań, kalkulator naukowy i przesyłanie plików przez Wi-Fi;
 - szachy dla dwóch osób z zegarem i przyrostem czasu po każdym ruchu;
 - dwa warianty warcabów: **polskie 8 × 8** z biciem pionem do tyłu i latającą damką oraz **angielskie** z krótką damką;
@@ -61,7 +61,7 @@ Aktualna wersja: **3.9.1**
 
 ## Instalacja
 
-1. Pobierz `InkDeck-3.9.1.zip` z najnowszego wydania GitHub.
+1. Pobierz `InkDeck-3.9.2.zip` z najnowszego wydania GitHub.
 2. Skopiuj foldery `documents` oraz `extensions` do głównego katalogu pamięci USB Kindle.
 3. Bezpiecznie odłącz Kindle od komputera.
 4. Uruchom **InkDeck** z biblioteki. Ten sam skrót instaluje i otwiera aplikację.
@@ -75,6 +75,10 @@ Aby ją otworzyć, na ekranie głównym dotknij szybko **7 razy napisu INKDECK**
 ## Zgodność
 
 Projekt jest przygotowany dla Kindle Basic 11. generacji / Kids z firmware 5.19.2.0.1, Véra i Mesquite. Na innych modelach układ może wymagać dopasowania.
+
+## Wydanie 3.9.2
+
+Naprawiono mnożenie przycisku kasowania w Sudoku. Sudoku natychmiast wykrywa błędne cyfry, liczy błędy i oferuje podpowiedzi na poziomach 1–2. Nonogram ma teraz zwartą, kwadratową planszę ze wskazówkami przy górnej i lewej krawędzi oraz natychmiast zgłasza pomyłki. Usunięto pasjansa. Hacket otrzymał terminalowy wygląd i ukryty tryb HACKED: siedem dotknięć napisu HACKET włącza ruchy warcabów bez zasad, a trzy dotknięcia nazwy gry wyłączają tryb.
 
 ## Wydanie 3.9.1
 
