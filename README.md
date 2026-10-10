@@ -2,11 +2,11 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.9.2**
+Current version: **3.10.0**
 
 ## Features
 
-- games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, six-level Sudoku, Nonograms and Polish or English Wordle;
+- games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, six-level Sudoku, Nonograms, Mahjong Connect, Ludo, Paper Soccer and Polish or English Wordle;
 - tools: KindleWriter, sketchpad, task list, scientific calculator and Wi-Fi file upload;
 - plugin support;
 - optional chess clock for two-player games;
@@ -14,13 +14,14 @@ Current version: **3.9.2**
 - Polish 8 × 8 checkers with backward captures and flying kings, plus classic English rules;
 - a stronger chess bot that detects checkmate and avoids repeated positions;
 - a Mesquite-compatible continuous drawing mode in the sketchpad;
-- the hidden **Hacket** reference with Wordle pools, game rules and technical secrets;
+- the hidden **Hacket** reference with Wordle pools, game rules, technical secrets and an app-wide HACKED mode;
+- integrated MultiplicatingKid.pl with shared browser accounts, scores, classes and administrator panel;
 - persistent game settings and difficulty levels stored in `extensions/InkDeck/data/settings.txt`;
 - update checking and installation from GitHub.
 
 ## Installation
 
-1. Download `InkDeck-3.9.2.zip` from the newest GitHub release.
+1. Download `InkDeck-3.10.0.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -45,23 +46,24 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.9.2**
+Aktualna wersja: **3.10.0**
 
 ## Funkcje
 
-- szachy, warcaby, Saper, 2048, kółko i krzyżyk, Pamięć, Zgaś światła, Gra w życie, Snake, sześciopoziomowe Sudoku, nonogramy i polskie lub angielskie Wordle;
+- szachy, warcaby, Saper, 2048, kółko i krzyżyk, Pamięć, Zgaś światła, Gra w życie, Snake, sześciopoziomowe Sudoku, nonogramy, Mahjong Connect, Chińczyk, Piłka oraz polskie lub angielskie Wordle;
 - KindleWriter, szkicownik, lista zadań, kalkulator naukowy i przesyłanie plików przez Wi-Fi;
 - szachy dla dwóch osób z zegarem i przyrostem czasu po każdym ruchu;
 - dwa warianty warcabów: **polskie 8 × 8** z biciem pionem do tyłu i latającą damką oraz **angielskie** z krótką damką;
 - poprawiony bot szachowy, który rozpoznaje mata i unika bezsensownego powtarzania pozycji;
 - szkicownik rysujący płynne linie na silniku Mesquite;
-- ukryta sekcja **Hacket** z pełnymi pulami Wordle, zasadami gier i technicznymi smaczkami;
+- ukryta sekcja **Hacket** z pełnymi pulami Wordle, zasadami gier, technicznymi smaczkami i trybem HACKED działającym w każdej grze;
+- MultiplicatingKid.pl z logowaniem, wspólnymi wynikami, klasami oraz panelem administratora zsynchronizowanym z wersją przeglądarkową;
 - trwały zapis ustawień i poziomów trudności w `extensions/InkDeck/data/settings.txt`;
 - bezpieczna aktualizacja bezpośrednio z GitHuba.
 
 ## Instalacja
 
-1. Pobierz `InkDeck-3.9.2.zip` z najnowszego wydania GitHub.
+1. Pobierz `InkDeck-3.10.0.zip` z najnowszego wydania GitHub.
 2. Skopiuj foldery `documents` oraz `extensions` do głównego katalogu pamięci USB Kindle.
 3. Bezpiecznie odłącz Kindle od komputera.
 4. Uruchom **InkDeck** z biblioteki. Ten sam skrót instaluje i otwiera aplikację.
@@ -75,6 +77,12 @@ Aby ją otworzyć, na ekranie głównym dotknij szybko **7 razy napisu INKDECK**
 ## Zgodność
 
 Projekt jest przygotowany dla Kindle Basic 11. generacji / Kids z firmware 5.19.2.0.1, Véra i Mesquite. Na innych modelach układ może wymagać dopasowania.
+
+## Wydanie 3.10.0
+
+Dodano Mahjong Connect, Chińczyka dla 2–4 osób, Piłkę według zasad gry na kartce z Kurnik.pl oraz dostęp do MultiplicatingKid.pl z logowaniem, kontem, klasami, wynikami i panelem administratora. Dane MultiplicatingKid pozostają na jego serwerze, dzięki czemu konto i wyniki są wspólne z wersją przeglądarkową.
+
+Tryb HACKED działa teraz we wszystkich grach i można go wyłączyć trzema dotknięciami napisu INKDECK na ekranie głównym. Komunikat ACCESS GRANTED nie zasłania zawartości Hacket. Poprawiono też nazwę NONOGRAM oraz zachowano układ planszy z klasycznymi wskazówkami wierszy i kolumn.
 
 ## Wydanie 3.9.2
 

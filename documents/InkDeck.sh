@@ -36,6 +36,7 @@ checkerslevel=medium
 checkersrules=polish
 checkersstyle=round
 sudokulevel=3
+ludoplayers=2
 lifegoal=25
 lifepreset=empty
 wordlelevel=medium
@@ -166,6 +167,9 @@ sudokulevel 3
 sudokulevel 4
 sudokulevel 5
 sudokulevel 6
+ludoplayers 2
+ludoplayers 3
+ludoplayers 4
 lifegoal 0
 lifegoal 10
 lifegoal 25

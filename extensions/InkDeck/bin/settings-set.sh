@@ -22,6 +22,7 @@ case "$KEY:$VALUE" in
     checkersrules:polish|checkersrules:english|\
     checkersstyle:round|checkersstyle:flat|\
     sudokulevel:1|sudokulevel:2|sudokulevel:3|sudokulevel:4|sudokulevel:5|sudokulevel:6|\
+    ludoplayers:2|ludoplayers:3|ludoplayers:4|\
     lifegoal:0|lifegoal:10|lifegoal:25|lifegoal:50|lifegoal:100|\
     lifepreset:empty|lifepreset:glider|lifepreset:beacon|lifepreset:pulsar|lifepreset:random|\
     wordlelevel:easy|wordlelevel:medium|wordlelevel:hard|\
