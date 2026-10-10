@@ -220,8 +220,8 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .nonogramSquare.thickBottom { border-bottom-width:3px; }
 .nonogramCell { display:block; min-width:0; min-height:0; margin:0; padding:0; border:0; background:#fff; font-size:20px; font-weight:bold; }.nonogramCell.filled { background:#000; color:#fff; }.nonogramCell.cross { background:#eee; }
 .nonogramCell.error { outline:3px solid #000; outline-offset:-4px; box-shadow:inset 0 0 0 3px #fff; }
-.mahjongBoard { margin:8px auto; border:3px solid #000; overflow:hidden; }
-.mahjongTile { float:left; margin:0; padding:0; border:2px solid #000; background:#fff; font-size:25px; font-weight:bold; }
+.mahjongBoard { margin:12px auto 30px; border:3px solid #000; overflow:hidden; }
+.mahjongTile { float:left; margin:0; padding:0; border:2px solid #000; background:#fff; font-size:32px; font-weight:bold; }
 .mahjongTile.empty { border-color:#fff; color:#fff; background:#fff; }
 .mahjongTile.selected { color:#fff; background:#000; }
 .ludoBoard { width:520px; margin:5px auto; }
@@ -235,7 +235,7 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .soccerBoard { position:relative; margin:7px auto; border:4px solid #000; background:#fff; }
 #soccerCanvas,#soccerNodes { position:absolute; left:0; top:0; }
 #soccerNodes { width:100%; height:100%; }
-.soccerNode { position:absolute; width:20px; height:20px; min-width:0; padding:0; border:2px solid #000; border-radius:10px; background:#fff; font-size:14px; line-height:14px; }
+.soccerNode { position:absolute; width:28px; height:28px; min-width:0; padding:0; border:2px solid #000; border-radius:14px; background:#fff; font-size:18px; line-height:22px; }
 .soccerNode.ball { color:#fff; background:#000; }
 #mahjongconnect.active,#ludo.active,#papersoccer.active { overflow-y:auto; -webkit-overflow-scrolling:touch; }
 #lifeStatus { min-width: 145px; font-size: 22px; }
@@ -248,16 +248,21 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .wideUpdate { display: block; width: 88%; height: 68px; margin: 18px auto; font-size: 22px; font-weight: bold; }
 
 @media (max-width: 570px) { .wordleKeys button { width:46px; min-width:46px; height:72px; margin:2px 1px; font-size:26px; } .wordleKeys button.wordleActionKey { width:62px; min-width:62px; font-size:18px; } }
+.wordleKeys.twoPlayer button { width:64px; min-width:64px; height:82px; margin:3px; font-size:32px; }
+.wordleKeys.twoPlayer button.wordleActionKey { width:82px; min-width:82px; font-size:23px; }
+@media (max-width:570px) { .wordleKeys.twoPlayer button { width:48px; min-width:48px; height:76px; margin:2px 1px; font-size:28px; } .wordleKeys.twoPlayer button.wordleActionKey { width:66px; min-width:66px; font-size:19px; } }
 
-.aiSettings { max-width:850px; margin:10px auto; padding:12px; border:3px solid #000; }
+.aiSettings { max-width:850px; margin:10px auto; padding:12px; border:2px solid #bbb; background:#fafafa; }
 .aiSettings label { display:block; margin:8px 0; font-size:18px; font-weight:bold; }
 .aiSettings input,.aiSettings select { display:block; width:100%; height:52px; margin-top:4px; padding:6px; border:3px solid #000; background:#fff; color:#000; font-size:20px; }
-.aiMessages { max-width:850px; height:32vh; min-height:150px; margin:8px auto; padding:8px; overflow:auto; border:2px solid #000; }
-.aiMessage { margin:7px 0; padding:8px; border:2px solid #555; white-space:pre-wrap; overflow-wrap:anywhere; font-size:19px; line-height:1.3; }
-.aiMessage.user { background:#eee; }
-.aiComposer { display:flex; max-width:850px; margin:8px auto; gap:8px; align-items:stretch; }
-.aiComposer textarea { flex:1; min-width:0; min-height:80px; padding:8px; border:3px solid #000; font-size:20px; }
-.aiComposer button { min-width:120px; font-size:19px; font-weight:bold; }
+.aiMessages { max-width:850px; height:38vh; min-height:190px; margin:10px auto; padding:12px; overflow:auto; border:1px solid #ccc; border-radius:12px; background:#fff; }
+.aiWelcome { padding:28px 8px; text-align:center; font-size:28px; font-weight:bold; } .aiWelcome small { font-size:19px; font-weight:normal; color:#555; }
+.aiKeyActions { text-align:center; } .aiKeyActions button { min-height:48px; margin:4px; padding:6px 10px; }
+.aiMessage { width:fit-content; max-width:88%; margin:10px 0; padding:12px 15px; border:1px solid #bbb; border-radius:16px; white-space:pre-wrap; overflow-wrap:anywhere; font-size:19px; line-height:1.4; }
+.aiMessage.user { margin-left:auto; border-color:#aaa; background:#eee; border-bottom-right-radius:4px; } .aiMessage.assistant { margin-right:auto; background:#fff; border-bottom-left-radius:4px; }
+.aiComposer { display:flex; max-width:850px; margin:8px auto 18px; gap:8px; align-items:stretch; padding:7px; border:2px solid #777; border-radius:12px; background:#fff; }
+.aiComposer textarea { flex:1; min-width:0; min-height:80px; padding:10px; border:0; font-size:20px; }
+.aiComposer button { min-width:120px; border-radius:9px; font-size:19px; font-weight:bold; }
 @media (max-width:570px) { .aiComposer { display:block; } .aiComposer textarea,.aiComposer button { width:100%; margin:4px 0; } }
 
 #memoryPairsSelect { width:110px; height:48px; border:3px solid #000; font-size:24px; text-align:center; }

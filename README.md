@@ -2,14 +2,14 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.10.5**
+Current version: **3.10.6**
 
 ## Features
 
 - games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, six-level Sudoku, Nonograms, Mahjong Connect, Ludo, Paper Soccer and Polish or English Wordle; Memory supports up to 20 pairs, Minesweeper accepts custom dimensions, and Snake wraps at screen edges;
 - tools: KindleWriter, sketchpad, task list, scientific calculator and Wi-Fi file upload;
 - plugin support;
-- Kindle AI chat with user-provided Google Gemini or OpenAI API keys; the key stays in memory and is sent directly to the selected provider when a message is submitted;
+- Kindle AI chat with user-provided Google Gemini, OpenAI or OpenRouter; API keys can be encrypted locally with a user-selected passphrase;
 - optional chess clock for two-player games;
 - configurable time increment after every move in two-player chess;
 - Polish 8 × 8 checkers with backward captures and flying kings, plus classic English rules;
@@ -21,7 +21,7 @@ Current version: **3.10.5**
 
 ## Installation
 
-1. Download `InkDeck-3.10.5.zip` from the newest GitHub release.
+1. Download `InkDeck-3.10.6.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -46,7 +46,7 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.10.5**
+Aktualna wersja: **3.10.6**
 
 ## Funkcje
 
@@ -62,7 +62,7 @@ Aktualna wersja: **3.10.5**
 
 ## Instalacja
 
-1. Pobierz `InkDeck-3.10.5.zip` z najnowszego wydania GitHub.
+1. Pobierz `InkDeck-3.10.6.zip` z najnowszego wydania GitHub.
 2. Skopiuj foldery `documents` oraz `extensions` do głównego katalogu pamięci USB Kindle.
 3. Bezpiecznie odłącz Kindle od komputera.
 4. Uruchom **InkDeck** z biblioteki. Ten sam skrót instaluje i otwiera aplikację.
@@ -77,7 +77,7 @@ Aby ją otworzyć, na ekranie głównym dotknij szybko **7 razy napisu INKDECK**
 
 Projekt jest przygotowany dla Kindle Basic 11. generacji / Kids z firmware 5.19.2.0.1, Véra i Mesquite. Na innych modelach układ może wymagać dopasowania.
 
-## Wydanie 3.10.5
+## Wydanie 3.10.6
 
 Powiększono klawisze Wordle i zwiększono szerokość ich pól dotykowych. Zmieniono nazwę gry na Memory; można ustawić od 2 do 20 par. W Saperze wpisuje się własną szerokość, wysokość i liczbę min. Snake zawija się na przeciwległą krawędź planszy. W HACKED dla warcabów pojedyncze dotknięcie teleportuje pionek, a szybkie podwójne dotknięcie pola zbija przeciwników po drodze.
 
