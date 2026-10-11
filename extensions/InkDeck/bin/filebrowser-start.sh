@@ -16,9 +16,12 @@ if [ -f "$PIDFILE" ]; then
 fi
 
 PYTHON=""
+HTTPD=""
 if command -v python3 >/dev/null 2>&1; then PYTHON="$(command -v python3)"; elif command -v python >/dev/null 2>&1; then PYTHON="$(command -v python)"; fi
-if [ -z "$PYTHON" ] && ! busybox --list 2>/dev/null | grep -q '^httpd$'; then
-    printf 'BLAD: brak Python i BusyBox httpd. Ten firmware nie ma dostepnego serwera HTTP.\n' > "$STATUS"
+if [ -z "$PYTHON" ] && command -v busybox >/dev/null 2>&1 && busybox --list 2>/dev/null | grep -q '^httpd$'; then HTTPD="busybox"; fi
+if [ -z "$PYTHON" ] && [ -z "$HTTPD" ] && command -v toybox >/dev/null 2>&1 && toybox --list 2>/dev/null | tr ' ' '\n' | grep -q '^httpd$'; then HTTPD="toybox"; fi
+if [ -z "$PYTHON" ] && [ -z "$HTTPD" ]; then
+    printf 'BLAD: brak Pythona oraz serwera httpd w BusyBox/toybox. Użyj importu pliku przez USB albo zainstaluj środowisko z serwerem HTTP.\n' > "$STATUS"
     exit 1
 fi
 
@@ -38,8 +41,10 @@ fi
 
 if [ -n "$PYTHON" ]; then
     "$PYTHON" "$ROOT/server.py" >/tmp/inkdeck-filebrowser.log 2>&1 &
-else
+elif [ "$HTTPD" = "busybox" ]; then
     busybox httpd -f -p "$PORT" -h "$ROOT" >/tmp/inkdeck-filebrowser.log 2>&1 &
+else
+    toybox httpd -f -p "$PORT" -h "$ROOT" >/tmp/inkdeck-filebrowser.log 2>&1 &
 fi
 serverpid=$!
 printf '%s' "$serverpid" > "$PIDFILE"
