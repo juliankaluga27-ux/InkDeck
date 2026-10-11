@@ -2,11 +2,11 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.10.7**
+Current version: **3.10.8**
 
 ## Features
 
-- games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, six-level Sudoku, Nonograms, Mahjong Connect, Ludo, Paper Soccer and Polish or English Wordle; Memory supports up to 20 pairs, Minesweeper accepts custom dimensions, and Snake wraps at screen edges;
+- games: chess, checkers, Minesweeper, 2048, Tic-tac-toe, Memory, Lights Out, Game of Life, Snake, six-level Sudoku, Nonograms, Mahjong Connect, Ludo, Paper Soccer and Polish or English Wordle; Memory uses Polish word pairs with diacritics or English ASCII words and supports up to 20 pairs, Minesweeper accepts custom dimensions, and Snake wraps at screen edges;
 - tools: KindleWriter, sketchpad, task list, scientific calculator and Wi-Fi file upload;
 - plugin support;
 - Kindle AI chat with user-provided Google Gemini, OpenAI or OpenRouter; API keys can be encrypted locally with a user-selected passphrase;
@@ -21,7 +21,7 @@ Current version: **3.10.7**
 
 ## Installation
 
-1. Download `InkDeck-3.10.7.zip` from the newest GitHub release.
+1. Download `InkDeck-3.10.8.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -46,7 +46,7 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.10.7**
+Aktualna wersja: **3.10.8**
 
 ## Funkcje
 
@@ -77,7 +77,11 @@ Aby ją otworzyć, na ekranie głównym dotknij szybko **7 razy napisu INKDECK**
 
 Projekt jest przygotowany dla Kindle Basic 11. generacji / Kids z firmware 5.19.2.0.1, Véra i Mesquite. Na innych modelach układ może wymagać dopasowania.
 
-## Wydanie 3.10.7
+## Wydanie 3.10.8
+
+Powiększono i przeorganizowano klawiaturę Wordle; tryb dwuosobowy został usunięty. Dodano polskie znaki do puli Wordle i klawiatury PL, bez polskich znaków w puli EN. Memory pokazuje pary polskich lub angielskich słów i układa planszę w równy układ kolumn. W Piłce można grać z botem albo w dwie osoby. Poprawiono rysowanie przeciągnięciem w szkicowniku i oznaczanie błędnych flag po przegranej w Saperze.
+
+Kindle AI pozwala wczytać klucz API z pliku tekstowego i zapisać go zaszyfrowanego hasłem. Filesender sprawdza także `toybox httpd`; jeśli firmware nie ma Pythona ani `httpd` w BusyBox/toybox, komunikat podaje dostępne obejście przez USB.
 
 Naprawiono błąd szybkiej zmiany liczby par lub rozpoczęcia nowej gry Memory po nietrafionym ruchu. Opóźnione schowanie kart nie modyfikuje już planszy nowej rozgrywki. Poprawiono też dopasowanie szerokości kart.
 
