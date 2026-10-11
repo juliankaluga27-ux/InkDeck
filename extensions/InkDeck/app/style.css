@@ -267,3 +267,13 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 @media (max-width:570px) { .aiComposer { display:block; } .aiComposer textarea,.aiComposer button { width:100%; margin:4px 0; } }
 
 #memoryPairsSelect { width:110px; height:48px; border:3px solid #000; font-size:24px; text-align:center; }
+
+.miniBoard { margin:14px auto; text-align:center; }
+.fifteenTile { width:22%; height:92px; margin:1%; border:3px solid #000; font-size:32px; font-weight:bold; }
+.fifteenTile.empty { visibility:hidden; }
+.masterSlots button { width:72px; height:68px; margin:5px; font-size:30px; }
+.masterPalette button { width:68px; height:58px; margin:4px; font-size:26px; }
+.hanoiTower { display:inline-block; vertical-align:bottom; width:31%; height:340px; margin:0 1%; border-bottom:5px solid #000; text-align:center; }
+.hanoiPeg { display:flex; height:100%; flex-direction:column-reverse; align-items:center; justify-content:flex-start; padding-bottom:0; }
+.hanoiDisk { height:42px; margin:2px auto; border:3px solid #000; background:#ddd; font-size:20px; line-height:36px; font-weight:bold; }
+.masterSlots button.selected,.hanoiTower.selected { border-width:6px; background:#ddd; }
