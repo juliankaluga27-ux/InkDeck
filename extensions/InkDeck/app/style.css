@@ -178,10 +178,10 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .wordleCell.near { background: #aaa; }
 .wordleCell.right { color: #fff; background: #000; }
 .wordleCell.bad { color: #777; border-color: #777; }
-.wordleKeys { width:100%; max-width:720px; margin:12px auto 20px; text-align:center; }
-.wordleKeyRow { display:block; margin:5px auto; white-space:nowrap; }
-.wordleKeys button { display:inline-block; width:54px; min-width:54px; height:76px; margin:2px; padding:2px; font-size:29px; line-height:1; font-weight:900; vertical-align:middle; }
-.wordleKeys button.wordleActionKey { width:72px; min-width:72px; font-size:21px; }
+.wordleKeys { width:100%; max-width:760px; margin:12px auto 20px; text-align:center; }
+.wordleKeyRow { display:flex; justify-content:center; flex-wrap:nowrap; margin:5px auto; white-space:nowrap; }
+.wordleKeys button { display:inline-block; width:60px; min-width:60px; height:70px; margin:2px; padding:2px; font-size:30px; line-height:1; font-weight:900; vertical-align:middle; }
+.wordleKeys button.wordleActionKey { width:82px; min-width:82px; font-size:21px; }
 .wordleCat { display:inline-block; margin-left:8px; padding:2px 5px; border:2px solid #000; font-size:17px; vertical-align:middle; }
 .wordleControls { width: 98%; min-height: 52px; margin: 3px auto; text-align: center; }
 .wordleControls select, .wordleControls button { height: 46px; margin: 2px 5px; padding: 4px 8px; border: 3px solid #000; background: #fff; font-size: 16px; font-weight: bold; }
@@ -247,10 +247,11 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .updateBox p { font-size: 20px; line-height: 1.4; }
 .wideUpdate { display: block; width: 88%; height: 68px; margin: 18px auto; font-size: 22px; font-weight: bold; }
 
-@media (max-width: 570px) { .wordleKeys button { width:46px; min-width:46px; height:72px; margin:2px 1px; font-size:26px; } .wordleKeys button.wordleActionKey { width:62px; min-width:62px; font-size:18px; } }
-.wordleKeys.twoPlayer button { width:64px; min-width:64px; height:82px; margin:3px; font-size:32px; }
-.wordleKeys.twoPlayer button.wordleActionKey { width:82px; min-width:82px; font-size:23px; }
-@media (max-width:570px) { .wordleKeys.twoPlayer button { width:48px; min-width:48px; height:76px; margin:2px 1px; font-size:28px; } .wordleKeys.twoPlayer button.wordleActionKey { width:66px; min-width:66px; font-size:19px; } }
+@media (max-width: 570px) { .wordleKeys button { width:54px; min-width:54px; height:68px; margin:2px; font-size:28px; } .wordleKeys button.wordleActionKey { width:74px; min-width:74px; font-size:20px; } }
+.mineCell.wrongFlag { background:#fff; color:#000; text-decoration:line-through; font-weight:900; }
+.aiImportButton { display:block; margin:8px auto; padding:10px; border:2px solid #000; text-align:center; font-weight:bold; }
+.aiImportButton input { display:block; margin:8px auto; font-size:17px; max-width:100%; }
+.soccerBoard { touch-action:manipulation; }
 
 .aiSettings { max-width:850px; margin:10px auto; padding:12px; border:2px solid #bbb; background:#fafafa; }
 .aiSettings label { display:block; margin:8px 0; font-size:18px; font-weight:bold; }
