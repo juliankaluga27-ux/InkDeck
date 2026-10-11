@@ -71,6 +71,8 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .chessPiece { display: inline-block; width: 57px; height: 57px; margin-top: 6px; border: 3px solid #000; border-radius: 29px; line-height: 51px; font-size: 39px; background: #fff; color: #000; }
 .chessPiece.black { background: #000; color: #fff; }
 .chessPiece.simplePiece, .chessPiece.simplePiece.black { border: 0; border-radius: 0; background: transparent; color: #000; font-family: serif; }
+.chessPiece.woodPiece { border: 2px solid #333; border-radius: 11px; background: linear-gradient(145deg,#fff 0%,#ddd 48%,#aaa 100%); color: #111; font-family: serif; text-shadow: 1px 1px 0 #fff; box-shadow: inset 1px 1px 2px #fff, inset -2px -2px 3px #777; }
+.chessPiece.woodPiece.black { border-color: #111; background: linear-gradient(145deg,#777 0%,#444 48%,#222 100%); color: #fff; text-shadow: 1px 1px 0 #111; box-shadow: inset 1px 1px 2px #aaa, inset -2px -2px 3px #111; }
 .lightsBoard { width: 510px; height: 510px; margin: 18px auto; border: 5px solid #000; }
 .lightCell { float: left; width: 100px; height: 100px; border: 3px solid #000; background: #fff; }
 .lightCell.on { background: #000; }
@@ -204,76 +206,4 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 .newGameButton { min-width: 165px; height: 58px; margin: 4px; border: 4px solid #000; font-size: 20px; font-weight: 900; }
 .bar #tttNew, .bar #mineNew, .bar #new2048, .bar #memoryNew, .bar #chessNew, .bar #checkersNew, .bar #lightsNew, .bar #wordleNew { min-width:145px; height:54px; margin-top:2px; border-width:4px; font-size:19px; font-weight:900; }
 .snakeBoard { margin:8px auto; border:4px solid #000; overflow:hidden; }
-.snakeCell { float:left; border:1px solid #bbb; text-align:center; font-size:28px; }
-.snakeBody { background:#000; }.snakeFood { color:#000; font-size:30px; }
-.sudokuBoard { margin:4px auto; border:3px solid #000; overflow:hidden; }
-.sudokuCell { float:left; min-width:0; padding:0; border:1px solid #888; font-size:25px; }.sudokuCell:nth-child(3n) { border-right:3px solid #000; }.sudokuCell:nth-child(n+19):nth-child(-n+27),.sudokuCell:nth-child(n+46):nth-child(-n+54) { border-bottom:3px solid #000; }.sudokuCell.given { font-weight:bold; background:#eee; }.sudokuCell.selected { background:#bbb; }
-.sudokuKeys { text-align:center; }.sudokuKeys button { width:54px; height:48px; margin:2px; font-size:22px; font-weight:bold; }
-.nonogramBoard { width:100%; margin:5px auto; overflow:auto; text-align:center; }
-.nonogramTable { margin:0 auto; border:4px solid #000; border-collapse:collapse; border-spacing:0; table-layout:fixed; }
-.nonogramTable td { padding:0; }
-.nonogramCorner { width:72px; min-width:72px; border:0 !important; }
-.nonogramClue { width:64px; padding:2px !important; border:0 !important; font-size:15px; font-weight:bold; text-align:center; white-space:pre-line; vertical-align:bottom; }
-.nonogramClue.rowClue { text-align:right; vertical-align:middle; }
-.nonogramSquare { padding:0 !important; border:1px solid #000; background:#fff; }
-.nonogramSquare.thickRight { border-right-width:3px; }
-.nonogramSquare.thickBottom { border-bottom-width:3px; }
-.nonogramCell { display:block; min-width:0; min-height:0; margin:0; padding:0; border:0; background:#fff; font-size:20px; font-weight:bold; }.nonogramCell.filled { background:#000; color:#fff; }.nonogramCell.cross { background:#eee; }
-.nonogramCell.error { outline:3px solid #000; outline-offset:-4px; box-shadow:inset 0 0 0 3px #fff; }
-.mahjongBoard { margin:12px auto 30px; border:3px solid #000; overflow:hidden; }
-.mahjongTile { float:left; margin:0; padding:0; border:2px solid #000; background:#fff; font-size:32px; font-weight:bold; }
-.mahjongTile.empty { border-color:#fff; color:#fff; background:#fff; }
-.mahjongTile.selected { color:#fff; background:#000; }
-.ludoBoard { width:520px; margin:5px auto; }
-.ludoTable { width:100%; border-collapse:collapse; table-layout:fixed; }
-.ludoCell { width:9%; height:43px; padding:0; border:1px solid #bbb; text-align:center; font-size:14px; font-weight:bold; }
-.ludoCell.track { border:3px solid #000; background:#fff; }
-.ludoCell.base { background:#ddd; }
-.ludoMoves { min-height:58px; text-align:center; }
-.ludoPawnButton { min-width:125px; height:48px; margin:3px; font-size:15px; font-weight:bold; }
-#ludoDice { display:inline-block; min-width:58px; height:50px; padding:8px; border:4px solid #000; font-size:25px; vertical-align:top; }
-.soccerBoard { position:relative; margin:7px auto; border:4px solid #000; background:#fff; }
-#soccerCanvas,#soccerNodes { position:absolute; left:0; top:0; }
-#soccerNodes { width:100%; height:100%; }
-.soccerNode { position:absolute; width:28px; height:28px; min-width:0; padding:0; border:2px solid #000; border-radius:14px; background:#fff; font-size:18px; line-height:22px; }
-.soccerNode.ball { color:#fff; background:#000; }
-#mahjongconnect.active,#ludo.active,#papersoccer.active { overflow-y:auto; -webkit-overflow-scrolling:touch; }
-#lifeStatus { min-width: 145px; font-size: 22px; }
-#life .bar button { min-width: 84px; padding: 2px 5px; font-size: 14px; }
-.pluginToggle { min-width: 78px !important; font-size: 14px; }
-.pluginBadge { display: inline-block; float: right; padding: 3px 6px; border: 2px solid #000; font-size: 12px; }
-.updateBox { width: 92%; margin: 45px auto; padding: 28px; border: 5px double #000; text-align: center; }
-.updateBox h2 { font-size: 34px; }
-.updateBox p { font-size: 20px; line-height: 1.4; }
-.wideUpdate { display: block; width: 88%; height: 68px; margin: 18px auto; font-size: 22px; font-weight: bold; }
-
-@media (max-width: 570px) { .wordleKeys button { width:54px; min-width:54px; height:68px; margin:2px; font-size:28px; } .wordleKeys button.wordleActionKey { width:74px; min-width:74px; font-size:20px; } }
-.mineCell.wrongFlag { background:#fff; color:#000; text-decoration:line-through; font-weight:900; }
-.aiImportButton { display:block; margin:8px auto; padding:10px; border:2px solid #000; text-align:center; font-weight:bold; }
-.aiImportButton input { display:block; margin:8px auto; font-size:17px; max-width:100%; }
-.soccerBoard { touch-action:manipulation; }
-
-.aiSettings { max-width:850px; margin:10px auto; padding:12px; border:2px solid #bbb; background:#fafafa; }
-.aiSettings label { display:block; margin:8px 0; font-size:18px; font-weight:bold; }
-.aiSettings input,.aiSettings select { display:block; width:100%; height:52px; margin-top:4px; padding:6px; border:3px solid #000; background:#fff; color:#000; font-size:20px; }
-.aiMessages { max-width:850px; height:38vh; min-height:190px; margin:10px auto; padding:12px; overflow:auto; border:1px solid #ccc; border-radius:12px; background:#fff; }
-.aiWelcome { padding:28px 8px; text-align:center; font-size:28px; font-weight:bold; } .aiWelcome small { font-size:19px; font-weight:normal; color:#555; }
-.aiKeyActions { text-align:center; } .aiKeyActions button { min-height:48px; margin:4px; padding:6px 10px; }
-.aiMessage { width:fit-content; max-width:88%; margin:10px 0; padding:12px 15px; border:1px solid #bbb; border-radius:16px; white-space:pre-wrap; overflow-wrap:anywhere; font-size:19px; line-height:1.4; }
-.aiMessage.user { margin-left:auto; border-color:#aaa; background:#eee; border-bottom-right-radius:4px; } .aiMessage.assistant { margin-right:auto; background:#fff; border-bottom-left-radius:4px; }
-.aiComposer { display:flex; max-width:850px; margin:8px auto 18px; gap:8px; align-items:stretch; padding:7px; border:2px solid #777; border-radius:12px; background:#fff; }
-.aiComposer textarea { flex:1; min-width:0; min-height:80px; padding:10px; border:0; font-size:20px; }
-.aiComposer button { min-width:120px; border-radius:9px; font-size:19px; font-weight:bold; }
-@media (max-width:570px) { .aiComposer { display:block; } .aiComposer textarea,.aiComposer button { width:100%; margin:4px 0; } }
-
-#memoryPairsSelect { width:110px; height:48px; border:3px solid #000; font-size:24px; text-align:center; }
-
-.miniBoard { margin:14px auto; text-align:center; }
-.fifteenTile { width:22%; height:92px; margin:1%; border:3px solid #000; font-size:32px; font-weight:bold; }
-.fifteenTile.empty { visibility:hidden; }
-.masterSlots button { width:72px; height:68px; margin:5px; font-size:30px; }
-.masterPalette button { width:68px; height:58px; margin:4px; font-size:26px; }
-.hanoiTower { display:inline-block; vertical-align:bottom; width:31%; height:340px; margin:0 1%; border-bottom:5px solid #000; text-align:center; }
-.hanoiPeg { display:flex; height:100%; flex-direction:column-reverse; align-items:center; justify-content:flex-start; padding-bottom:0; }
-.hanoiDisk { height:42px; margin:2px auto; border:3px solid #000; background:#ddd; font-size:20px; line-height:36px; font-weight:bold; }
-.masterSlots button.selected,.hanoiTower.selected { border-width:6px; background:#ddd; }
+.snakeCell { float:left; border:1

@@ -80,6 +80,16 @@ extract_archive() {
         fi
     fi
     rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
+    if command -v toybox >/dev/null 2>&1; then
+        if toybox tar -xzf "$ARCHIVE" -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
+            return 0
+        fi
+        rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
+        if toybox gzip -dc "$ARCHIVE" 2>> "$DETAIL_LOG" | toybox tar -xf - -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
+            return 0
+        fi
+    fi
+    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
     if command -v busybox >/dev/null 2>&1; then
         if busybox tar -xzf "$ARCHIVE" -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
             return 0
@@ -108,7 +118,7 @@ download "$BASE_URL/InkDeck-update.tar.gz.sha256" "$CHECKSUM" || fail "nie udalo
 
 status "InkDeck: sprawdzanie paczki..."
 verify_archive || fail "nie mozna sprawdzic SHA-256 albo suma jest bledna"
-extract_archive || fail "nie udalo sie rozpakowac paczki zadna metoda (tar, gzip, BusyBox ani Python)"
+extract_archive || fail "nie udalo sie rozpakowac paczki zadna metoda (tar, gzip, toybox, BusyBox ani Python)"
 
 [ -f "$UNPACK/extensions/InkDeck/app/main.page" ] || fail "brak strony aplikacji"
 [ -f "$UNPACK/extensions/InkDeck/app/app.js" ] || fail "brak app.js"
