@@ -6,6 +6,7 @@ EXTENSIONS="/mnt/us/extensions"
 STAGE="/tmp/inkdeck-update-$$"
 ARCHIVE="$STAGE/InkDeck-update.tar.gz"
 CHECKSUM="$STAGE/InkDeck-update.tar.gz.sha256"
+MANIFEST="$STAGE/InkDeck-update-manifest.txt"
 UNPACK="$STAGE/unpacked"
 BACKUP="$STAGE/app-backup"
 LOG="$EXTENSIONS/InkDeck/update-status.txt"
@@ -67,6 +68,53 @@ verify_archive() {
     [ -n "$actual" ] && [ "$actual" = "$expected" ]
 }
 
+
+verify_file() {
+    expected="$1"
+    file="$2"
+    case "$expected" in
+        ''|*[!0-9a-f]*) return 1 ;;
+    esac
+    [ "${#expected}" -eq 64 ] || return 1
+    actual=""
+    if command -v sha256sum >/dev/null 2>&1; then
+        actual="$(sha256sum "$file" 2>/dev/null | awk '{ print $1 }')"
+    elif command -v openssl >/dev/null 2>&1; then
+        actual="$(openssl dgst -sha256 "$file" 2>/dev/null | awk '{ print $NF }')"
+    elif command -v python >/dev/null 2>&1; then
+        actual="$(python -c 'import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$file" 2>/dev/null)"
+    elif command -v python3 >/dev/null 2>&1; then
+        actual="$(python3 -c 'import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$file" 2>/dev/null)"
+    fi
+    [ -n "$actual" ] && [ "$actual" = "$expected" ]
+}
+
+load_manifest() {
+    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
+    count=0
+    while IFS=' ' read -r expected path url; do
+        [ -n "$expected" ] || continue
+        case "$path" in
+            documents/InkDeck.sh|extensions/InkDeck/*) ;;
+            *) return 1 ;;
+        esac
+        case "$path" in
+            *..*|/*) return 1 ;;
+        esac
+        case "$url" in
+            https://raw.githubusercontent.com/juliankaluga27-ux/InkDeck/*) ;;
+            *) return 1 ;;
+        esac
+        [ -n "$url" ] || return 1
+        target="$UNPACK/$path"
+        mkdir -p "${target%/*}" || return 1
+        download "$url" "$target" || return 1
+        verify_file "$expected" "$target" || return 1
+        count=$((count + 1))
+    done < "$MANIFEST"
+    [ "$count" -ge 5 ]
+}
+
 extract_archive() {
     # Kindle firmware releases expose different tar implementations.  Some
     # accept -z, some need gzip in a pipe, and some only expose BusyBox.
@@ -113,12 +161,17 @@ extract_archive() {
 mkdir -p "$STAGE" "$UNPACK" || fail "nie mozna utworzyc katalogu roboczego"
 : > "$DETAIL_LOG"
 status "InkDeck: pobieranie aktualizacji..."
-download "$BASE_URL/InkDeck-update.tar.gz" "$ARCHIVE" || fail "nie udalo sie pobrac paczki; sprawdz Wi-Fi i date Kindle"
-download "$BASE_URL/InkDeck-update.tar.gz.sha256" "$CHECKSUM" || fail "nie udalo sie pobrac sumy SHA-256"
-
-status "InkDeck: sprawdzanie paczki..."
-verify_archive || fail "nie mozna sprawdzic SHA-256 albo suma jest bledna"
-extract_archive || fail "nie udalo sie rozpakowac paczki zadna metoda (tar, gzip, toybox, BusyBox ani Python)"
+if download "$BASE_URL/InkDeck-update-manifest.txt" "$MANIFEST"; then
+    status "InkDeck: pobieranie i sprawdzanie plikow..."
+    load_manifest || fail "nie udalo sie pobrac lub sprawdzic plikow z manifestu"
+else
+    status "InkDeck: pobieranie paczki zgodnosci..."
+    download "$BASE_URL/InkDeck-update.tar.gz" "$ARCHIVE" || fail "nie udalo sie pobrac paczki; sprawdz Wi-Fi i date Kindle"
+    download "$BASE_URL/InkDeck-update.tar.gz.sha256" "$CHECKSUM" || fail "nie udalo sie pobrac sumy SHA-256"
+    status "InkDeck: sprawdzanie paczki..."
+    verify_archive || fail "nie mozna sprawdzic SHA-256 albo suma jest bledna"
+    extract_archive || fail "nie udalo sie rozpakowac paczki zadna metoda (tar, gzip, toybox, BusyBox ani Python)"
+fi
 
 [ -f "$UNPACK/extensions/InkDeck/app/main.page" ] || fail "brak strony aplikacji"
 [ -f "$UNPACK/extensions/InkDeck/app/app.js" ] || fail "brak app.js"

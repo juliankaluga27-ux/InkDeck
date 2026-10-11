@@ -28,6 +28,11 @@ jobs:
           tar --format=ustar --owner=0 --group=0 --numeric-owner -cf InkDeck-update.tar -C update-release .
           gzip -1n InkDeck-update.tar
           sha256sum InkDeck-update.tar.gz > InkDeck-update.tar.gz.sha256
+          : > InkDeck-update-manifest.txt
+          while IFS= read -r path; do
+            digest="$(sha256sum "$path" | awk '{ print $1 }')"
+            printf '%s %s https://raw.githubusercontent.com/juliankaluga27-ux/InkDeck/%s/%s\n' "$digest" "$path" "$GITHUB_REF_NAME" "$path" >> InkDeck-update-manifest.txt
+          done < <(find documents/InkDeck.sh extensions/InkDeck -type f -print | sort)
           cd release
           zip -r ../InkDeck-${GITHUB_REF_NAME#v}.zip documents extensions
       - name: Publish GitHub release
@@ -38,3 +43,4 @@ jobs:
             InkDeck-*.zip
             InkDeck-update.tar.gz
             InkDeck-update.tar.gz.sha256
+            InkDeck-update-manifest.txt
