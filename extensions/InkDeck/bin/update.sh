@@ -1,210 +1,136 @@
 #!/bin/sh
-
+# Detach from appmgrd: returning to InkDeck must not terminate a download.
+if [ "${1:-}" != "--worker" ]; then
+    worker="/tmp/inkdeck-updater-worker-$$.sh"
+    cp "$0" "$worker" || exit 1
+    if command -v setsid >/dev/null 2>&1; then
+        setsid sh "$worker" --worker </dev/null >/dev/null 2>&1 &
+    else
+        nohup sh "$worker" --worker </dev/null >/dev/null 2>&1 &
+    fi
+    exit 0
+fi
 REPO="juliankaluga27-ux/InkDeck"
 DOCS="/mnt/us/documents"
 EXTENSIONS="/mnt/us/extensions"
 STAGE="/tmp/inkdeck-update-$$"
-ARCHIVE="$STAGE/InkDeck-update.tar.gz"
-CHECKSUM="$STAGE/InkDeck-update.tar.gz.sha256"
-MANIFEST="$STAGE/InkDeck-update-manifest.txt"
 UNPACK="$STAGE/unpacked"
-BACKUP="$STAGE/app-backup"
+MANIFEST="$STAGE/manifest.txt"
+BACKUP="$STAGE/backup"
 LOG="$EXTENSIONS/InkDeck/update-status.txt"
 DETAIL_LOG="$EXTENSIONS/InkDeck/update-detail.txt"
+LOCK="/tmp/inkdeck-update.lock"
 BASE_URL="https://github.com/$REPO/releases/latest/download"
-
+if ! mkdir "$LOCK" 2>/dev/null; then
+    previous_pid="$(cat "$LOCK/pid" 2>/dev/null)"
+    case "$previous_pid" in ''|*[!0-9]*) exit 0 ;; esac
+    kill -0 "$previous_pid" 2>/dev/null && exit 0
+    rm -rf "$LOCK"
+    mkdir "$LOCK" 2>/dev/null || exit 0
+fi
+printf '%s\n' "$$" > "$LOCK/pid"
 status() {
-    printf '%s\n' "$1" > "$LOG"
-    if command -v eips >/dev/null 2>&1; then
-        eips 1 38 "$1" >/dev/null 2>&1
-    fi
+    printf '%s\n' "$1" > "$LOG.tmp.$$"
+    mv "$LOG.tmp.$$" "$LOG"
+    printf '%s %s\n' "$(date '+%H:%M:%S')" "$1" >> "$DETAIL_LOG"
 }
-
 cleanup() {
-    case "$STAGE" in
-        /tmp/inkdeck-update-*) rm -rf "$STAGE" ;;
-    esac
+    case "$STAGE" in /tmp/inkdeck-update-*) rm -rf "$STAGE" ;; esac
+    case "$0" in /tmp/inkdeck-updater-worker-*.sh) rm -f "$0" ;; esac
+    [ "$(cat "$LOCK/pid" 2>/dev/null)" = "$$" ] && rm -rf "$LOCK"
 }
-
 fail() {
-    reason="${1:-nieznany blad}"
-    printf 'InkDeck: aktualizacja nieudana: %s\n' "$reason" > "$LOG"
-    if command -v eips >/dev/null 2>&1; then
-        eips 1 38 "InkDeck: blad aktualizacji. Sprawdz extensions/InkDeck/update-status.txt" >/dev/null 2>&1
-    fi
-    cleanup
+    status "InkDeck: aktualizacja nieudana: ${1:-nieznany blad}. Szczegoly: extensions/InkDeck/update-detail.txt"
     exit 1
 }
-
-download() {
-    url="$1"
-    target="$2"
+trap cleanup 0
+trap 'fail "proces przerwany"' 1 2 15
+mkdir -p "$STAGE" "$UNPACK" || fail "brak miejsca na pliki robocze"
+: > "$DETAIL_LOG"
+command -v curl >/dev/null 2>&1 || command -v wget >/dev/null 2>&1 || fail "brak curl lub wget"
+command -v sha256sum >/dev/null 2>&1 || command -v openssl >/dev/null 2>&1 || fail "brak sha256sum lub openssl do sprawdzania plikow"
+# Bound both curl and wget, including implementations with ineffective timeouts.
+bounded() (
+    "$@" >> "$DETAIL_LOG" 2>&1 &
+    fetch_pid=$!
+    (sleep 40; kill -TERM "$fetch_pid" 2>/dev/null; sleep 1; kill -KILL "$fetch_pid" 2>/dev/null) &
+    guard_pid=$!
+    wait "$fetch_pid"
+    result=$?
+    kill "$guard_pid" 2>/dev/null
+    wait "$guard_pid" 2>/dev/null
+    exit "$result"
+)
+download() (
+    url="$1"; target="$2"
     if command -v curl >/dev/null 2>&1; then
-        if curl --fail --location --connect-timeout 20 --max-time 180 "$url" -o "$target" >> "$DETAIL_LOG" 2>&1; then
-            return 0
-        fi
+        bounded curl --fail --location --silent --show-error --connect-timeout 10 --max-time 35 "$url" -o "$target" && exit 0
     fi
     if command -v wget >/dev/null 2>&1; then
-        if wget -T 20 -O "$target" "$url" >> "$DETAIL_LOG" 2>&1; then
-            return 0
-        fi
+        bounded wget -T 15 -t 1 -O "$target" "$url" && exit 0
     fi
-    return 1
-}
-
-verify_archive() {
-    expected="$(awk 'NR == 1 { print $1 }' "$CHECKSUM")"
-    case "$expected" in
-        ''|*[!0-9a-fA-F]*) return 1 ;;
-    esac
-    actual=""
-    if command -v sha256sum >/dev/null 2>&1; then
-        actual="$(sha256sum "$ARCHIVE" 2>/dev/null | awk '{ print $1 }')"
-    elif command -v openssl >/dev/null 2>&1; then
-        actual="$(openssl dgst -sha256 "$ARCHIVE" 2>/dev/null | awk '{ print $NF }')"
-    elif command -v python >/dev/null 2>&1; then
-        actual="$(python -c 'import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$ARCHIVE" 2>/dev/null)"
-    fi
-    [ -n "$actual" ] && [ "$actual" = "$expected" ]
-}
-
-
-verify_file() {
-    expected="$1"
-    file="$2"
-    case "$expected" in
-        ''|*[!0-9a-f]*) return 1 ;;
-    esac
-    [ "${#expected}" -eq 64 ] || return 1
-    actual=""
+    exit 1
+)
+verify_file() (
+    expected="$1"; file="$2"
+    [ -f "$file" ] || exit 1
+    case "$expected" in ''|*[!0-9a-f]*) exit 1 ;; esac
+    [ "${#expected}" -eq 64 ] || exit 1
     if command -v sha256sum >/dev/null 2>&1; then
         actual="$(sha256sum "$file" 2>/dev/null | awk '{ print $1 }')"
-    elif command -v openssl >/dev/null 2>&1; then
+    else
         actual="$(openssl dgst -sha256 "$file" 2>/dev/null | awk '{ print $NF }')"
-    elif command -v python >/dev/null 2>&1; then
-        actual="$(python -c 'import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$file" 2>/dev/null)"
-    elif command -v python3 >/dev/null 2>&1; then
-        actual="$(python3 -c 'import hashlib,sys; print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$file" 2>/dev/null)"
     fi
-    [ -n "$actual" ] && [ "$actual" = "$expected" ]
-}
-
-load_manifest() {
-    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
-    count=0
-    while IFS=' ' read -r expected path url; do
-        [ -n "$expected" ] || continue
-        case "$path" in
-            documents/InkDeck.sh|extensions/InkDeck/*) ;;
-            *) return 1 ;;
-        esac
-        case "$path" in
-            *..*|/*) return 1 ;;
-        esac
-        case "$url" in
-            https://raw.githubusercontent.com/juliankaluga27-ux/InkDeck/*) ;;
-            *) return 1 ;;
-        esac
-        [ -n "$url" ] || return 1
-        target="$UNPACK/$path"
-        mkdir -p "${target%/*}" || return 1
-        download "$url" "$target" || return 1
-        verify_file "$expected" "$target" || return 1
-        count=$((count + 1))
-    done < "$MANIFEST"
-    [ "$count" -ge 5 ]
-}
-
-extract_archive() {
-    # Kindle firmware releases expose different tar implementations.  Some
-    # accept -z, some need gzip in a pipe, and some only expose BusyBox.
-    if tar -xzf "$ARCHIVE" -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
-        return 0
+    [ "$actual" = "$expected" ]
+)
+status "InkDeck: pobieranie listy plikow (limit 40 s na polaczenie)..."
+download "$BASE_URL/InkDeck-update-manifest.txt" "$MANIFEST" || fail "nie mozna pobrac manifestu; sprawdz Wi-Fi i date Kindle"
+total=0
+while IFS=' ' read -r expected path url extra; do
+    [ -n "$expected" ] || continue
+    case "$path" in documents/InkDeck.sh|extensions/InkDeck/*) ;; *) fail "nieprawidlowa sciezka manifestu" ;; esac
+    case "$path" in *..*|/*) fail "nieprawidlowa sciezka manifestu" ;; esac
+    case "$url" in https://raw.githubusercontent.com/juliankaluga27-ux/InkDeck/v*/"$path") ;; *) fail "nieprawidlowy adres manifestu" ;; esac
+    case "$expected" in *[!0-9a-f]*) fail "nieprawidlowa suma SHA-256" ;; esac
+    [ "${#expected}" -eq 64 ] && [ -z "$extra" ] || fail "nieprawidlowy rekord manifestu"
+    total=$((total + 1))
+done < "$MANIFEST"
+[ "$total" -ge 5 ] && [ "$total" -le 200 ] || fail "niepelna lista plikow"
+count=0; changed=0
+while IFS=' ' read -r expected path url; do
+    [ -n "$expected" ] || continue
+    count=$((count + 1))
+    target="$UNPACK/$path"
+    mkdir -p "${target%/*}" || fail "brak miejsca dla $path"
+    status "InkDeck: plik $count/$total: ${path##*/}"
+    if verify_file "$expected" "/mnt/us/$path"; then
+        cp "/mnt/us/$path" "$target" || fail "blad kopiowania $path"
+    else
+        changed=$((changed + 1))
+        download "$url" "$target" || fail "nie mozna pobrac $path (limit czasu lub blad sieci)"
     fi
-    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
-    if command -v gzip >/dev/null 2>&1; then
-        if gzip -dc "$ARCHIVE" 2>> "$DETAIL_LOG" | tar -xf - -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
-            return 0
-        fi
-    fi
-    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
-    if command -v toybox >/dev/null 2>&1; then
-        if toybox tar -xzf "$ARCHIVE" -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
-            return 0
-        fi
-        rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
-        if toybox gzip -dc "$ARCHIVE" 2>> "$DETAIL_LOG" | toybox tar -xf - -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
-            return 0
-        fi
-    fi
-    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
-    if command -v busybox >/dev/null 2>&1; then
-        if busybox tar -xzf "$ARCHIVE" -C "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
-            return 0
-        fi
-    fi
-    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
-    if command -v python >/dev/null 2>&1; then
-        if python -c 'import sys,tarfile; tarfile.open(sys.argv[1],"r:gz").extractall(sys.argv[2])' "$ARCHIVE" "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
-            return 0
-        fi
-    fi
-    rm -rf "$UNPACK" && mkdir -p "$UNPACK" || return 1
-    if command -v python3 >/dev/null 2>&1; then
-        if python3 -c 'import sys,tarfile; tarfile.open(sys.argv[1],"r:gz").extractall(sys.argv[2])' "$ARCHIVE" "$UNPACK" >> "$DETAIL_LOG" 2>&1; then
-            return 0
-        fi
-    fi
-    return 1
-}
-
-mkdir -p "$STAGE" "$UNPACK" || fail "nie mozna utworzyc katalogu roboczego"
-: > "$DETAIL_LOG"
-status "InkDeck: pobieranie aktualizacji..."
-if download "$BASE_URL/InkDeck-update-manifest.txt" "$MANIFEST"; then
-    status "InkDeck: pobieranie i sprawdzanie plikow..."
-    load_manifest || fail "nie udalo sie pobrac lub sprawdzic plikow z manifestu"
-else
-    status "InkDeck: pobieranie paczki zgodnosci..."
-    download "$BASE_URL/InkDeck-update.tar.gz" "$ARCHIVE" || fail "nie udalo sie pobrac paczki; sprawdz Wi-Fi i date Kindle"
-    download "$BASE_URL/InkDeck-update.tar.gz.sha256" "$CHECKSUM" || fail "nie udalo sie pobrac sumy SHA-256"
-    status "InkDeck: sprawdzanie paczki..."
-    verify_archive || fail "nie mozna sprawdzic SHA-256 albo suma jest bledna"
-    extract_archive || fail "nie udalo sie rozpakowac paczki zadna metoda (tar, gzip, toybox, BusyBox ani Python)"
+    verify_file "$expected" "$target" || fail "bledna suma SHA-256: $path"
+done < "$MANIFEST"
+for path in app/main.page app/app.js app/style.css app/new-games.js app/extra-games.js bin/update.sh; do
+    [ -s "$UNPACK/extensions/InkDeck/$path" ] || fail "brak $path w aktualizacji"
+done
+[ -s "$UNPACK/documents/InkDeck.sh" ] || fail "brak launchera"
+sh -n "$UNPACK/documents/InkDeck.sh" || fail "blad skladni launchera"
+sh -n "$UNPACK/extensions/InkDeck/bin/update.sh" || fail "blad skladni aktualizatora"
+if [ "$changed" -eq 0 ]; then
+    status "InkDeck: aktualizacja zakonczona. Masz najnowsze pliki ($total/$total)."
+    exit 0
 fi
-
-[ -f "$UNPACK/extensions/InkDeck/app/main.page" ] || fail "brak strony aplikacji"
-[ -f "$UNPACK/extensions/InkDeck/app/app.js" ] || fail "brak app.js"
-[ -f "$UNPACK/extensions/InkDeck/app/new-games.js" ] || fail "brak pliku nowych gier"
-[ -f "$UNPACK/extensions/InkDeck/app/extra-games.js" ] || fail "brak pliku dodatkowych gier"
-[ -f "$UNPACK/extensions/InkDeck/filebrowser/server.py" ] || fail "brak alternatywnego serwera plikow"
-[ -f "$UNPACK/documents/InkDeck.sh" ] || fail "brak launchera"
-[ -f "$UNPACK/extensions/InkDeck/bin/update.sh" ] || fail "brak modulu aktualizacji"
-sh -n "$UNPACK/documents/InkDeck.sh" || fail "launcher ma blad skladni"
-
-status "InkDeck: instalowanie..."
-lipc-set-prop com.lab126.appmgrd stop app://com.codex.inkdeck >/dev/null 2>&1
-sleep 1
-
-if [ -d "$EXTENSIONS/InkDeck/app" ]; then
-    cp -r "$EXTENSIONS/InkDeck/app" "$BACKUP" || fail "nie udalo sie zrobic kopii aplikacji"
-fi
-if [ ! -f "$DOCS/InkDeck.sh" ] || ! cmp -s "$UNPACK/documents/InkDeck.sh" "$DOCS/InkDeck.sh"; then
-    cp "$UNPACK/documents/InkDeck.sh" "$DOCS/InkDeck.sh" || fail "nie udalo sie zapisac launchera"
-fi
-mkdir -p "$EXTENSIONS/InkDeck/bin" || fail
-cp -r "$UNPACK/extensions/InkDeck/." "$EXTENSIONS/InkDeck/" || fail "nie udalo sie skopiowac modulu extensions"
-rm -f "$EXTENSIONS/InkDeck/filebrowser/index.html"
-rm -f "$EXTENSIONS/InkDeck/app/plugins/README.txt"
-rm -rf "$EXTENSIONS/InkDeck/app/plugins/PRZYKLAD"
-chmod 755 "$EXTENSIONS/InkDeck/bin/"*.sh "$EXTENSIONS/InkDeck/filebrowser/cgi-bin/"*.sh "$DOCS/InkDeck.sh" >/dev/null 2>&1
-
-sh "$DOCS/InkDeck.sh" || {
-    rm -rf "$EXTENSIONS/InkDeck/app"
-    [ -d "$BACKUP" ] && cp -r "$BACKUP" "$EXTENSIONS/InkDeck/app"
-    fail
+status "InkDeck: instalowanie $changed zmienionych plikow..."
+cp -r "$EXTENSIONS/InkDeck" "$BACKUP" || fail "nie mozna utworzyc kopii zapasowej"
+cp "$DOCS/InkDeck.sh" "$STAGE/launcher-backup.sh" || fail "nie mozna zachowac launchera"
+rollback() {
+    cp -r "$BACKUP/." "$EXTENSIONS/InkDeck/"
+    cp "$STAGE/launcher-backup.sh" "$DOCS/InkDeck.sh"
 }
-
-status "InkDeck: aktualizacja zakonczona."
-cleanup
+cp "$UNPACK/documents/InkDeck.sh" "$DOCS/InkDeck.sh" && cp -r "$UNPACK/extensions/InkDeck/." "$EXTENSIONS/InkDeck/" || { rollback; fail "blad zapisu; przywrocono kopie"; }
+chmod 755 "$EXTENSIONS/InkDeck/bin/"*.sh "$DOCS/InkDeck.sh" >/dev/null 2>&1
+status "InkDeck: uruchamianie nowej wersji..."
+sh "$DOCS/InkDeck.sh" >> "$DETAIL_LOG" 2>&1 || { rollback; fail "blad uruchomienia; przywrocono kopie"; }
+status "InkDeck: aktualizacja zakonczona ($total/$total plikow)."
 exit 0

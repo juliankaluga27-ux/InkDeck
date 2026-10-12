@@ -13,6 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Validate application before packaging
+        run: |
+          for script in extensions/InkDeck/app/*.js; do node --check "$script"; done
+          for script in documents/*.sh extensions/InkDeck/bin/*.sh; do sh -n "$script"; done
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          css = Path('extensions/InkDeck/app/style.css').read_text()
+          assert css.count('{') == css.count('}'), 'Truncated stylesheet'
+          for selector in ['.snakeBody', '.snakeCell', '.soccerNode', '.sudokuCell', '.nonogramCell', '.aiComposer']:
+              assert selector + ' {' in css, 'Missing stylesheet rule: ' + selector
+          PYCODE
       - name: Build Kindle packages
         shell: bash
         run: |
