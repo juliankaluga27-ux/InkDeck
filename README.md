@@ -2,7 +2,7 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.10.9.3**
+Current version: **3.11.0**
 
 ## Features
 
@@ -21,7 +21,7 @@ Current version: **3.10.9.3**
 
 ## Installation
 
-1. Download `InkDeck-3.10.9.3.zip` from the newest GitHub release.
+1. Download `InkDeck-3.11.0.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -46,7 +46,7 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.10.9.3**
+Aktualna wersja: **3.11.0**
 
 ## Funkcje
 
@@ -62,7 +62,7 @@ Aktualna wersja: **3.10.9.3**
 
 ## Instalacja
 
-1. Pobierz `InkDeck-3.10.9.3.zip` z najnowszego wydania GitHub.
+1. Pobierz `InkDeck-3.11.0.zip` z najnowszego wydania GitHub.
 2. Skopiuj foldery `documents` oraz `extensions` do głównego katalogu pamięci USB Kindle.
 3. Bezpiecznie odłącz Kindle od komputera.
 4. Uruchom **InkDeck** z biblioteki. Ten sam skrót instaluje i otwiera aplikację.
@@ -147,3 +147,11 @@ Pluginy mogą definiować własne figury i ruchy przez `InkDeck.registerChessPie
 - Aktualizator działa jako niezależny proces, pokazuje numer i nazwę pliku, pomija niezmienione pliki i ogranicza czas pobierania.
 - Błędy wskazują konkretny plik lub brakujące narzędzie. Nie wraca do rozpakowywania archiwów.
 - Poprawkę aktualizatora można wgrać przez USB: scal foldery documents i extensions bez usuwania danych.
+
+## Wydanie 3.11.0 — multiplayer
+
+W szachach, warcabach i kółku i krzyżyku wybierz PRZEZ INTERNET. Gospodarz wybiera UTWÓRZ GRĘ i przekazuje kod drugiej osobie; druga osoba w tej samej grze wpisuje kod i wybiera DOŁĄCZ. Oba urządzenia muszą mieć Wi-Fi. Host gra białymi lub X.
+
+Stan gry sprawdza serwer pod https://multiplicatingkid.pl/multiplayerinkdeck/. Pokój i token gracza są zapisywane na urządzeniu, żeby wznowić połączenie po restarcie. Remis i rewanż wymagają zgody obu graczy. OPUŚĆ POKÓJ poddaje trwającą partię. HACKED nie działa w partiach online. Ustawienia czasu szachów i dodawanego czasu wybiera gospodarz przed utworzeniem pokoju.
+
+Serwer przeszedł testy reguł i równoczesnych dołączeń z osobną bazą testową. Połączenie z wdrożoną bazą potwierdza test serwera; pełna partia na dwóch fizycznych Kindle pozostaje do potwierdzenia.
