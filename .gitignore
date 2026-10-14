@@ -1,0 +1,4 @@
+# Private multiplayer credentials stay on the hosting server.
+server/multiplayerinkdeck/config.php
+server/multiplayerinkdeck/**/config.php
+server/multiplayerinkdeck/config.example.php

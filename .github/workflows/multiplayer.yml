@@ -1,0 +1,36 @@
+name: Multiplayer checks
+on:
+  push:
+    branches: ['inkdeck-multiplayer']
+  pull_request:
+    paths: ['server/multiplayerinkdeck/**', 'extensions/InkDeck/app/multiplayer.js']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: inkdeck_test_only
+          MYSQL_DATABASE: inkdeck_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -pinkdeck_test_only"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and test game rules
+        run: |
+          for file in server/multiplayerinkdeck/public/*.php server/multiplayerinkdeck/tests/*.php; do php -l "$file"; done
+          php server/multiplayerinkdeck/tests/rules-test.php
+          node --check extensions/InkDeck/app/multiplayer.js
+          node --check extensions/InkDeck/app/app.js
+          node server/multiplayerinkdeck/tests/client-test.js
+      - name: Test API against isolated MySQL database
+        run: |
+          printf '%s\n' '<?php return array("db_host"=>"127.0.0.1","db_name"=>"inkdeck_test","db_user"=>"root","db_password"=>"inkdeck_test_only","table_prefix"=>"inkdeck_");' > "$RUNNER_TEMP/inkdeck-test-config.php"
+          export INKDECK_CONFIG_PATH="$RUNNER_TEMP/inkdeck-test-config.php"
+          PHP_CLI_SERVER_WORKERS=4 php -S 127.0.0.1:8090 -t server/multiplayerinkdeck/public > "$RUNNER_TEMP/inkdeck-php.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          python3 server/multiplayerinkdeck/tests/api-test.py
