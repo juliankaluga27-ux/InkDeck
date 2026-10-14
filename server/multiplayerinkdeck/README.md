@@ -8,7 +8,7 @@ Kod jest przygotowany do wdrożenia. Obecna wersja opublikowana na Kindle nie za
 
 PHP 7.4+ (zalecany utrzymywany PHP 8.x), rozszerzenie `pdo_mysql`, MySQL/MariaDB z InnoDB, HTTPS. Żądania InkDecka są zwykłymi POST JSON; nie trzeba WebSocketów, stałego procesu ani instalacji BusyBoxa/Toyboxa.
 
-Zawartość `public/` trafia do publicznego folderu `multiplayerinkdeck/` na domenie multiplicatingkid.pl. Prywatnego config.php nie przesyła się do tego folderu.
+Zawartość `public/` trafia do publicznego folderu `multiplayerinkdeck/` na domenie multiplicatingkid.pl. Preferowana lokalizacja config.php jest poza katalogiem publicznym. Jeśli konto FTP nie pozwala wyjść poza public_html, API może użyć istniejącego config.php w multiplayerinkdeck. Dołączony .htaccess blokuje jego pobieranie na Apache; plik PHP musi być wykonywany przez serwer.
 
 Domyślna lokalizacja konfiguracji: `inkdeck-private/config.php` obok katalogu publicznego hostingu. Przykład: jeśli API ma ścieżkę `/home/account/public_html/multiplayerinkdeck/api.php`, konfiguracja musi być `/home/account/inkdeck-private/config.php`. Jeśli użytkownik zapisał ją gdzie indziej, administrator może wskazać dokładną ścieżkę zmienną środowiskową `INKDECK_CONFIG_PATH`; przed wdrożeniem trzeba ustalić tę lokalizację.
 
@@ -27,3 +27,7 @@ Szachy obejmują szach, mat, pat, roszadę, bicie w przelocie i promocję. UI wy
 ## Testy
 
 `php tests/rules-test.php` sprawdza ruchy oraz reguły. `node server/multiplayerinkdeck/tests/client-test.js` z głównego katalogu repozytorium sprawdza klienta i utratę sesji. `tests/api-test.py` sprawdza API z uruchomionym PHP i osobną testową bazą MySQL. Workflow Multiplayer checks uruchamia wszystkie te testy w izolowanym środowisku; nie łączy się z produkcyjną bazą użytkownika.
+
+## Paczka do wgrania przez FTP
+
+Rozpakuj InkDeck-multiplayer-server.zip na swoim urządzeniu i wgraj jego zawartość bezpośrednio do public_html/multiplayerinkdeck. Wgraj także .htaccess. Paczka nie zawiera config.php i nie nadpisuje istniejących danych dostępu. Po wgraniu API zostanie sprawdzone, zanim opublikujemy nowe wydanie Kindle.

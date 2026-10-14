@@ -1,6 +1,7 @@
 <?php
 function idk_database() {
-    $file=getenv('INKDECK_CONFIG_PATH');if(!$file)$file=dirname(__DIR__,2).'/inkdeck-private/config.php';
+    $file=getenv('INKDECK_CONFIG_PATH');
+    if(!$file){$file=dirname(__DIR__,2).'/inkdeck-private/config.php';if(!is_file($file))$file=__DIR__.'/config.php';}
     if(!is_file($file))throw new RuntimeException('Missing private configuration');
     $c=require $file;if(!is_array($c))throw new RuntimeException('Invalid private configuration');
     foreach(array('db_host','db_name','db_user','db_password') as $key)if(!isset($c[$key])||!is_string($c[$key])||$c[$key]==='')throw new RuntimeException('Incomplete private configuration');
