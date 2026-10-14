@@ -1,10 +1,11 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const elements={},requests=[],timers=[],storage={};
-function node(id){return elements[id]||(elements[id]={id,children:[{}],className:'',value:'',disabled:false,textContent:'',style:{},insertBefore(){},appendChild(){},getAttribute(){return null;}});}
+function node(id){if(elements[id])return elements[id];let key=id;const n={children:[{}],className:'',value:'',disabled:false,textContent:'',style:{},insertBefore(){},appendChild(){},getAttribute(){return null;}};Object.defineProperty(n,'id',{get(){return key;},set(v){key=v;elements[v]=n;}});elements[id]=n;return n;}
+const intervals=[];let clockNow=100000,lastClock=null;function FakeDate(){this.getTime=()=>clockNow;}
 let applied=null,resets=0;
-const InkDeck={settingGet(){return'pl';},show(){},onlineAdapter:{apply(x){applied=x;},redraw(){},select(){},reset(){resets++;}}};
+const InkDeck={settingGet(key,fallback){return fallback;},settingSet(){},show(){},onlineAdapter:{apply(x){applied=x;},redraw(){},select(){},prepare(){},clock(remaining){lastClock=remaining;},reset(){resets++;}}};
 function XHR(){this.open=()=>{};this.setRequestHeader=()=>{};this.send=body=>requests.push({xhr:this,body:JSON.parse(body)});}
-const context={InkDeck,document:{getElementById:node,createElement:()=>node('element'+Object.keys(elements).length)},localStorage:{setItem(k,v){storage[k]=v;},getItem(k){return storage[k]||null;},removeItem(k){delete storage[k];}},XMLHttpRequest:XHR,setTimeout(fn){timers.push(fn);return timers.length;},clearTimeout(){},Math,JSON};
+const context={InkDeck,document:{getElementById:node,createElement:()=>node('element'+Object.keys(elements).length)},localStorage:{setItem(k,v){storage[k]=v;},getItem(k){return storage[k]||null;},removeItem(k){delete storage[k];}},XMLHttpRequest:XHR,setTimeout(fn){timers.push(fn);return timers.length;},clearTimeout(){},setInterval(fn){intervals.push(fn);return intervals.length;},clearInterval(){},Math,JSON,Date:FakeDate};
 context.window=context;context.confirm=()=>true;
 vm.runInNewContext(fs.readFileSync('extensions/InkDeck/app/multiplayer.js','utf8'),context);
 function reply(data,status=200){const req=requests.shift();assert(req);req.xhr.status=status;req.xhr.responseText=JSON.stringify(data);req.xhr.readyState=4;req.xhr.onreadystatechange();return req.body;}
@@ -18,4 +19,8 @@ InkDeck.online.tap('ttt',1);assert.equal(requests.length,0,'Cannot move for oppo
 timers.pop()();reply(joined);assert.equal(applied.revision,2,'Old poll cannot roll board back');
 node('tttOnlineLeave').onclick();assert.equal(requests[0].body.action,'leave');reply({ok:false,error:'Pokój wygasł.'},403);assert(!InkDeck.online.active('ttt'));assert.equal(resets,1);assert(!storage.inkdeck_online_session);
 node('chessOnlineCode').value='wrong';node('chessOnlineJoin').onclick();assert.equal(requests.length,0,'Reject malformed room codes locally');
+node('tttOnlineToggle').onclick();assert(InkDeck.online.selected('ttt'));assert.equal(node('tttOnlineToggle').className,'selected onlineToggle');
+node('tttTwo').onclick();assert(!InkDeck.online.selected('ttt'));assert.equal(node('tttTwo').className,'selected','Local two-player button is a peer of online');
+node('chessOnlineCreate').onclick();const clockGame={...start,game:'chess',joined:true,state:{...start.state,board:Array(64).fill(''),remaining:[100,100],clock_started:true},legal:[{from:52,to:36}]};reply(clockGame);clockNow+=5000;intervals[0]();assert.equal(lastClock[0],95,'Clock ticks between server replies');assert.equal(lastClock[1],100);
+node('chessTwo').onclick();assert.equal(requests[0].body.action,'leave','Switching online to local leaves the room');reply({...clockGame,state:{...clockGame.state,over:true}});assert(!InkDeck.online.active('chess'));assert.equal(node('chessTwo').className,'selected');
 console.log('Client checks passed: create, persist, wait, turn guard, move revision, stale response, expired room, invalid code');
