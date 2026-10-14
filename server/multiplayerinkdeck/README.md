@@ -2,7 +2,7 @@
 
 Trzy gry: szachy, warcaby 8 × 8 w wariancie InkDeck (bicie wstecz i daleka damka) lub wariancie angielskim oraz kółko i krzyżyk. Jedna osoba tworzy pokój z kodem, druga dołącza. Nie jest wymagane konto.
 
-Kod jest przygotowany do wdrożenia. Obecna wersja opublikowana na Kindle nie zawiera jeszcze multiplayera. Nowe wydanie powinno zostać opublikowane po wdrożeniu i sprawdzeniu hostingu.
+Multiplayer jest częścią InkDeck 3.11.0. Serwer został wdrożony na multiplicatingkid.pl; połączenie z bazą potwierdzono testem serwera. Pełna partia na dwóch fizycznych Kindle pozostaje do potwierdzenia.
 
 ## Hosting
 
