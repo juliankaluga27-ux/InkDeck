@@ -10,6 +10,7 @@ PREVIOUS_DIR="${TARGET_DIR}.previous"
 DB="/var/local/appreg.db"
 APP_ID="com.codex.inkdeck"
 UPDATER_ID="com.codex.inkdeck.updater"
+DOWNLOADER_ID="com.codex.inkdeck.updater.download"
 FILES_START_ID="com.codex.inkdeck.files.start"
 FILES_STOP_ID="com.codex.inkdeck.files.stop"
 SETTINGS_FILE="/mnt/us/extensions/InkDeck/data/settings.txt"
@@ -87,6 +88,10 @@ INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$UPDATER_ID','li
 INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$UPDATER_ID','command','/bin/sh /mnt/us/extensions/InkDeck/bin/update.sh');
 INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$UPDATER_ID','supportedOrientation','U');
 INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$UPDATER_ID','unloadPolicy','unloadOnPause');
+INSERT OR IGNORE INTO handlerIds(handlerId) VALUES('$DOWNLOADER_ID');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$DOWNLOADER_ID','lipcId','$DOWNLOADER_ID');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$DOWNLOADER_ID','command','/bin/sh /mnt/us/extensions/InkDeck/bin/update.sh --download-only');
+INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$DOWNLOADER_ID','unloadPolicy','unloadOnPause');
 INSERT OR IGNORE INTO handlerIds(handlerId) VALUES('$FILES_START_ID');
 INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$FILES_START_ID','lipcId','$FILES_START_ID');
 INSERT OR REPLACE INTO properties(handlerId,name,value) VALUES('$FILES_START_ID','command','/bin/sh /mnt/us/extensions/InkDeck/bin/filebrowser-start.sh');

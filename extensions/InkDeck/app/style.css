@@ -288,9 +288,15 @@ button { color: #000; background: #fff; border: 3px solid #000; font-family: Ari
 #papersoccer .soccerBar #soccerNew { float:right; width:30%; min-width:0; vertical-align:middle; }
 .snakeHead { border:3px solid #fff; outline:1px solid #000; }
 
-.onlinePanel { margin:4px auto; width:98%; text-align:center; border:2px solid #000; padding:4px; }
-.onlinePanel button { min-height:44px; padding:5px 9px; margin:3px; font-size:17px; font-weight:bold; }
-.onlineToggle { width:98%; }
-.onlineBody input { width:180px; height:46px; border:3px solid #000; padding:4px; font-size:22px; text-align:center; text-transform:uppercase; }
-.onlineBody p { margin:5px; font-size:17px; overflow-wrap:break-word; }
-.onlinePanel button:disabled { color:#777; border-color:#777; }
+#tttModes, #chessModes, #checkersModes { white-space:nowrap; }
+#tttModes button, #chessModes button, #checkersModes button { width:31%; min-width:0; height:50px; margin:0 1px; }
+.onlineBody { margin:4px auto; text-align:center; }
+.onlineBody button, .onlineActions button { min-height:44px; padding:5px 9px; margin:3px; font-size:17px; font-weight:bold; }
+.onlineBody input { width:170px; height:46px; border:3px solid #000; padding:4px; font-size:22px; text-align:center; text-transform:uppercase; }
+.onlineSession .bar { height:auto; min-height:58px; overflow:hidden; }
+.onlineSession .bar span { display:inline-block; width:44%; line-height:1.2; padding:5px 0; font-size:20px; vertical-align:top; }
+.chessClockPanel span { width:46%; }
+#tttSettings select, #chessSettings select, #checkersSettings select { min-height:45px; margin:5px; font-size:18px; }
+
+.updateAutoOption { display:block; margin:12px auto; font-size:18px; }
+#updateAuto { width:28px; height:28px; vertical-align:middle; margin-right:8px; }

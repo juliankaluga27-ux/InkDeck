@@ -26,6 +26,8 @@ jobs:
           node --check extensions/InkDeck/app/multiplayer.js
           node --check extensions/InkDeck/app/app.js
           node server/multiplayerinkdeck/tests/client-test.js
+          node tests/updater-client-test.js
+          python3 tests/updater-test.py
       - name: Test API against isolated MySQL database
         run: |
           printf '%s\n' '<?php return array("db_host"=>"127.0.0.1","db_name"=>"inkdeck_test","db_user"=>"root","db_password"=>"inkdeck_test_only","table_prefix"=>"inkdeck_");' > "$RUNNER_TEMP/inkdeck-test-config.php"
