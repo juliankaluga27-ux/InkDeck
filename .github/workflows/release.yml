@@ -26,6 +26,7 @@ jobs:
           PYCODE
       - name: Check updater behavior
         run: |
+          node tests/ui-test.js
           node tests/updater-client-test.js
           python3 tests/updater-test.py
       - name: Build Kindle packages

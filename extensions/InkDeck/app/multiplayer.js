@@ -31,7 +31,7 @@
   function clockTick(){if(!session||!snapshot||session.game!=='chess'||!InkDeck.onlineAdapter.clock)return;var s=snapshot.state,remaining=s.remaining.slice(0),elapsed=(new Date().getTime()-clockSeen)/1000;if(s.clock_started&&!s.over)remaining[s.turn]=Math.max(0,remaining[s.turn]-elapsed);InkDeck.onlineAdapter.clock(remaining,s.turn,s.clock_started);}
   function describe(data){var s=data.state,side=data.side,text=label('Kod: ','Code: ')+data.code+' · '+(data.game==='ttt'?(side===0?'X':'O'):(side===0?label('białe','white'):label('czarne','black')));
     if(!data.joined)return text+' · '+label('czekam na drugą osobę','waiting for another player');
-    if(s.over)text+=' · '+(s.winner===null?label('Remis','Draw'):(s.winner===side?label('Wygrana','You won'):label('Przegrana','You lost')))+' ('+s.reason+')';
+    if(s.over)text+=' · '+(s.winner===null?label('Remis','Draw'):(s.winner===side?label('Wygrano','You won'):label('Przegrano','You lost')))+' ('+s.reason+')';
     else text+=' · '+(s.turn===side?label('Twój ruch','Your move'):label('Ruch przeciwnika','Opponent’s move'));
     if(s.draw_offer!==null&&s.draw_offer!==undefined)text+=' · '+(s.draw_offer===side?label('wysłano propozycję remisu','draw offered'):label('przeciwnik proponuje remis','opponent offers a draw'));
     if(s.rematch_offer!==null&&s.rematch_offer!==undefined)text+=' · '+(s.rematch_offer===side?label('wysłano propozycję rewanżu','rematch offered'):label('przeciwnik proponuje rewanż','opponent offers a rematch'));

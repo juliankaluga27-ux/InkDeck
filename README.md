@@ -2,7 +2,7 @@
 
 Offline games and tools for jailbroken Kindle devices. InkDeck runs locally as a Mesquite application and does not require KOReader.
 
-Current version: **3.11.1**
+Current version: **3.11.2**
 
 ## Features
 
@@ -21,7 +21,7 @@ Current version: **3.11.1**
 
 ## Installation
 
-1. Download `InkDeck-3.11.1.zip` from the newest GitHub release.
+1. Download `InkDeck-3.11.2.zip` from the newest GitHub release.
 2. Copy both folders, `documents` and `extensions`, to the USB root of the Kindle.
 3. Safely disconnect the Kindle.
 4. Run **InkDeck** from the library. The same single shortcut installs and opens the application.
@@ -46,7 +46,7 @@ The uninstall script remains available in the source repository but is intention
 
 InkDeck to zestaw gier i narzędzi działających całkowicie lokalnie na Kindle po jailbreaku. Aplikacja korzysta z Véra i Mesquite; KOReader nie jest wymagany.
 
-Aktualna wersja: **3.11.1**
+Aktualna wersja: **3.11.2**
 
 ## Funkcje
 
@@ -62,7 +62,7 @@ Aktualna wersja: **3.11.1**
 
 ## Instalacja
 
-1. Pobierz `InkDeck-3.11.1.zip` z najnowszego wydania GitHub.
+1. Pobierz `InkDeck-3.11.2.zip` z najnowszego wydania GitHub.
 2. Skopiuj foldery `documents` oraz `extensions` do głównego katalogu pamięci USB Kindle.
 3. Bezpiecznie odłącz Kindle od komputera.
 4. Uruchom **InkDeck** z biblioteki. Ten sam skrót instaluje i otwiera aplikację.
@@ -161,3 +161,9 @@ Serwer przeszedł testy reguł i równoczesnych dołączeń z osobną bazą test
 Tryb online jest trzecim równym przyciskiem obok Z KINDLEM i 2 OSOBY. Kod, kolor i oczekiwanie wyświetlają się w górnym pasku. Remis i opuszczenie pokoju są w ustawieniach; nie ma dużego panelu internetowego. Zegary szachowe odliczają płynnie, a ustawienia czasu są w ustawieniach gry.
 
 W Aktualizacjach można włączyć automatyczne pobieranie. Pobraną i sprawdzoną paczkę instaluje się jednym kliknięciem, także z powiadomienia na ekranie głównym. Po instalacji InkDeck wraca w nowej wersji i usuwa oznaczenie gotowej paczki. Pobieranie nie instaluje aktualizacji w trakcie gry.
+
+## Wydanie 3.11.2
+
+Mniejszy, ciemny pasek nawigacji, większe sterowanie Snake i Chińczyka oraz plansze dopasowane do ekranu. Jednoznaczne wyniki gier i poprawione przełączanie języków. Tryb HACKED nie wyświetla komunikatów ani dodatkowych przycisków; tryb jednego koloru sygnalizuje dyskretna kropka.
+
+Testy automatyczne nie zastępują sprawdzenia dotyku na fizycznym Kindle.

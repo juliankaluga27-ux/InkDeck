@@ -26,6 +26,7 @@ jobs:
           node --check extensions/InkDeck/app/multiplayer.js
           node --check extensions/InkDeck/app/app.js
           node server/multiplayerinkdeck/tests/client-test.js
+          node tests/ui-test.js
           node tests/updater-client-test.js
           python3 tests/updater-test.py
       - name: Test API against isolated MySQL database
