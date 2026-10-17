@@ -46,7 +46,7 @@
     if(key)xhr.setRequestHeader(provider==='google'?'x-goog-api-key':'Authorization',provider==='google'?key:'Bearer '+key);
     if(body)xhr.setRequestHeader('Content-Type','application/json');
     xhr.onreadystatechange=()=>{if(xhr.readyState!==4)return;let data;try{data=JSON.parse(xhr.responseText);}catch(_){reject(new Error('Nieprawidłowa odpowiedź serwera (HTTP '+xhr.status+').'));return;}
-      if(xhr.status>=200&&xhr.status<300)resolve(data);else reject(new Error(data.error?.message||'Błąd HTTP '+xhr.status+'. Sprawdź klucz i dostęp do modelu.'));};
+      if(xhr.status>=200&&xhr.status<300)resolve(data);else {let message=data.error?.message||'Błąd HTTP '+xhr.status+'. Sprawdź klucz i dostęp do modelu.';if(key)message=message.split(key).join('[ukryty klucz]');reject(new Error(message));}};
     xhr.onerror=()=>reject(new Error('Brak połączenia z dostawcą AI. Sprawdź internet.'));
     xhr.ontimeout=()=>reject(new Error('Przekroczono czas oczekiwania.'));
     try{xhr.send(body?JSON.stringify(body):null);}catch(e){reject(e);}

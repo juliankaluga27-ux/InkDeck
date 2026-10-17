@@ -49,6 +49,7 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
   app=boot();app.click('aiSettingsOpen');assert.equal(app.get('aiKey').value,'');app.input('aiVaultPass','wrong');await app.click('aiUnlockKey');assert.equal(app.get('aiKey').value,'');
   app.input('aiVaultPass','test-passphrase');await app.click('aiUnlockKey');assert.equal(app.get('aiKey').value,'unit-openai-secret');
   app.click('aiSettingsClose');app.input('aiPrompt','Request error');app.send();requests.at(-1).respond({error:{message:'Model unavailable'}},403);await tick();assert.equal(app.get('aiStatus').textContent,'Model unavailable');assert.equal(app.get('aiSend').disabled,false);
+  app.input('aiPrompt','Invalid key error');app.send();requests.at(-1).respond({error:{message:'Invalid unit-openai-secret'}},401);await tick();assert.equal(app.get('aiStatus').textContent,'Invalid [ukryty klucz]');assert(!Array.from(data.values()).some(x=>x.includes('unit-openai-secret')));
   const count=app.db().chats.length;app.click('aiDeleteChat');assert.equal(app.db().chats.length,count-1);app.click('aiDeleteChat');assert.equal(app.db().chats.length,1);
   console.log('AI checks passed: searchable catalogs, separate persistent chats/drafts, pending response isolation, provider payloads/parsing, paginated models, no plaintext keys, encrypted vault reload/unlock, errors and deletion');
 })().catch(e=>{console.error(e);process.exitCode=1;});
