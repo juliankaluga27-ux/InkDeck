@@ -4,3 +4,5 @@ package/
 *.xcodeproj/
 *.ipa
 *.sha256
+simulator/
+*.xcresult/

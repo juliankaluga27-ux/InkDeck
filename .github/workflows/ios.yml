@@ -8,6 +8,9 @@ on:
     paths: ['ios/**', '.github/workflows/ios.yml', 'extensions/InkDeck/app/**']
 permissions:
   contents: read
+concurrency:
+  group: ios-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: macos-15
@@ -31,6 +34,15 @@ jobs:
       - name: Build device application without signing
         run: |
           xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO build
+      - name: Check bundled games in iOS WebKit
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for group in d["devices"].values() for x in group if x["name"].startswith("iPhone")))')
+          xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE_ID" -derivedDataPath ios/simulator -resultBundlePath ios/SmokeTests.xcresult CODE_SIGNING_ALLOWED=NO test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: InkDeck-iOS-test-results
+          path: ios/SmokeTests.xcresult
       - name: Package IPA for Sideloadly
         run: |
           mkdir -p ios/package/Payload

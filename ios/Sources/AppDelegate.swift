@@ -62,7 +62,7 @@ final class InkDeckController: UIViewController, WKNavigationDelegate, WKUIDeleg
                 self?.web.callAsyncJavaScript(
                     "window.InkDeckNative.complete(id, status, text, error)",
                     arguments: ["id": id, "status": status, "text": text, "error": error],
-                    in: nil, contentWorld: .page, completionHandler: nil)
+                    in: nil, in: .page, completionHandler: nil)
             }
         }
     }
