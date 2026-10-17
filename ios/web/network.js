@@ -5,6 +5,8 @@
   var endpoints = [
     'https://multiplicatingkid.pl/multiplayerinkdeck/api.php',
     'https://api.openai.com/v1/responses',
+    'https://api.openai.com/v1/models',
+    'https://openrouter.ai/api/v1/models',
     'https://openrouter.ai/api/v1/chat/completions',
     'https://generativelanguage.googleapis.com/v1beta/interactions'
   ];
@@ -20,7 +22,8 @@
   function XHR() { this.headers = {}; this.readyState = 0; this.status = 0; this.responseText = ''; this.timeout = 15000; }
   XHR.prototype.open = function (method, url, async) {
     this.method = method.toUpperCase(); this.url = url;
-    if (endpoints.indexOf(url) < 0) {
+    var nativeURL=endpoints.indexOf(url)>=0 || /^https:\/\/generativelanguage\.googleapis\.com\/v1beta\/(models(?:\?(?:pageSize|pageToken)=[^#]*)?|models\/[A-Za-z0-9._-]+:generateContent)$/.test(url);
+    if (!nativeURL) {
       this.original = new OriginalXHR();
       var self = this;
       ['readystatechange', 'error', 'timeout', 'load'].forEach(function (event) {

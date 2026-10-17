@@ -1,4 +1,4 @@
-# InkDeck for iPhone and iPad — 1.0.1 beta 2
+# InkDeck for iPhone and iPad — 1.0.2 beta 3
 
 Separate iOS/iPadOS application based on the Kindle 3.11.2 game code. Requires iOS/iPadOS 16 or newer. Kindle source files, version number, release workflow and published packages are unchanged.
 
@@ -23,13 +23,17 @@ For a local Mac build: run `node ios/prepare-web.js`, install XcodeGen, run `cd 
 
 1. Download and extract the IPA from the successful Actions run.
 2. Connect the iPhone or iPad with USB, unlock it and trust the computer.
-3. Open Sideloadly, select the device, drag in `InkDeck-iOS-1.0.1-beta2-unsigned.ipa` and enter your Apple ID in Sideloadly.
+3. Open Sideloadly, select the device, drag in `InkDeck-iOS-1.0.2-beta3-unsigned.ipa` and enter your Apple ID in Sideloadly.
 4. Choose Start and complete Apple's authentication if requested. Keep Apple credentials in Sideloadly; do not add them to this repository.
 5. Follow the device's prompts to trust the developer and enable Developer Mode if required.
 
 Sideloadly signs the IPA during installation. Signing validity depends on the Apple account and provisioning used. A jailbreak is not required.
 
 ## Platform differences and validation
+
+Beta 3 centers/scales chess pieces independently of glyph baselines and reserves screen height for Wordle's full Polish/English keyboard. Wordle uses a side-by-side layout in landscape. Ink AI has an API settings dialog, encrypted key vault, persistent named/deletable chats and drafts, provider-specific model selection/search, and catalog refresh. The bundled text-chat catalog contains 392 interactive OpenRouter entries, 49 OpenAI starter entries and 22 Gemini/Gemma starter entries (snapshot 2026-10-17, derived from the public OpenRouter catalog). Starter entries are not a guarantee of availability via a particular account or direct-provider API; refresh uses the provider's canonical model listing. Model IDs and names can be searched. No API keys or vault passwords are stored in chat history or catalog caches.
+
+Google uses generateContent with structured conversation history; OpenAI uses Responses with store:false; OpenRouter uses Chat Completions. GET model catalogs and Google model-generation routes are explicitly allowlisted by the native bridge. Redirects remain rejected. AI response parsing, chat switching during pending requests, encrypted-vault migration and catalog pagination are checked with deterministic fixtures; no paid provider completion is sent during CI.
 
 Beta 2 fixes document-level drawing handlers canceling unrelated touch events. Its tests include real simulator taps opening Tic-tac-toe and placing X, plus a regression check for uncanceled touchend events. It restores the original InkDeck logo, supplies a home-screen app icon, uses a compact game launcher without scrolling at supported phone/tablet sizes, renames the editor InkWriter, and adds color including blue X and red O.
 

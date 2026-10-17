@@ -51,4 +51,6 @@ window.InkDeckNative.complete(payload.id,200,'{"ok":true}','');assert.equal(xhr.
 window.InkDeckNative.complete(payload.id,200,'{}','');assert.equal(finished,1);
 let timedOut=false;xhr.ontimeout=()=>{timedOut=true};xhr.send('{}');window.InkDeckNative.complete(payload.id,0,'','timeout');assert(timedOut);
 xhr.send('{}');xhr.abort();window.InkDeckNative.complete(payload.id,200,'{}','');assert.equal(xhr.readyState,0);
+const catalogRequest=new window.XMLHttpRequest();catalogRequest.open('GET','https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&pageToken=page2',true);catalogRequest.send(null);assert.equal(payload.method,'GET');
+const generateRequest=new window.XMLHttpRequest();generateRequest.open('POST','https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent',true);generateRequest.send('{}');assert(payload.url.endsWith(':generateContent'));
 console.log('Mobile checks passed: assets, six viewport sizes, Snake background/menu pause, network response/timeout/abort');

@@ -112,3 +112,52 @@ button.selected, .darkButton { background:#2563eb; color:white; border-color:#25
 .settingsPanel { background:#fff; border-color:#8ca7d0; }
 @media(min-width:700px) { #menuItems .menuButton { font-size:14px; } #menuItems .menuButton::before { font-size:29px; height:30px; line-height:30px; flex-basis:30px; } }
 @media(max-height:420px) { #menu .hero { flex-basis:38px; } #menu .hero img { width:36px; height:36px; } #menu .hero h1 { font-size:18px; } #menu.active { gap:4px; } #menu .tabs, #menu .tabs button { height:34px; min-height:34px; flex-basis:34px; } #menuItems { gap:4px; } #menuItems .menuButton { font-size:10px; gap:2px; } #menuItems .menuButton::before { font-size:20px; height:22px; line-height:22px; flex-basis:22px; } }
+
+/* 1.0.2: pieces stay centered within their squares after every render/move. */
+.gameBoard8 .boardCell { position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; line-height:1 !important; }
+.gameBoard8 .chessPiece, .gameBoard8 .checkerPiece { flex:0 0 82%; display:flex; align-items:center; justify-content:center; width:82% !important; height:82% !important; max-width:82%; max-height:82%; margin:0 !important; line-height:1 !important; font-size:calc(var(--chess-cell,40px) * .58) !important; border-width:2px; }
+.gameBoard8 .boardCell.lastFrom:after { content:none; }
+
+#wordle.active { display:grid; grid-template-columns:1fr; grid-template-rows:44px 44px minmax(0,1fr) auto; gap:4px; overflow:hidden !important; }
+#wordle > .hint { display:none; }
+#wordle .bar { min-height:44px; padding:0; }
+#wordle .wordleControls { min-height:0; height:44px; width:100%; margin:0; padding:0; flex-wrap:nowrap; align-items:center; }
+#wordle .wordleControls span { min-width:0; font-size:12px; flex:1; }
+#wordle .wordleControls span:empty { display:none; }
+#wordle .wordleControls button, #wordle .wordleControls select { height:44px; min-height:44px; font-size:12px; padding:3px 6px; margin:0; }
+#wordleBoard { margin:0; align-self:center; justify-self:center; }
+#wordleKeys { display:flex; flex-direction:column; gap:4px; width:100%; max-width:680px; margin:0; justify-self:center; }
+#wordleKeys .wordleKeyRow { display:flex; gap:3px; margin:0; height:44px; }
+#wordleKeys button { flex:1 1 0; width:auto; min-width:0; height:44px; min-height:44px; margin:0; padding:0; font-size:clamp(13px,3.6vw,20px); border-radius:6px; }
+#wordleKeys button.wordleActionKey { flex:1.35 1 0; width:auto; min-width:0; font-size:12px; }
+@media(min-aspect-ratio:27/20) {
+  #wordle.active { grid-template-columns:44% minmax(0,1fr); grid-template-rows:44px minmax(0,1fr); column-gap:8px; }
+  #wordle > .bar { grid-column:1; grid-row:1; }
+  #wordle > .wordleControls { grid-column:2; grid-row:1; }
+  #wordleBoard { grid-column:1; grid-row:2; }
+  #wordleKeys { grid-column:2; grid-row:2; align-self:center; }
+}
+
+#kindleai.active { display:flex; flex-direction:column; gap:6px; overflow:hidden !important; }
+#kindleai .bar { flex:0 0 46px; min-height:46px; padding:0; }
+#kindleai button { min-height:44px; padding:4px 8px; font-size:13px; }
+.aiChatTools { display:flex; gap:4px; flex:0 0 44px; }
+.aiChatTools select { flex:1; min-width:0; width:0; height:44px; font-size:15px; }
+.aiModelButton { flex:0 0 44px; width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+#aiMessages { flex:1 1 0; min-height:0; height:auto; width:100%; margin:0; overflow:auto; border:1px solid #cbd5e1; padding:8px; }
+#aiMessages .aiMessage { font-size:16px; padding:10px; max-width:95%; }
+#aiComposer { display:flex; flex-wrap:nowrap; flex:0 0 auto; width:100%; margin:0; padding:4px; gap:4px; }
+#aiComposer textarea { flex:1; width:0; min-width:0; min-height:52px; max-height:110px; height:52px; padding:6px; margin:0; font-size:16px; resize:vertical; }
+#aiComposer button { flex:0 0 72px; width:72px; min-width:72px; margin:0; }
+#aiStatus { font-size:12px; line-height:16px; min-height:16px; overflow-wrap:anywhere; }
+.aiPanel { position:fixed; z-index:300; inset:56px 4% 8px; overflow:auto; padding:12px; border:1px solid #94a3b8; border-radius:14px; box-shadow:0 4px 30px #14233f55; background:#fff; }
+.aiPanel header { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+.aiPanel h2 { margin:0; font-size:20px; flex:1; }
+.aiPanel label { display:block; margin:10px 0; font-size:15px; }
+.aiPanel label input, .aiPanel label select { display:block; width:100%; margin:4px 0; padding:8px; border:1px solid #94a3b8; border-radius:6px; }
+.aiPanel p { font-size:13px; line-height:1.45; color:#52637d; }
+.aiActions { display:flex; flex-wrap:wrap; gap:4px; }
+#aiModelSearch { width:100%; padding:8px; }
+#aiModelList { width:100%; max-width:100%; min-height:210px; height:50%; font-size:14px; margin:8px 0; }
+#aiModelList option { padding:8px; white-space:normal; overflow-wrap:anywhere; }
+#aiModelCount, #aiSettingsStatus { font-size:13px; padding:6px 0; overflow-wrap:anywhere; }

@@ -26,6 +26,7 @@ jobs:
           node tests/ui-test.js
           node tests/updater-client-test.js
           node ios/tests/mobile-test.js
+          node ios/tests/ai-test.js
       - name: Generate Xcode project
         run: |
           mkdir -p ios/Assets.xcassets/AppIcon.appiconset
@@ -52,9 +53,9 @@ jobs:
           mkdir -p ios/package/Payload
           cp -R ios/build/Build/Products/Release-iphoneos/InkDeck.app ios/package/Payload/
           cd ios/package
-          zip -qry ../InkDeck-iOS-1.0.1-beta2-unsigned.ipa Payload
+          zip -qry ../InkDeck-iOS-1.0.2-beta3-unsigned.ipa Payload
           cd ..
-          shasum -a 256 InkDeck-iOS-1.0.1-beta2-unsigned.ipa > InkDeck-iOS-1.0.1-beta2-unsigned.ipa.sha256
+          shasum -a 256 InkDeck-iOS-1.0.2-beta3-unsigned.ipa > InkDeck-iOS-1.0.2-beta3-unsigned.ipa.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: InkDeck-iOS-Sideloadly

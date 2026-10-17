@@ -10,15 +10,32 @@ final class NetworkBridge: NSObject, URLSessionTaskDelegate {
         "https://generativelanguage.googleapis.com/v1beta/interactions"
     ]
 
+    private func allowed(_ url: URL, method: String) -> Bool {
+        guard url.scheme == "https", url.user == nil, url.password == nil,
+              url.fragment == nil, url.port == nil || url.port == 443 else { return false }
+        if method == "POST", endpoints.contains(url.absoluteString) { return true }
+        if method == "GET", url.query == nil,
+           ["https://api.openai.com/v1/models", "https://openrouter.ai/api/v1/models"].contains(url.absoluteString) { return true }
+        if url.host == "generativelanguage.googleapis.com" {
+            if method == "GET", url.path == "/v1beta/models" {
+                let query = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+                return query.allSatisfy { ["pageSize", "pageToken"].contains($0.name) }
+            }
+            if method == "POST", url.query == nil,
+               url.path.range(of: "^/v1beta/models/[A-Za-z0-9._-]+:generateContent$", options: .regularExpression) != nil { return true }
+        }
+        return false
+    }
+
     func send(_ body: [String: Any], completion: @escaping (Int, String, String) -> Void) {
-        guard let address = body["url"] as? String, endpoints.contains(address),
-              let url = URL(string: address), body["method"] as? String == "POST" else {
+        guard let address = body["url"] as? String, let url = URL(string: address),
+              let method = body["method"] as? String, allowed(url, method: method) else {
             completion(0, "", "network"); return
         }
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = method
         request.timeoutInterval = min(90, max(1, (body["timeout"] as? Double ?? 15000) / 1000))
-        request.httpBody = (body["body"] as? String ?? "").data(using: .utf8)
+        if method == "POST" { request.httpBody = (body["body"] as? String ?? "").data(using: .utf8) }
         for (key, value) in body["headers"] as? [String: String] ?? [:] {
             if ["content-type", "authorization", "x-goog-api-key"].contains(key.lowercased()) {
                 request.setValue(value, forHTTPHeaderField: key)

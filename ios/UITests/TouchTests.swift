@@ -13,6 +13,19 @@ final class TouchTests: XCTestCase {
         XCTAssertTrue(app.webViews.buttons["Pole 1: X"].waitForExistence(timeout: 5), "A real tap must place X")
         app.webViews.buttons["‹ MENU"].tap()
         XCTAssertTrue(game.waitForExistence(timeout: 5))
+        app.webViews.buttons["WORDLE"].tap()
+        let enter = app.webViews.buttons["OK"]
+        XCTAssertTrue(enter.waitForExistence(timeout: 5))
+        XCTAssertLessThanOrEqual(enter.frame.maxY,app.webViews.firstMatch.frame.maxY+1,"Wordle submit key must be visible without scrolling")
+        app.webViews.buttons["Q"].tap()
+        app.webViews.buttons["‹ MENU"].tap()
+        app.webViews.buttons["NARZĘDZIA"].tap()
+        app.webViews.buttons["Ink AI"].tap()
+        app.webViews.buttons["USTAWIENIA API"].tap()
+        XCTAssertTrue(app.webViews.secureTextFields.firstMatch.waitForExistence(timeout:5))
+        app.webViews.buttons["GOTOWE"].tap()
+        app.webViews.buttons["+ CZAT"].tap()
+        app.webViews.buttons["‹ MENU"].tap()
         let shot = XCTAttachment(screenshot: app.screenshot())
         shot.name = "iPhone compact color menu"
         shot.lifetime = .keepAlways
