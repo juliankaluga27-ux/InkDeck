@@ -1,0 +1,48 @@
+name: iOS IPA for Sideloadly
+on:
+  workflow_dispatch:
+  push:
+    branches: ['ios/**']
+    paths: ['ios/**', '.github/workflows/ios.yml']
+  pull_request:
+    paths: ['ios/**', '.github/workflows/ios.yml', 'extensions/InkDeck/app/**']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare mobile bundle and check regressions
+        run: |
+          node ios/prepare-web.js
+          for file in ios/Web/*.js; do node --check "$file"; done
+          node tests/ui-test.js
+          node tests/updater-client-test.js
+          node ios/tests/mobile-test.js
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          cd ios
+          xcodegen generate
+      - name: Build device application without signing
+        run: |
+          xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO build
+      - name: Package IPA for Sideloadly
+        run: |
+          mkdir -p ios/package/Payload
+          cp -R ios/build/Build/Products/Release-iphoneos/InkDeck.app ios/package/Payload/
+          cd ios/package
+          zip -qry ../InkDeck-iOS-1.0.0-beta1-unsigned.ipa Payload
+          cd ..
+          shasum -a 256 InkDeck-iOS-1.0.0-beta1-unsigned.ipa > InkDeck-iOS-1.0.0-beta1-unsigned.ipa.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: InkDeck-iOS-Sideloadly
+          path: |
+            ios/*.ipa
+            ios/*.ipa.sha256
+          if-no-files-found: error

@@ -1,0 +1,59 @@
+/* Overrides are bundled only in the mobile app. Dimensions are CSS points. */
+html, body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+body { -webkit-text-size-adjust:100%; }
+button, select, input, textarea { font-family:inherit; font-size:16px; }
+button { touch-action:manipulation; border-width:2px; border-radius:8px; }
+#top { display:flex; align-items:center; gap:8px; height:50px; min-height:50px; padding:0 8px; line-height:normal; border:0; background:#171717; color:white; font-size:18px; }
+#title { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+#top #back, #top #languageToggle { position:static; float:none; min-width:64px; height:44px; margin:0; padding:0 8px; font-size:13px; box-shadow:none; border:0; background:#171717; color:white; }
+.page { height:calc(100% - 50px); max-width:900px; margin:0 auto; padding:6px; }
+.page.active { overflow:auto !important; overscroll-behavior:contain; }
+.hero { width:100%; margin:0 auto 12px; padding:12px; border:0; }
+.hero h1 { font-size:30px; margin:4px; }
+.hero p { font-size:15px; }
+#menuItems { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding-bottom:12px; }
+.menuButton { width:100%; height:auto; min-height:96px; margin:0; padding:10px 6px; font-size:17px; }
+.menuButton span { font-size:13px; line-height:1.35; }
+.tabs { display:flex; gap:8px; }
+.tabs button { flex:1; width:auto; min-width:0; height:44px; margin:0 0 10px; font-size:16px; }
+.page .bar, #chess .bar { display:flex; flex-wrap:wrap; align-items:center; gap:4px; min-height:48px; line-height:normal; padding:2px 0 6px; font-size:16px; border-bottom:1px solid #777; }
+.page .bar span { min-width:0 !important; padding:0 4px !important; font-size:16px !important; flex:1 1 100px; letter-spacing:0; }
+.bar button { float:none; margin:0; }
+.small, .newGameButton, .page .bar button { min-width:54px; height:44px; font-size:13px; padding:4px 6px; }
+.gameControls, .wordleControls, .onlineModes { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; height:auto; }
+.gameControls button, .gameControls select, .wordleControls button, .wordleControls select { min-width:0; width:auto; max-width:100%; min-height:44px; height:auto; font-size:14px; padding:4px 8px; margin:2px 0; }
+select, input, textarea { max-width:100%; min-height:44px; }
+.settingsPanel { position:fixed; top:56px; bottom:8px; left:4%; width:92%; overflow:auto; box-shadow:none; border:2px solid black; border-radius:12px; }
+#settingsCloseGlobal { top:auto; bottom:10px; min-height:44px; font-size:15px; }
+.arrows { margin:6px 0; }
+.arrows button { width:clamp(68px,20vw,110px); height:60px; margin:2px; font-size:30px; }
+#snake .arrows button { width:clamp(76px,22vw,120px); height:64px; min-height:64px; }
+#snakeBoard, #board2048 { touch-action:none; }
+#ludoRoll, .ludoPawnButton { min-height:48px; height:auto; min-width:80px; width:auto; padding:8px; font-size:16px; }
+#ludoMoves { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; }
+.chessPiece, .checkerPiece { max-width:90%; max-height:90%; font-size:clamp(14px,4vw,40px); }
+.wordleBoard { width:auto; max-width:100%; }
+.wordleKeys { width:100%; max-width:660px; margin:8px auto; }
+.wordleKeys button { min-width:0; width:8.5%; height:46px; margin:2px .3%; padding:0; font-size:16px; border-width:1px; }
+.wordleKeys .wordleWide { width:14%; font-size:12px; }
+.wordleKeys button.wordleActionKey { width:14%; min-width:0; font-size:12px; }
+.sudokuKeys { display:flex; flex-wrap:wrap; gap:3px; justify-content:center; }
+.sudokuKeys button { width:calc(20% - 4px); max-width:76px; height:44px; margin:0; font-size:22px; }
+.sudokuCell { min-width:0; min-height:0; padding:0; border-radius:0; }
+.mahjongTile, .soccerNode, .nonogramCell { min-width:0; min-height:0; padding:0; border-radius:0; }
+#drawCanvas { display:block; max-width:100%; }
+#writerEditor { max-width:100%; font-size:18px; }
+.aiComposer { display:flex; flex-wrap:wrap; gap:6px; }
+.aiComposer textarea { width:100%; }
+.aiComposer button { min-height:44px; }
+.onlineBody input { width:100%; }
+.hint { font-size:13px; }
+@media(min-width:700px) { #menuItems { grid-template-columns:repeat(3,minmax(0,1fr)); } .menuButton { min-height:108px; font-size:21px; } .page .bar span { font-size:20px !important; } }
+@media(orientation:landscape) and (max-height:500px) { .page { max-width:100%; } #snakeBoard,#board2048 { float:left; margin:4px 16px; } .arrows { padding-top:8px; } }
+/* Override the Kindle rules with matching specificity. */
+.bar #tttNew, .bar #mineNew, .bar #new2048, .bar #memoryNew, .bar #chessNew, .bar #checkersNew, .bar #lightsNew, .bar #wordleNew { min-width:54px; height:44px; margin:0; padding:4px 6px; border-width:2px; font-size:13px; }
+#ludo .gameControls { min-height:52px; white-space:normal; font-size:16px; }
+#ludoPlayers, #ludoDice { width:52px; min-width:52px; height:48px; padding:4px; font-size:22px; }
+#ludoRoll { width:auto; min-width:110px; height:48px; font-size:16px; }
+#settingsCloseGlobal { top:auto; bottom:8px; }
+#languageToggle { min-width:78px !important; }

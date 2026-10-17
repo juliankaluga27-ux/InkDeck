@@ -1,0 +1,6 @@
+Web/
+build/
+package/
+*.xcodeproj/
+*.ipa
+*.sha256
