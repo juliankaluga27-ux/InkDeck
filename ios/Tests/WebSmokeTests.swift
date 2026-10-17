@@ -30,7 +30,7 @@ final class WebSmokeTests: XCTestCase {
             NSLayoutConstraint.deactivate(controller.view.constraints)
             web.frame = CGRect(origin: .zero, size: size)
             for game in ["ttt", "chess", "checkers", "snake", "sudoku", "nonogram", "g2048", "wordle", "mahjongconnect", "ludo", "papersoccer", "memory", "lights", "life", "writer", "draw", "todo", "calc", "kindleai"] {
-                _ = try await web.evaluateJavaScript("InkDeck.show('\(game)')")
+                _ = try await web.evaluateJavaScript("InkDeck.show('\(game)'); true")
                 try await Task.sleep(nanoseconds: 150_000_000)
                 let errors = try await web.evaluateJavaScript("JSON.stringify(window.smokeErrors)") as? String
                 XCTAssertEqual(errors, "[]", "Startup/render errors in \(game) at \(size)")
@@ -43,3 +43,4 @@ final class WebSmokeTests: XCTestCase {
         host.isHidden = true
     }
 }
+
