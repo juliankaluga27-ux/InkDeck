@@ -1,4 +1,4 @@
-# InkDeck for iPhone and iPad — 1.0.0 beta 1
+# InkDeck for iPhone and iPad — 1.0.1 beta 2
 
 Separate iOS/iPadOS application based on the Kindle 3.11.2 game code. Requires iOS/iPadOS 16 or newer. Kindle source files, version number, release workflow and published packages are unchanged.
 
@@ -23,13 +23,15 @@ For a local Mac build: run `node ios/prepare-web.js`, install XcodeGen, run `cd 
 
 1. Download and extract the IPA from the successful Actions run.
 2. Connect the iPhone or iPad with USB, unlock it and trust the computer.
-3. Open Sideloadly, select the device, drag in `InkDeck-iOS-1.0.0-beta1-unsigned.ipa` and enter your Apple ID in Sideloadly.
+3. Open Sideloadly, select the device, drag in `InkDeck-iOS-1.0.1-beta2-unsigned.ipa` and enter your Apple ID in Sideloadly.
 4. Choose Start and complete Apple's authentication if requested. Keep Apple credentials in Sideloadly; do not add them to this repository.
 5. Follow the device's prompts to trust the developer and enable Developer Mode if required.
 
 Sideloadly signs the IPA during installation. Signing validity depends on the Apple account and provisioning used. A jailbreak is not required.
 
 ## Platform differences and validation
+
+Beta 2 fixes document-level drawing handlers canceling unrelated touch events. Its tests include real simulator taps opening Tic-tac-toe and placing X, plus a regression check for uncanceled touchend events. It restores the original InkDeck logo, supplies a home-screen app icon, uses a compact game launcher without scrolling at supported phone/tablet sizes, renames the editor InkWriter, and adds color including blue X and red O.
 
 Kindle's shell-based updater, Wi-Fi upload server and filesystem plugin manager are excluded from the mobile menu. Install newer mobile builds through Sideloadly. The shared Hacket text may still describe Kindle-specific features; it is not an iOS installation guide.
 

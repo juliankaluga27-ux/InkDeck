@@ -25,6 +25,17 @@ final class WebSmokeTests: XCTestCase {
         }
         XCTAssertTrue(ready, "Bundled scripts must finish startup")
         guard ready else { return }
+        let canceled = try await web.evaluateJavaScript("(function(){var e=new Event('touchend',{bubbles:true,cancelable:true});document.querySelector('[data-game=ttt]').dispatchEvent(e);return e.defaultPrevented})()") as? Bool
+        XCTAssertEqual(canceled,false,"Idle sketchpad must not cancel taps anywhere in the app")
+        for size in [CGSize(width: 320,height:568),CGSize(width:390,height:760),CGSize(width:844,height:320),CGSize(width:768,height:980)] {
+            web.translatesAutoresizingMaskIntoConstraints = true
+            NSLayoutConstraint.deactivate(controller.view.constraints)
+            web.frame = CGRect(origin: .zero,size:size)
+            _ = try await web.evaluateJavaScript("InkDeck.show('menu'); window.dispatchEvent(new Event('resize')); true")
+            try await Task.sleep(nanoseconds:150_000_000)
+            let fits = try await web.evaluateJavaScript("(function(){var m=document.getElementById('menu');var b=Array.from(document.querySelectorAll('#menuItems .menuButton')).filter(function(n){return !n.classList.contains('hidden')});var bottom=m.getBoundingClientRect().bottom;return m.scrollHeight<=m.clientHeight+2 && b.every(function(n){var r=n.getBoundingClientRect();return r.height>=44 && r.bottom<=bottom+1})})()") as? Bool
+            XCTAssertEqual(fits,true,"All game tiles must be visible without scrolling at \(size)")
+        }
         for size in [CGSize(width: 390, height: 760), CGSize(width: 768, height: 980)] {
             web.translatesAutoresizingMaskIntoConstraints = true
             NSLayoutConstraint.deactivate(controller.view.constraints)
@@ -43,4 +54,3 @@ final class WebSmokeTests: XCTestCase {
         host.isHidden = true
     }
 }
-

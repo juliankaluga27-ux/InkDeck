@@ -60,3 +60,55 @@ select, input, textarea { max-width:100%; min-height:44px; }
 #settingsCloseGlobal { top:auto; bottom:8px; }
 #languageToggle { min-width:78px !important; }
 
+/* iOS 1.0.1: compact launcher, original identity and a color palette. */
+html, body { background:#f3f6fc; color:#18243b; }
+#top { background:#14233f; }
+#top #back, #top #languageToggle { background:#14233f; }
+.page { background:#f3f6fc; }
+button { border-color:#bbc8dd; }
+button:active { filter:brightness(.92); }
+button.selected, .darkButton { background:#2563eb; color:white; border-color:#2563eb; }
+#menu.active { display:flex; flex-direction:column; gap:6px; overflow:hidden !important; }
+#menu .hero { display:flex; align-items:center; justify-content:center; gap:12px; flex:0 0 62px; min-height:0; padding:0; margin:0; background:white; border-radius:12px; }
+#menu .hero img { width:60px; height:60px; margin:0; object-fit:contain; }
+#menu .hero h1 { margin:0; font-size:23px; letter-spacing:1px; }
+#menu .hero p { display:none; }
+#menu .tabs { flex:0 0 38px; margin:0; }
+#menu .tabs button { height:38px; min-height:38px; margin:0; font-size:14px; border-width:1px; background:white; color:#52637d; }
+#menu .tabs button.selected { background:#2563eb; color:white; border-color:#2563eb; }
+#menuItems { --menu-cols:3; --menu-rows:6; flex:1 1 0; min-height:0; display:grid; grid-template-columns:repeat(var(--menu-cols),minmax(0,1fr)); grid-template-rows:repeat(var(--menu-rows),minmax(0,1fr)); gap:6px; padding:0; align-content:start; }
+#menuItems .menuButton { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4px; width:100%; min-width:0; min-height:0; height:100%; padding:4px 2px; margin:0; border:1px solid #d8e1ee; border-radius:12px; background:var(--tile-bg,#fff); color:#20304d; font-size:11px; line-height:1.15; overflow:hidden; overflow-wrap:anywhere; }
+#menuItems .menuButton::before { content:attr(data-icon); display:block; flex:0 0 26px; min-width:28px; height:26px; line-height:26px; color:var(--accent,#2563eb); font-weight:800; font-size:24px; pointer-events:none; }
+#menuItems .menuButton[data-game="g2048"]::before { font-size:17px; }
+#menuItems .menuButton span { display:none; }
+.tttCell { border-color:#b9c9df; background:#fff; border-radius:10px; }
+.tttCell.tttX { color:#2563eb; }
+.tttCell.tttO { color:#dc2626; }
+.tttCell.win { background:#dcfce7; border-color:#16a34a; }
+.boardCell { background:#eef4ff; border-color:#a5b4cb; }
+.boardCell.dark { background:#6883a6; }
+.boardCell.selected, .boardCell.lastTo { background:#a7d8ff; }
+.boardCell.target { background:#bbf7d0; }
+.checkerPiece { background:#ef4444; border-color:#991b1b; }
+.checkerPiece.black { background:#20304d; border-color:#0f172a; }
+.snakeCell { background:#f0fdf4; }
+.snakeBody { background:#22c55e; }
+.snakeHead { background:#15803d; color:white; border-color:#bbf7d0; }
+.snakeFood { color:#dc2626; background:#fee2e2; }
+.tile2048 { border-color:#d6bca2; background:#fff7ed; color:#7c452b; }
+.tile2048[data-value="4"] { background:#fde68a; }
+.tile2048[data-value="8"], .tile2048[data-value="16"] { background:#fb923c; color:#fff; }
+.tile2048[data-value="32"], .tile2048[data-value="64"] { background:#ef4444; color:#fff; }
+.tile2048.dark { background:#7c3aed; color:#fff; }
+.wordleCell.right { background:#15803d; border-color:#15803d; color:#fff; }
+.wordleCell.near { background:#eab308; border-color:#eab308; color:#1e293b; }
+.wordleCell.bad { background:#e2e8f0; border-color:#cbd5e1; color:#64748b; }
+.memoryCell { border-color:#a5b4fc; background:#eef2ff; color:#4338ca; }
+.memoryCell.done { background:#dcfce7; border-color:#86efac; color:#166534; }
+.mineCell.n1 { color:#2563eb; } .mineCell.n2 { color:#15803d; } .mineCell.n3 { color:#dc2626; }
+.lightCell.on { background:#facc15; border-color:#ca8a04; }
+.lifeCell.alive { background:#0d9488; }
+.sudokuCell.selected { background:#bfdbfe; } .sudokuCell.given { color:#183b6b; }
+.settingsPanel { background:#fff; border-color:#8ca7d0; }
+@media(min-width:700px) { #menuItems .menuButton { font-size:14px; } #menuItems .menuButton::before { font-size:29px; height:30px; line-height:30px; flex-basis:30px; } }
+@media(max-height:420px) { #menu .hero { flex-basis:38px; } #menu .hero img { width:36px; height:36px; } #menu .hero h1 { font-size:18px; } #menu.active { gap:4px; } #menu .tabs, #menu .tabs button { height:34px; min-height:34px; flex-basis:34px; } #menuItems { gap:4px; } #menuItems .menuButton { font-size:10px; gap:2px; } #menuItems .menuButton::before { font-size:20px; height:22px; line-height:22px; flex-basis:22px; } }

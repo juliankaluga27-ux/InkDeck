@@ -14,12 +14,36 @@
       if (/Kindle/.test(n.textContent)) n.textContent = en ? 'against the bot or with two players' : 'gra z botem lub dla dwóch osób';
     });
     var writer = document.querySelector('[data-game="writer"]');
-    writer.firstChild.nodeValue = 'INKWRITER';
+    writer.firstChild.nodeValue = 'InkWriter';
     var ai = document.querySelector('[data-game="kindleai"]');
-    ai.firstChild.nodeValue = 'INKDECK AI';
+    ai.firstChild.nodeValue = 'Ink AI';
   }
   labels();
   byId('languageToggle').addEventListener('click', labels);
+  var icons = {ttt:'\u2715',mine:'\u2691',g2048:'2048',memory:'\u25d2',chess:'\u265e',checkers:'\u25cf',
+    lights:'\u2600',life:'\u2733',snake:'\u219d',sudoku:'\u25a6',nonogram:'\u25a7',mahjongconnect:'\u2637',
+    ludo:'\u2684',papersoccer:'\u26bd',wordle:'W',fifteen:'15',mastermind:'\u25c9',hanoi:'\u25b3',
+    writer:'Aa',draw:'\u270e',todo:'\u2713',calc:'\u00f7',kindleai:'AI'};
+  var palette = [['#2563eb','#eff6ff'],['#dc2626','#fef2f2'],['#7c3aed','#f5f3ff'],['#08916b','#ecfdf5'],['#b45309','#fffbeb'],['#0369a1','#f0f9ff']];
+  document.querySelectorAll('.menuButton').forEach(function (button,i) {
+    var game=button.getAttribute('data-game'), color=palette[i%palette.length];
+    button.setAttribute('data-icon',icons[game]||'\u25c7');
+    button.setAttribute('aria-label',button.firstChild.nodeValue.trim());
+    button.style.setProperty('--accent',color[0]);button.style.setProperty('--tile-bg',color[1]);
+  });
+  function fitMenu() {
+    var menu=byId('menu'), grid=byId('menuItems');
+    if (!menu.classList.contains('active')) return;
+    var visible=Array.from(grid.querySelectorAll('.menuButton')).filter(function(n){return !n.classList.contains('hidden');});
+    var columns=menu.clientWidth>=700?5:(menu.clientWidth>menu.clientHeight*1.5?6:3);
+    grid.style.setProperty('--menu-cols',columns);
+    grid.style.setProperty('--menu-rows',Math.max(1,Math.ceil(visible.length/columns)));
+    grid.style.maxHeight=(Math.ceil(visible.length/columns)*88)+'px';
+  }
+  new MutationObserver(fitMenu).observe(byId('menuItems'),{subtree:true,attributes:true,attributeFilter:['class']});
+  new MutationObserver(fitMenu).observe(byId('menu'),{attributes:true,attributeFilter:['class']});
+  window.addEventListener('resize',fitMenu);
+  fitMenu();
   var directions = {snakeUp:'↑',snakeDown:'↓',snakeLeft:'←',snakeRight:'→'};
   Object.keys(directions).forEach(function (id) {
     var button = byId(id); button.textContent = directions[id];
