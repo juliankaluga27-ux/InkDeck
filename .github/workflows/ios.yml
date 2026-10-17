@@ -1,0 +1,65 @@
+name: iOS IPA for Sideloadly
+on:
+  workflow_dispatch:
+  push:
+    branches: ['ios/**']
+    paths: ['ios/**', '.github/workflows/ios.yml']
+  pull_request:
+    paths: ['ios/**', '.github/workflows/ios.yml', 'extensions/InkDeck/app/**']
+permissions:
+  contents: read
+concurrency:
+  group: ios-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare mobile bundle and check regressions
+        run: |
+          node ios/prepare-web.js
+          for file in ios/Web/*.js; do node --check "$file"; done
+          node tests/ui-test.js
+          node tests/updater-client-test.js
+          node ios/tests/mobile-test.js
+          node ios/tests/ai-test.js
+      - name: Generate Xcode project
+        run: |
+          mkdir -p ios/Assets.xcassets/AppIcon.appiconset
+          sips -z 1024 1024 extensions/InkDeck/app/assets/inkdeck-logo.png --out ios/Assets.xcassets/AppIcon.appiconset/AppIcon.png
+          brew install xcodegen
+          cd ios
+          xcodegen generate
+      - name: Build device application without signing
+        run: |
+          xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO build
+      - name: Check bundled games in iOS WebKit
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for group in d["devices"].values() for x in group if x["name"].startswith("iPhone")))')
+          # Xcode 16.4 / iOS 18.5 simulator WebKit loader workaround (Apple forum 785964).
+          # This override affects tests only; the device IPA still targets iOS 16.
+          xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE_ID" -derivedDataPath ios/simulator -resultBundlePath ios/SmokeTests.xcresult -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 CODE_SIGNING_ALLOWED=NO IPHONEOS_DEPLOYMENT_TARGET=18.4 test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: InkDeck-iOS-test-results
+          path: ios/SmokeTests.xcresult
+      - name: Package IPA for Sideloadly
+        run: |
+          mkdir -p ios/package/Payload
+          cp -R ios/build/Build/Products/Release-iphoneos/InkDeck.app ios/package/Payload/
+          cd ios/package
+          zip -qry ../InkDeck-iOS-1.0.2-beta3-unsigned.ipa Payload
+          cd ..
+          shasum -a 256 InkDeck-iOS-1.0.2-beta3-unsigned.ipa > InkDeck-iOS-1.0.2-beta3-unsigned.ipa.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: InkDeck-iOS-Sideloadly
+          path: |
+            ios/*.ipa
+            ios/*.ipa.sha256
+          if-no-files-found: error
