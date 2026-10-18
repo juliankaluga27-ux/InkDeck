@@ -1,6 +1,11 @@
 name: iOS IPA for iLoader and Sideloadly
 on:
   workflow_dispatch:
+    inputs:
+      run_simulator:
+        description: Run optional simulator checks after publishing the IPA
+        type: boolean
+        default: false
   push:
     branches: ['ios/**']
     paths: ['ios/**', '.github/workflows/ios.yml']
@@ -43,17 +48,6 @@ jobs:
           python3 -c 'import plistlib; p=plistlib.load(open("ios/build/Build/Products/Release-iphoneos/InkDeck.app/Info.plist","rb")); assert p["MinimumOSVersion"] == "15.0", p["MinimumOSVersion"]; assert 2 in p["UIDeviceFamily"]; print("Verified minimum iPadOS 15.0 and iPad support")'
           xcrun lipo "$APP/InkDeck" -verify_arch arm64
           xcrun vtool -show-build "$APP/InkDeck"
-      - name: Check bundled games in iOS WebKit
-        run: |
-          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for group in d["devices"].values() for x in group if x["name"].startswith("iPhone")))')
-          # Xcode 16.4 / iOS 18.5 simulator WebKit loader workaround (Apple forum 785964).
-          # This override affects tests only; the device IPA still targets iOS 15.
-          xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE_ID" -derivedDataPath ios/simulator -resultBundlePath ios/SmokeTests.xcresult -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 CODE_SIGNING_ALLOWED=NO IPHONEOS_DEPLOYMENT_TARGET=18.4 test
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: InkDeck-iOS-test-results
-          path: ios/SmokeTests.xcresult
       - name: Package IPA for iLoader and Sideloadly
         run: |
           mkdir -p ios/package/Payload
@@ -69,3 +63,15 @@ jobs:
             ios/*.ipa
             ios/*.ipa.sha256
           if-no-files-found: error
+      - name: Check bundled games in iOS WebKit
+        if: github.event_name == 'workflow_dispatch' && inputs.run_simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for group in d["devices"].values() for x in group if x["name"].startswith("iPhone")))')
+          # Xcode 16.4 / iOS 18.5 simulator WebKit loader workaround (Apple forum 785964).
+          # This override affects tests only; the device IPA still targets iOS 15.
+          xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE_ID" -derivedDataPath ios/simulator -resultBundlePath ios/SmokeTests.xcresult -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 CODE_SIGNING_ALLOWED=NO IPHONEOS_DEPLOYMENT_TARGET=18.4 test
+      - uses: actions/upload-artifact@v4
+        if: failure() && github.event_name == 'workflow_dispatch' && inputs.run_simulator
+        with:
+          name: InkDeck-iOS-test-results
+          path: ios/SmokeTests.xcresult
