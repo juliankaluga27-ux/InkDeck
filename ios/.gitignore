@@ -1,0 +1,10 @@
+Web/
+build/
+package/
+*.xcodeproj/
+*.ipa
+*.sha256
+simulator/
+*.xcresult/
+Assets.xcassets/AppIcon.appiconset/AppIcon.png
+logo.tmp.b64
