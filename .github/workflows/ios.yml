@@ -41,7 +41,7 @@ jobs:
         run: |
           APP=ios/build/Build/Products/Release-iphoneos/InkDeck.app
           python3 -c 'import plistlib; p=plistlib.load(open("ios/build/Build/Products/Release-iphoneos/InkDeck.app/Info.plist","rb")); assert p["MinimumOSVersion"] == "15.0", p["MinimumOSVersion"]; assert 2 in p["UIDeviceFamily"]; print("Verified minimum iPadOS 15.0 and iPad support")'
-          xcrun lipo -verify_arch arm64 "$APP/InkDeck"
+          xcrun lipo "$APP/InkDeck" -verify_arch arm64
           xcrun vtool -show-build "$APP/InkDeck"
       - name: Check bundled games in iOS WebKit
         run: |
