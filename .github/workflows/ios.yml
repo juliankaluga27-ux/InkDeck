@@ -1,4 +1,4 @@
-name: iOS IPA for Sideloadly
+name: iOS IPA for iLoader and Sideloadly
 on:
   workflow_dispatch:
   push:
@@ -37,28 +37,34 @@ jobs:
       - name: Build device application without signing
         run: |
           xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO build
+      - name: Verify iPadOS 15 device compatibility
+        run: |
+          APP=ios/build/Build/Products/Release-iphoneos/InkDeck.app
+          python3 -c 'import plistlib; p=plistlib.load(open("ios/build/Build/Products/Release-iphoneos/InkDeck.app/Info.plist","rb")); assert p["MinimumOSVersion"] == "15.0", p["MinimumOSVersion"]; assert 2 in p["UIDeviceFamily"]; print("Verified minimum iPadOS 15.0 and iPad support")'
+          xcrun lipo -verify_arch arm64 "$APP/InkDeck"
+          xcrun vtool -show-build "$APP/InkDeck"
       - name: Check bundled games in iOS WebKit
         run: |
           DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for group in d["devices"].values() for x in group if x["name"].startswith("iPhone")))')
           # Xcode 16.4 / iOS 18.5 simulator WebKit loader workaround (Apple forum 785964).
-          # This override affects tests only; the device IPA still targets iOS 16.
+          # This override affects tests only; the device IPA still targets iOS 15.
           xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE_ID" -derivedDataPath ios/simulator -resultBundlePath ios/SmokeTests.xcresult -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 CODE_SIGNING_ALLOWED=NO IPHONEOS_DEPLOYMENT_TARGET=18.4 test
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: InkDeck-iOS-test-results
           path: ios/SmokeTests.xcresult
-      - name: Package IPA for Sideloadly
+      - name: Package IPA for iLoader and Sideloadly
         run: |
           mkdir -p ios/package/Payload
           cp -R ios/build/Build/Products/Release-iphoneos/InkDeck.app ios/package/Payload/
           cd ios/package
-          zip -qry ../InkDeck-iOS-1.0.2-beta3-unsigned.ipa Payload
+          zip -qry ../InkDeck-iOS-1.0.3-unsigned.ipa Payload
           cd ..
-          shasum -a 256 InkDeck-iOS-1.0.2-beta3-unsigned.ipa > InkDeck-iOS-1.0.2-beta3-unsigned.ipa.sha256
+          shasum -a 256 InkDeck-iOS-1.0.3-unsigned.ipa > InkDeck-iOS-1.0.3-unsigned.ipa.sha256
       - uses: actions/upload-artifact@v4
         with:
-          name: InkDeck-iOS-Sideloadly
+          name: InkDeck-iOS-iLoader-Sideloadly
           path: |
             ios/*.ipa
             ios/*.ipa.sha256

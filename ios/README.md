@@ -1,6 +1,6 @@
-# InkDeck for iPhone and iPad — 1.0.2 beta 3
+# InkDeck for iPhone and iPad — 1.0.3
 
-Separate iOS/iPadOS application based on the Kindle 3.11.2 game code. Requires iOS/iPadOS 16 or newer. Kindle source files, version number, release workflow and published packages are unchanged.
+Separate iOS/iPadOS application based on the Kindle 3.11.2 game code. Requires iOS/iPadOS 15 or newer, including the iPad Air 2. Kindle source files, version number, release workflow and published packages are unchanged.
 
 ## Architecture
 
@@ -13,17 +13,26 @@ Separate iOS/iPadOS application based on the Kindle 3.11.2 game code. Requires i
 
 ## Build the IPA
 
-Open the **iOS IPA for Sideloadly** workflow in GitHub Actions. Pushes to `ios/**` branches start it automatically. Download the `InkDeck-iOS-Sideloadly` artifact from a successful run and extract the IPA from the ZIP.
+Open the **iOS IPA for iLoader and Sideloadly** workflow in GitHub Actions. Pushes to `ios/**` branches start it automatically. Download the `InkDeck-iOS-iLoader-Sideloadly` artifact from a successful run and extract the IPA from the ZIP.
 
 The workflow generates an Xcode project using XcodeGen, builds for physical iOS devices with signing disabled, and packages `Payload/InkDeck.app` into an IPA. No Apple account, certificates or signing secrets are required for this build.
 
 For a local Mac build: run `node ios/prepare-web.js`, install XcodeGen, run `cd ios && xcodegen generate`, then use the same `xcodebuild` and packaging commands as `.github/workflows/ios.yml`.
 
+## Install through iLoader (including iPad Air 2)
+
+1. Download the artifact ZIP from the successful workflow and extract `InkDeck-iOS-1.0.3-unsigned.ipa`.
+2. Connect the iPad by USB, unlock it, trust the computer, and select it in iLoader.
+3. Use iLoader's IPA installation option, choose the extracted IPA, and complete signing/authentication in iLoader.
+4. If iPadOS asks, trust your developer identity under Settings > General > VPN & Device Management. iPadOS 15 does not have the Developer Mode switch introduced in iPadOS 16.
+
+iLoader must sign the IPA for the selected device. This is an unsigned sideload build, not a TestFlight or AltStore PAL distribution package. The workflow verifies the packaged application's minimum OS, iPad device family and arm64 executable. CI runs WebKit/touch tests on the available newer simulator; installation and runtime behavior on a physical iPad Air 2 with iPadOS 15 still need device verification. If installation fails, keep iLoader's exact error message.
+
 ## Install through Sideloadly (Windows or macOS)
 
 1. Download and extract the IPA from the successful Actions run.
 2. Connect the iPhone or iPad with USB, unlock it and trust the computer.
-3. Open Sideloadly, select the device, drag in `InkDeck-iOS-1.0.2-beta3-unsigned.ipa` and enter your Apple ID in Sideloadly.
+3. Open Sideloadly, select the device, drag in `InkDeck-iOS-1.0.3-unsigned.ipa` and enter your Apple ID in Sideloadly.
 4. Choose Start and complete Apple's authentication if requested. Keep Apple credentials in Sideloadly; do not add them to this repository.
 5. Follow the device's prompts to trust the developer and enable Developer Mode if required.
 
@@ -37,6 +46,6 @@ Google uses generateContent with structured conversation history; OpenAI uses Re
 
 Beta 2 fixes document-level drawing handlers canceling unrelated touch events. Its tests include real simulator taps opening Tic-tac-toe and placing X, plus a regression check for uncanceled touchend events. It restores the original InkDeck logo, supplies a home-screen app icon, uses a compact game launcher without scrolling at supported phone/tablet sizes, renames the editor InkWriter, and adds color including blue X and red O.
 
-Kindle's shell-based updater, Wi-Fi upload server and filesystem plugin manager are excluded from the mobile menu. Install newer mobile builds through Sideloadly. The shared Hacket text may still describe Kindle-specific features; it is not an iOS installation guide.
+Kindle's shell-based updater, Wi-Fi upload server and filesystem plugin manager are excluded from the mobile menu. Install newer mobile builds through iLoader or Sideloadly. The shared Hacket text may still describe Kindle-specific features; it is not an iOS installation guide.
 
 Node regression checks cover the original game behavior, generated resources, board sizing for phone/tablet viewports, Snake pausing and network bridge callbacks. A successful device build is required before claiming the IPA is ready. Physical iPhone/iPad checks remain necessary for touch, Pencil, document picking, persistent data after an update, full online games and AI providers.
