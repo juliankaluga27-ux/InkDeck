@@ -9,10 +9,11 @@ const server=http.createServer((req,res)=>{
 });
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
- const browser=await chromium.launch({channel:'chrome',headless:true});
+ const browser=await chromium.launch(process.env.PLAYWRIGHT_BUNDLED?{headless:true}:{channel:'chrome',headless:true});
  try{
   for(const [width,height] of [[320,568],[390,760],[844,320],[768,980]]){
-   const page=await browser.newPage({viewport:{width,height},hasTouch:true});const errors=[];
+   const page=await browser.newPage({viewport:{width,height},hasTouch:true});page.setDefaultTimeout(7000);const errors=[];
+   console.log('Checking Arcade viewport',width,height);
    page.on('pageerror',e=>errors.push(e.message));
    await page.goto('http://127.0.0.1:'+server.address().port+'/index.html');
    await page.locator('.category[data-category="arcade"]').click();
@@ -24,10 +25,14 @@ const server=http.createServer((req,res)=>{
     const fits=await page.evaluate(()=>{const c=document.getElementById('arcadeCanvas').getBoundingClientRect(),b=document.getElementById('arcadeControls').getBoundingClientRect();return c.width>0&&c.height>0&&c.right<=innerWidth+1&&c.bottom<=innerHeight+1&&b.bottom<=innerHeight+1;});
     assert(fits,kind+' stage/controls fit '+width+'x'+height);
     await page.locator('#arcadePlay').click();await page.waitForTimeout(80);
+    await page.locator('#arcadeCanvas').tap();await page.waitForTimeout(100);
+    if(process.env.INKDECK_SCREENSHOT_DIR&&kind==='blocks'){fs.mkdirSync(process.env.INKDECK_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.INKDECK_SCREENSHOT_DIR,'blocks-'+width+'x'+height+'.png')});}
     await page.locator('#arcadePause').click();assert(await page.locator('#arcadeOverlay').isVisible());
     await page.locator('#back').click();
    }
    await page.locator('[data-arcade="multiplicatingkid"]').click();
+   await page.evaluate(()=>{window.webkit={messageHandlers:{inkdeckOpenMath:{postMessage:()=>window.__mathOpened=true}}};});
+   await page.locator('#mathOnline').click();assert(await page.evaluate(()=>window.__mathOpened),'Full game native bridge');
    await page.locator('#mathNew').click();assert.equal(await page.locator('#mathAnswers button').count(),4);
    await page.locator('#mathAnswers button').first().click();assert(await page.locator('#mathFeedback').textContent());
    await page.locator('#back').click();

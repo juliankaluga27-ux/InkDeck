@@ -119,3 +119,27 @@ jobs:
             watch/*.sha256
             watch/*.app.zip
           if-no-files-found: error
+  browser:
+    name: Check Arcade touch UI without iOS simulator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare bundle and browser
+        run: |
+          node ios/prepare-web.js
+          npm install --prefix "$RUNNER_TEMP/inkdeck-browser" playwright --no-audit --no-fund
+          npx --prefix "$RUNNER_TEMP/inkdeck-browser" playwright install --with-deps chromium
+      - name: Exercise real touch UI at four screen sizes
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/inkdeck-browser/node_modules/playwright
+          PLAYWRIGHT_BUNDLED: '1'
+          INKDECK_SCREENSHOT_DIR: ${{ runner.temp }}/inkdeck-screenshots
+        run: node ios/tests/arcade-browser-test.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: InkDeck-Arcade-UI
+          path: ${{ runner.temp }}/inkdeck-screenshots

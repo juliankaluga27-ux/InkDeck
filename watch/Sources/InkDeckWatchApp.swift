@@ -98,7 +98,7 @@ struct WatchPlay: View {
                         .gesture(DragGesture(minimumDistance:0).onChanged { value in
                             guard !store.paused else { return }
                             if kind == .pong || kind == .breakout || kind == .invaders {
-                                store.game.player = WatchGame.clamp(value.location.x/geometry.size.width*360,42,318)
+                                store.game.player = WatchGame.clamp(Double(value.location.x/geometry.size.width)*360,42,318)
                             }
                         }.onEnded { value in
                             guard !store.paused else { return }
