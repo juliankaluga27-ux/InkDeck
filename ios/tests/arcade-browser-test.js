@@ -25,7 +25,9 @@ const server=http.createServer((req,res)=>{
     const fits=await page.evaluate(()=>{const c=document.getElementById('arcadeCanvas').getBoundingClientRect(),b=document.getElementById('arcadeControls').getBoundingClientRect();return c.width>0&&c.height>0&&c.right<=innerWidth+1&&c.bottom<=innerHeight+1&&b.bottom<=innerHeight+1;});
     assert(fits,kind+' stage/controls fit '+width+'x'+height);
     await page.locator('#arcadePlay').click();await page.waitForTimeout(80);
-    await page.locator('#arcadeCanvas').tap();await page.waitForTimeout(100);
+    const beforeTap=await page.locator('#arcadeCanvas').evaluate(n=>n.toDataURL());
+    await page.locator('#arcadeCanvas').tap();await page.waitForTimeout(180);
+    if(kind==='breakout')assert.notEqual(await page.locator('#arcadeCanvas').evaluate(n=>n.toDataURL()),beforeTap,'A short tap launches the ball');
     if(process.env.INKDECK_SCREENSHOT_DIR&&kind==='blocks'){fs.mkdirSync(process.env.INKDECK_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.INKDECK_SCREENSHOT_DIR,'blocks-'+width+'x'+height+'.png')});}
     await page.locator('#arcadePause').click();assert(await page.locator('#arcadeOverlay').isVisible());
     await page.locator('#back').click();
