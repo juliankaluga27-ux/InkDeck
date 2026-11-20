@@ -1,0 +1,35 @@
+name: InkDeckWatch
+options:
+  bundleIdPrefix: pl.inkdeck
+  deploymentTarget:
+    watchOS: '9.0'
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  InkDeckWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - path: Sources
+      - path: Shared
+      - path: Assets.xcassets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: pl.inkdeck.mobile.watchkitapp
+        MARKETING_VERSION: '1.1.0'
+        CURRENT_PROJECT_VERSION: '5'
+        TARGETED_DEVICE_FAMILY: '4'
+        SDKROOT: watchos
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: InkDeck
+        INFOPLIST_KEY_WKApplication: YES
+        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: pl.inkdeck.mobile
+        INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+schemes:
+  InkDeckWatch:
+    build:
+      targets:
+        InkDeckWatch: all

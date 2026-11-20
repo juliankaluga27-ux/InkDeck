@@ -8,9 +8,9 @@ on:
         default: false
   push:
     branches: ['ios/**']
-    paths: ['ios/**', '.github/workflows/ios.yml']
+    paths: ['ios/**', 'watch/**', '.github/workflows/ios.yml']
   pull_request:
-    paths: ['ios/**', '.github/workflows/ios.yml', 'extensions/InkDeck/app/**']
+    paths: ['ios/**', 'watch/**', '.github/workflows/ios.yml', 'extensions/InkDeck/app/**']
 permissions:
   contents: read
 concurrency:
@@ -32,6 +32,7 @@ jobs:
           node tests/updater-client-test.js
           node ios/tests/mobile-test.js
           node ios/tests/ai-test.js
+          node ios/tests/arcade-test.js
       - name: Generate Xcode project
         run: |
           mkdir -p ios/Assets.xcassets/AppIcon.appiconset
@@ -53,9 +54,9 @@ jobs:
           mkdir -p ios/package/Payload
           cp -R ios/build/Build/Products/Release-iphoneos/InkDeck.app ios/package/Payload/
           cd ios/package
-          zip -qry ../InkDeck-iOS-1.0.3-unsigned.ipa Payload
+          zip -qry ../InkDeck-iOS-1.1.0-beta5-unsigned.ipa Payload
           cd ..
-          shasum -a 256 InkDeck-iOS-1.0.3-unsigned.ipa > InkDeck-iOS-1.0.3-unsigned.ipa.sha256
+          shasum -a 256 InkDeck-iOS-1.1.0-beta5-unsigned.ipa > InkDeck-iOS-1.1.0-beta5-unsigned.ipa.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: InkDeck-iOS-iLoader-Sideloadly
@@ -75,3 +76,46 @@ jobs:
         with:
           name: InkDeck-iOS-test-results
           path: ios/SmokeTests.xcresult
+  watch:
+    name: Build native Apple Watch edition
+    needs: build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test native game rules without simulator
+        run: |
+          cat watch/Shared/GameCore.swift watch/tests/core-test.swift > "$RUNNER_TEMP/InkDeckWatchRules.swift"
+          swift "$RUNNER_TEMP/InkDeckWatchRules.swift"
+      - name: Build watchOS app without signing
+        run: |
+          sips -z 1024 1024 extensions/InkDeck/app/assets/inkdeck-logo.png --out watch/Assets.xcassets/AppIcon.appiconset/AppIcon.png
+          brew install xcodegen
+          cd watch
+          xcodegen generate
+          cd ..
+          xcodebuild -project watch/InkDeckWatch.xcodeproj -scheme InkDeckWatch -configuration Release -sdk watchos -destination 'generic/platform=watchOS' -derivedDataPath watch/build CODE_SIGNING_ALLOWED=NO build
+      - uses: actions/download-artifact@v4
+        with:
+          name: InkDeck-iOS-iLoader-Sideloadly
+          path: watch/companion
+      - name: Package iPhone companion with Apple Watch app
+        run: |
+          mkdir -p watch/package
+          unzip -q watch/companion/InkDeck-iOS-1.1.0-beta5-unsigned.ipa -d watch/package
+          mkdir -p watch/package/Payload/InkDeck.app/Watch
+          cp -R watch/build/Build/Products/Release-watchos/InkDeckWatch.app watch/package/Payload/InkDeck.app/Watch/
+          python3 -c 'import plistlib; p=plistlib.load(open("watch/package/Payload/InkDeck.app/Watch/InkDeckWatch.app/Info.plist","rb")); assert p["WKCompanionAppBundleIdentifier"] == "pl.inkdeck.mobile"; assert p["WKApplication"]; assert p["MinimumOSVersion"] == "9.0"; print("Verified native watchOS 9 app and companion identifier")'
+          xcrun lipo watch/package/Payload/InkDeck.app/Watch/InkDeckWatch.app/InkDeckWatch -archs
+          cd watch/package
+          zip -qry ../InkDeck-iPhone-Watch-1.1.0-beta5-unsigned.ipa Payload
+          cd ..
+          shasum -a 256 InkDeck-iPhone-Watch-1.1.0-beta5-unsigned.ipa > InkDeck-iPhone-Watch-1.1.0-beta5-unsigned.ipa.sha256
+          ditto -c -k --keepParent build/Build/Products/Release-watchos/InkDeckWatch.app InkDeckWatch-1.1.0-beta5.app.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: InkDeck-Apple-Watch-beta
+          path: |
+            watch/*.ipa
+            watch/*.sha256
+            watch/*.app.zip
+          if-no-files-found: error

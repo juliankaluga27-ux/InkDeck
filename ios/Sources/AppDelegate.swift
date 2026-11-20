@@ -25,6 +25,7 @@ final class InkDeckController: UIViewController, WKNavigationDelegate, WKUIDeleg
         let config = WKWebViewConfiguration()
         config.websiteDataStore = .default()
         config.userContentController.add(self, name: "inkdeckNetwork")
+        config.userContentController.add(self, name: "inkdeckOpenMath")
         web = WKWebView(frame: .zero, configuration: config)
         web.navigationDelegate = self
         web.uiDelegate = self
@@ -55,6 +56,14 @@ final class InkDeckController: UIViewController, WKNavigationDelegate, WKUIDeleg
     }
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "inkdeckOpenMath" {
+            guard message.frameInfo.isMainFrame, message.frameInfo.request.url?.isFileURL == true,
+                  presentedViewController == nil else { return }
+            let online = UINavigationController(rootViewController: MultiplicatingKidController())
+            online.modalPresentationStyle = .fullScreen
+            present(online, animated: true)
+            return
+        }
         guard message.frameInfo.isMainFrame, message.frameInfo.request.url?.isFileURL == true,
               let body = message.body as? [String: Any], let id = body["id"] as? Int else { return }
         network.send(body) { [weak self] status, text, error in

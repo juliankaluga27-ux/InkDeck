@@ -26,7 +26,8 @@
     writer:'Aa',draw:'\u270e',todo:'\u2713',calc:'\u00f7',kindleai:'AI'};
   var palette = [['#2563eb','#eff6ff'],['#dc2626','#fef2f2'],['#7c3aed','#f5f3ff'],['#08916b','#ecfdf5'],['#b45309','#fffbeb'],['#0369a1','#f0f9ff']];
   document.querySelectorAll('.menuButton').forEach(function (button,i) {
-    var game=button.getAttribute('data-game'), color=palette[i%palette.length];
+    var game=button.getAttribute('data-arcade')||button.getAttribute('data-game'), color=palette[i%palette.length];
+    Object.assign(icons,{pong:'Ⅱ',breakout:'▦',blocks:'▟',invaders:'⌁',flappy:'↑',multiplicatingkid:'×'});
     button.setAttribute('data-icon',icons[game]||'\u25c7');
     button.setAttribute('aria-label',button.firstChild.nodeValue.trim());
     button.style.setProperty('--accent',color[0]);button.style.setProperty('--tile-bg',color[1]);

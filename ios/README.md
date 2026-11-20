@@ -1,6 +1,16 @@
-# InkDeck for iPhone and iPad — 1.0.3
+# InkDeck for iPhone and iPad — 1.1.0 beta 5
 
 Separate iOS/iPadOS application based on the Kindle 3.11.2 game code. Requires iOS/iPadOS 15 or newer, including the iPad Air 2. Kindle source files, version number, release workflow and published packages are unchanged.
+
+## Arcade beta 5
+
+The iOS-only Arcade tab adds Pong (first to seven), ten-level brick breaking with three lives, Ink Blocks, Space Invaders, Ink Flight and MultiplicatingKid. Ink Blocks includes seven shuffled figures, hold, three-piece previews, a ghost, wall kicks, lock delay, hard/soft drop, line/combo points and increasing speed. Touch controls, pause on navigation/background, local records and resuming unfinished Ink Blocks sessions are included. The original game launcher keeps its no-scroll layout.
+
+MultiplicatingKid includes a local trainer: twenty-question practice, a sixty-second sprint and a three-life challenge, ranges 10/12/20, selected tables, retries and persistent answer counters. **Full game online** opens the existing HTTPS service in a separate native web view, including accounts, classes, rankings, streaks and administration. Internet/service availability is required. The online view has no access to InkDeck API keys or its privileged local-file networking bridge. Offline sessions do not synchronize with the service.
+
+Download `InkDeck-iOS-1.1.0-beta5-unsigned.ipa` from the ordinary iOS artifact. A separate `InkDeck-Apple-Watch-beta` artifact contains the companion IPA with the native watch app and a zipped watch application; see [watch instructions](../watch/README.md). The watch job tests native rules and builds without a simulator. A failed watch build does not remove the published iOS IPA. The ordinary IPA still targets iOS/iPadOS 15, including Air 2. All these packages remain beta.
+
+`node ios/tests/arcade-test.js` checks actual rule transitions. The optional `ios/tests/arcade-browser-test.js` uses Playwright/Chrome to exercise menus, canvases and controls. Install Playwright separately or provide its module path through PLAYWRIGHT_MODULE. Physical iOS 15 and Apple Watch testing remains necessary.
 
 ## Architecture
 
@@ -21,7 +31,7 @@ For a local Mac build: run `node ios/prepare-web.js`, install XcodeGen, run `cd 
 
 ## Install through iLoader (including iPad Air 2)
 
-1. Download the artifact ZIP from the successful workflow and extract `InkDeck-iOS-1.0.3-unsigned.ipa`.
+1. Download the artifact ZIP from the successful workflow and extract `InkDeck-iOS-1.1.0-beta5-unsigned.ipa`.
 2. Connect the iPad by USB, unlock it, trust the computer, and select it in iLoader.
 3. Use iLoader's IPA installation option, choose the extracted IPA, and complete signing/authentication in iLoader.
 4. If iPadOS asks, trust your developer identity under Settings > General > VPN & Device Management. iPadOS 15 does not have the Developer Mode switch introduced in iPadOS 16.
@@ -32,7 +42,7 @@ iLoader must sign the IPA for the selected device. This is an unsigned sideload 
 
 1. Download and extract the IPA from the successful Actions run.
 2. Connect the iPhone or iPad with USB, unlock it and trust the computer.
-3. Open Sideloadly, select the device, drag in `InkDeck-iOS-1.0.3-unsigned.ipa` and enter your Apple ID in Sideloadly.
+3. Open Sideloadly, select the device, drag in `InkDeck-iOS-1.1.0-beta5-unsigned.ipa` and enter your Apple ID in Sideloadly.
 4. Choose Start and complete Apple's authentication if requested. Keep Apple credentials in Sideloadly; do not add them to this repository.
 5. Follow the device's prompts to trust the developer and enable Developer Mode if required.
 

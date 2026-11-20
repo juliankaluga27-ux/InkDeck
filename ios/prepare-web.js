@@ -38,20 +38,27 @@ for (const name of ['app.js','style.css','new-games.js','extra-games.js','multip
 }
 let html = fs.readFileSync(path.join(source,'main.page'),'utf8');
 html = html.replace('initial-scale=1,user-scalable=no','initial-scale=1,viewport-fit=cover');
-html = html.replace('</head>','<link rel="stylesheet" href="mobile.css"></head>');
-html = html.replace(/<img src="assets\/inkdeck-logo.png" alt="InkDeck">/, '<img src="assets/inkdeck-logo.png" alt="InkDeck"><div class="brandText"><h1>INKDECK</h1></div>');
+html = html.replace('</head>','<link rel="stylesheet" href="mobile.css"><link rel="stylesheet" href="arcade.css"></head>');
+html = html.replace('<div id="menuItems">', '<div id="menuItems">'+[
+  ['pong','PONG','Paletka i bot'],['breakout','NISZCZENIE BLOKÓW','10 plansz'],
+  ['blocks','INK BLOCKS','Spadające klocki'],['invaders','SPACE INVADERS','Kolejne fale'],
+  ['flappy','INK FLIGHT','Dotknij i leć'],['multiplicatingkid','MULTIPLICATINGKID','Trening mnożenia offline']
+].map(([id,title,description])=>'<button class="menuButton hidden" data-category="arcade" data-game="'+(id==='multiplicatingkid'?id:'arcade')+'" data-arcade="'+id+'">'+title+'<span>'+description+'</span></button>').join(''));
+html = html.replace('<div class="tabs">','<div class="tabs"><button class="category" data-category="arcade">ARCADE</button>');
+html = html.replace('<script src="app.js"></script>', fs.readFileSync(path.join(__dirname,'web/arcade.html'),'utf8')+'<script src="app.js"></script>');
+html = html.replace(/<img src="assets\/inkdeck-logo.png" alt="InkDeck">/, '<img src="assets/inkdeck-logo.png" alt="InkDeck"><div class="brandText"><h1>INKDECK</h1><small>1.1.0 · BETA 5</small></div>');
 html = html.replace('data-color="#555555">CIEMNY', 'data-color="#2563eb">NIEBIESKI')
   .replace('data-color="#999999">SZARY', 'data-color="#16a34a">ZIELONY')
   .replace('data-color="#dddddd">JASNY', 'data-color="#dc2626">CZERWONY');
 html = html.replace('<script src="settings-loader.js"></script>', '<script src="platform.js"></script><script src="network.js"></script>');
 html = html.replace('<script src="updater.js"></script>','').replace('<script src="plugins-loader.js"></script>','');
 html=html.replace(/<div id="kindleai"[\s\S]*?(?=<div id="plugins")/,fs.readFileSync(path.join(__dirname,'web/ai.html'),'utf8'));
-html = html.replace('</body>','<script src="mobile.js"></script><script src="models.js"></script><script src="ai.js"></script></body>');
+html = html.replace('</body>','<script src="mobile.js"></script><script src="models.js"></script><script src="ai.js"></script><script src="arcade-engine.js"></script><script src="arcade.js"></script></body>');
 fs.writeFileSync(path.join(out,'index.html'), html);
 fs.mkdirSync(path.join(out,'assets'), {recursive:true});
 fs.copyFileSync(path.join(source,'assets/inkdeck-logo.png'),path.join(out,'assets/inkdeck-logo.png'));
 // Explicit names also work on Windows, where Web and web refer to the same folder.
-for (const name of ['platform.js','network.js','mobile.js','mobile.css','ai.js','models.js']) {
+for (const name of ['platform.js','network.js','mobile.js','mobile.css','ai.js','models.js','arcade-engine.js','arcade.js','arcade.css']) {
   fs.copyFileSync(path.join(__dirname,'web',name),path.join(out,name));
 }
 console.log('Prepared iOS web assets from Kindle 3.11.2');
