@@ -1,0 +1,24 @@
+<div id="kindleai" class="page">
+  <div class="bar"><span>Ink AI</span><button id="aiSettingsOpen">USTAWIENIA API</button></div>
+  <div class="aiChatTools"><select id="aiChats" aria-label="Czaty"></select><button id="aiNewChat">+ CZAT</button><button id="aiRenameChat" aria-label="Zmień nazwę czatu">✎</button><button id="aiDeleteChat" aria-label="Usuń czat">×</button></div>
+  <button id="aiChooseModel" class="aiModelButton">WYBIERZ MODEL</button>
+  <div id="aiMessages" class="aiMessages" role="log" aria-live="polite"></div>
+  <form id="aiComposer" class="aiComposer"><textarea id="aiPrompt" rows="2" aria-label="Wiadomość" placeholder="Napisz wiadomość…"></textarea><button id="aiSend" type="submit" class="darkButton">WYŚLIJ</button></form>
+  <div id="aiStatus" role="status"></div>
+  <section id="aiSettingsPanel" class="aiPanel hidden" role="dialog" aria-label="Ustawienia API">
+    <header><h2>Ustawienia API</h2><button id="aiSettingsClose">GOTOWE</button></header>
+    <label>Dostawca <select id="aiProvider"><option value="openrouter">OpenRouter</option><option value="openai">OpenAI</option><option value="google">Google Gemini</option></select></label>
+    <label>Klucz API <input id="aiKey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Wklej klucz API"></label>
+    <label>Wczytaj klucz z pliku <input id="aiKeyFile" type="file" accept=".txt,.key,text/plain"></label>
+    <label>Hasło do sejfu <input id="aiVaultPass" type="password" autocomplete="off" placeholder="Hasło nie jest zapisywane"></label>
+    <div class="aiActions"><button id="aiSaveKey">ZAPISZ SZYFROWANY</button><button id="aiUnlockKey">ODBLOKUJ</button><button id="aiForget">USUŃ KLUCZ</button></div>
+    <p>Klucz pozostaje w pamięci sesji. Możesz zapisać go zaszyfrowanego hasłem. Czaty są zapisywane na tym urządzeniu. Wiadomości trafiają do wybranego dostawcy po naciśnięciu „Wyślij”.</p>
+    <button id="aiRefreshModels">ODŚWIEŻ LISTĘ MODELI</button><div id="aiSettingsStatus" role="status"></div>
+  </section>
+  <section id="aiModelsPanel" class="aiPanel hidden" role="dialog" aria-label="Modele">
+    <header><h2>Modele</h2><button id="aiModelsClose">GOTOWE</button></header>
+    <input id="aiModelSearch" type="search" aria-label="Szukaj modelu" placeholder="Szukaj po nazwie lub ID…">
+    <div id="aiModelCount"></div><select id="aiModelList" size="8" aria-label="Wybierz model"></select>
+    <button id="aiApplyModel">WYBIERZ MODEL</button><p id="aiCatalogNote"></p>
+  </section>
+</div>

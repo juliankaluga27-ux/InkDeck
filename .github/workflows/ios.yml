@@ -1,0 +1,117 @@
+name: iOS IPA for iLoader and Sideloadly
+on:
+  workflow_dispatch:
+    inputs:
+      run_simulator:
+        description: Run optional simulator checks after publishing the IPA
+        type: boolean
+        default: false
+  push:
+    branches: ['ios/**']
+    paths: ['ios/**', 'watch/**', '.github/workflows/ios.yml']
+  pull_request:
+    paths: ['ios/**', 'watch/**', '.github/workflows/ios.yml', 'extensions/InkDeck/app/**']
+permissions:
+  contents: read
+concurrency:
+  group: ios-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare mobile bundle and check regressions
+        run: |
+          node ios/prepare-web.js
+          for file in ios/Web/*.js; do node --check "$file"; done
+          node tests/ui-test.js
+          node tests/updater-client-test.js
+          node ios/tests/mobile-test.js
+          node ios/tests/multiplayer-test.js
+          node ios/tests/ai-test.js
+          node ios/tests/arcade-test.js
+      - name: Generate Xcode project
+        run: |
+          mkdir -p ios/Assets.xcassets/AppIcon.appiconset
+          sips -z 1024 1024 extensions/InkDeck/app/assets/inkdeck-logo.png --out ios/Assets.xcassets/AppIcon.appiconset/AppIcon.png
+          brew install xcodegen
+          cd ios
+          xcodegen generate
+      - name: Build device application without signing
+        run: |
+          xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO build
+      - name: Verify iPadOS 15 device compatibility
+        run: |
+          APP=ios/build/Build/Products/Release-iphoneos/InkDeck.app
+          python3 -c 'import plistlib; p=plistlib.load(open("ios/build/Build/Products/Release-iphoneos/InkDeck.app/Info.plist","rb")); assert p["MinimumOSVersion"] == "15.0", p["MinimumOSVersion"]; assert 2 in p["UIDeviceFamily"]; print("Verified minimum iPadOS 15.0 and iPad support")'
+          xcrun lipo "$APP/InkDeck" -verify_arch arm64
+          xcrun vtool -show-build "$APP/InkDeck"
+      - name: Test and build native Apple Watch app
+        run: |
+          cat watch/Shared/GameCore.swift watch/tests/core-test.swift > "$RUNNER_TEMP/InkDeckWatchRules.swift"
+          swift "$RUNNER_TEMP/InkDeckWatchRules.swift"
+          sips -z 1024 1024 extensions/InkDeck/app/assets/inkdeck-logo.png --out watch/Assets.xcassets/AppIcon.appiconset/AppIcon.png
+          cd watch
+          xcodegen generate
+          cd ..
+          xcodebuild -project watch/InkDeckWatch.xcodeproj -scheme InkDeckWatch -configuration Release -sdk watchos -destination 'generic/platform=watchOS' -derivedDataPath watch/build CODE_SIGNING_ALLOWED=NO build
+      - name: Package one iPhone, iPad and Watch IPA
+        run: |
+          APP=ios/build/Build/Products/Release-iphoneos/InkDeck.app
+          mkdir -p "$APP/Watch"
+          cp -R watch/build/Build/Products/Release-watchos/InkDeckWatch.app "$APP/Watch/"
+          python3 -c 'import plistlib; p=plistlib.load(open("ios/build/Build/Products/Release-iphoneos/InkDeck.app/Watch/InkDeckWatch.app/Info.plist","rb")); assert p["WKCompanionAppBundleIdentifier"] == "pl.inkdeck.mobile"; assert p["WKApplication"]; assert p["MinimumOSVersion"] == "9.0"; print("Verified embedded native watchOS 9 app and companion identifier")'
+          xcrun lipo "$APP/Watch/InkDeckWatch.app/InkDeckWatch" -archs
+          mkdir -p ios/package/Payload
+          cp -R "$APP" ios/package/Payload/
+          cd ios/package
+          zip -qry ../InkDeck-1.1.0-beta6-iPhone-iPad-Apple-Watch-unsigned.ipa Payload
+          cd ..
+          shasum -a 256 InkDeck-1.1.0-beta6-iPhone-iPad-Apple-Watch-unsigned.ipa > InkDeck-1.1.0-beta6-iPhone-iPad-Apple-Watch-unsigned.ipa.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: InkDeck-iPhone-iPad-Apple-Watch-beta6
+          path: |
+            ios/InkDeck-1.1.0-beta6-iPhone-iPad-Apple-Watch-unsigned.ipa
+            ios/InkDeck-1.1.0-beta6-iPhone-iPad-Apple-Watch-unsigned.ipa.sha256
+          if-no-files-found: error
+      - name: Check bundled games in iOS WebKit
+        if: github.event_name == 'workflow_dispatch' && inputs.run_simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys; d=json.load(sys.stdin); print(next(x["udid"] for group in d["devices"].values() for x in group if x["name"].startswith("iPhone")))')
+          # Xcode 16.4 / iOS 18.5 simulator WebKit loader workaround (Apple forum 785964).
+          # This override affects tests only; the device IPA still targets iOS 15.
+          xcodebuild -project ios/InkDeck.xcodeproj -scheme InkDeck -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE_ID" -derivedDataPath ios/simulator -resultBundlePath ios/SmokeTests.xcresult -parallel-testing-enabled NO -test-timeouts-enabled YES -maximum-test-execution-time-allowance 90 CODE_SIGNING_ALLOWED=NO IPHONEOS_DEPLOYMENT_TARGET=18.4 test
+      - uses: actions/upload-artifact@v4
+        if: failure() && github.event_name == 'workflow_dispatch' && inputs.run_simulator
+        with:
+          name: InkDeck-iOS-test-results
+          path: ios/SmokeTests.xcresult
+  browser:
+    name: Check Arcade touch UI without iOS simulator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare bundle and browser
+        run: |
+          node ios/prepare-web.js
+          npm install --prefix "$RUNNER_TEMP/inkdeck-browser" playwright --no-audit --no-fund
+          npx --prefix "$RUNNER_TEMP/inkdeck-browser" playwright install --with-deps chromium
+      - name: Exercise real touch UI at four screen sizes
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/inkdeck-browser/node_modules/playwright
+          PLAYWRIGHT_BUNDLED: '1'
+          INKDECK_SCREENSHOT_DIR: ${{ runner.temp }}/inkdeck-screenshots
+        run: node ios/tests/arcade-browser-test.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: InkDeck-Arcade-UI
+          path: ${{ runner.temp }}/inkdeck-screenshots
