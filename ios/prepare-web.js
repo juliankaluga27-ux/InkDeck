@@ -6,6 +6,13 @@ const out = path.join(__dirname, 'Web');
 fs.mkdirSync(out, {recursive:true});
 for (const name of ['app.js','style.css','new-games.js','extra-games.js','multiplayer.js']) {
   let text = fs.readFileSync(path.join(source,name),'utf8');
+  if (name === 'multiplayer.js') {
+    const marker = "byId(data.game+'OnlineDraw').disabled=!data.joined||data.state.over;if(data.game==='chess'&&!clockTimer)clockTimer=setInterval(clockTick,1000);";
+    const finish = "if(data.state.over){finishEndedRoom(data);return;}";
+    if (!text.includes(marker)) throw new Error('Cannot locate multiplayer terminal-state handler');
+    text = text.replace(marker, marker+finish);
+    text = text.replace('  function poll(){', "  function finishEndedRoom(data){var game=data.game,result=describe(data);if(clockTimer)clearInterval(clockTimer);clockTimer=null;generation++;if(timer)clearTimeout(timer);timer=null;busy=false;failures=0;session=null;snapshot=null;selected=-1;save();viewMode[game]='online';controls(game);message(game,result+label(' · Pokój zakończony. Możesz utworzyć nowy albo dołączyć do innego.',' · Room finished. Create a new one or join another.'));}\n  function poll(){");
+  }
   if (name.endsWith('.js')) {
     // Keep every original renderer, but size it against the current page column.
     text = text.replace(/window\.innerWidth/g, 'InkDeck.viewportWidth()')
@@ -46,7 +53,8 @@ html = html.replace('<div id="menuItems">', '<div id="menuItems">'+[
 ].map(([id,title,description])=>'<button class="menuButton hidden" data-category="arcade" data-game="'+(id==='multiplicatingkid'?id:'arcade')+'" data-arcade="'+id+'">'+title+'<span>'+description+'</span></button>').join(''));
 html = html.replace('<div class="tabs">','<div class="tabs"><button class="category" data-category="arcade">ARCADE</button>');
 html = html.replace('<script src="app.js"></script>', fs.readFileSync(path.join(__dirname,'web/arcade.html'),'utf8')+'<script src="app.js"></script>');
-html = html.replace(/<img src="assets\/inkdeck-logo.png" alt="InkDeck">/, '<img src="assets/inkdeck-logo.png" alt="InkDeck"><div class="brandText"><h1>INKDECK</h1><small>1.1.0 · BETA 5</small></div>');
+html = html.replace(/<img src="assets\/inkdeck-logo.png" alt="InkDeck">/, '<img src="assets/inkdeck-logo.png" alt="InkDeck"><div class="brandText"><h1>INKDECK</h1><small>1.1.0 · BETA 6</small></div>');
+html = html.replace('<p>Gry, pisanie i narzędzia offline</p>', '<p>Gry, pisanie i narzędzia offline</p><button class="small settingsToggle" data-panel="appSettings">USTAWIENIA</button><div id="appSettings" class="settingsPanel hidden"><h2>Ustawienia InkDeck</h2><p>Dodaj aplikację z zegarkiem do sparowanego Apple Watcha.</p><button id="watchInstallAction" class="wideSmall">DODAJ DO APPLE WATCHA</button><p class="hint">Wymaga iPhone’a i IPA zawierającego aplikację Watch. Na iPadzie można używać InkDeck, ale iPad nie paruje się z Apple Watch.</p></div>');
 html = html.replace('data-color="#555555">CIEMNY', 'data-color="#2563eb">NIEBIESKI')
   .replace('data-color="#999999">SZARY', 'data-color="#16a34a">ZIELONY')
   .replace('data-color="#dddddd">JASNY', 'data-color="#dc2626">CZERWONY');

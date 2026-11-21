@@ -26,6 +26,7 @@ final class InkDeckController: UIViewController, WKNavigationDelegate, WKUIDeleg
         config.websiteDataStore = .default()
         config.userContentController.add(self, name: "inkdeckNetwork")
         config.userContentController.add(self, name: "inkdeckOpenMath")
+        config.userContentController.add(self, name: "inkdeckAddWatch")
         web = WKWebView(frame: .zero, configuration: config)
         web.navigationDelegate = self
         web.uiDelegate = self
@@ -62,6 +63,17 @@ final class InkDeckController: UIViewController, WKNavigationDelegate, WKUIDeleg
             let online = UINavigationController(rootViewController: MultiplicatingKidController())
             online.modalPresentationStyle = .fullScreen
             present(online, animated: true)
+            return
+        }
+        if message.name == "inkdeckAddWatch" {
+            guard message.frameInfo.isMainFrame, message.frameInfo.request.url?.isFileURL == true,
+                  presentedViewController == nil else { return }
+            let alert = UIAlertController(
+                title: "Dodaj InkDeck do Apple Watch",
+                message: "Zainstaluj IPA InkDeck z dołączoną aplikacją Watch i podpisz obie części tym samym kontem deweloperskim. Następnie otwórz aplikację Watch na iPhonie: Mój zegarek → Dostępne aplikacje → InkDeck → Instaluj. Po instalacji gry działają na zegarku także bez iPhone’a.",
+                preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Rozumiem", style: .default))
+            present(alert, animated: true)
             return
         }
         guard message.frameInfo.isMainFrame, message.frameInfo.request.url?.isFileURL == true,

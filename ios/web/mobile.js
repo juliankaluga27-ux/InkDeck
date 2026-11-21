@@ -20,6 +20,11 @@
   }
   labels();
   byId('languageToggle').addEventListener('click', labels);
+  byId('watchInstallAction').addEventListener('click', function () {
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.inkdeckAddWatch) {
+      window.webkit.messageHandlers.inkdeckAddWatch.postMessage({add:true});
+    }
+  });
   var icons = {ttt:'\u2715',mine:'\u2691',g2048:'2048',memory:'\u25d2',chess:'\u265e',checkers:'\u25cf',
     lights:'\u2600',life:'\u2733',snake:'\u219d',sudoku:'\u25a6',nonogram:'\u25a7',mahjongconnect:'\u2637',
     ludo:'\u2684',papersoccer:'\u26bd',wordle:'W',fifteen:'15',mastermind:'\u25c9',hanoi:'\u25b3',

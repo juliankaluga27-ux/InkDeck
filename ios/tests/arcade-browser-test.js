@@ -16,6 +16,11 @@ const server=http.createServer((req,res)=>{
    console.log('Checking Arcade viewport',width,height);
    page.on('pageerror',e=>errors.push(e.message));
    await page.goto('http://127.0.0.1:'+server.address().port+'/index.html');
+   await page.locator('#menu .settingsToggle[data-panel="appSettings"]').click();
+   assert(await page.locator('#appSettings').isVisible(),'App settings open on touch');
+   await page.evaluate(()=>{window.webkit={messageHandlers:{inkdeckAddWatch:{postMessage:()=>window.__watchAdd=true}}};});
+   await page.locator('#watchInstallAction').click();assert(await page.evaluate(()=>window.__watchAdd),'Watch install help native bridge');
+   await page.locator('#settingsCloseGlobal').click();
    await page.locator('.category[data-category="arcade"]').click();
    assert.equal(await page.locator('.menuButton[data-category="arcade"]:visible').count(),6);
    assert(await page.evaluate(()=>document.getElementById('menu').scrollHeight<=document.getElementById('menu').clientHeight+1),'Arcade menu has no scrolling');

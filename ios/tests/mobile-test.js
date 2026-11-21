@@ -8,6 +8,9 @@ for (const match of html.matchAll(/(?:src|href)="([^"#:]+)"/g)) {
 }
 assert(!html.includes('updater.js'));
 assert(!html.includes('settings-loader.js'));
+assert(html.includes('id="appSettings"') && html.includes('id="watchInstallAction"'), 'Watch install action is reachable from app settings');
+assert(fs.readFileSync(path.join(__dirname,'../Sources/AppDelegate.swift'),'utf8').includes('inkdeckAddWatch'), 'Native Watch installation guidance handler is connected');
+assert(fs.readFileSync(path.join(base,'multiplayer.js'),'utf8').includes('finishEndedRoom(data)'), 'Finished online games release the local room session');
 const nodes = {};
 function node(id) {
   return nodes[id] || (nodes[id] = {id,children:[],style:{},className:'',textContent:'',innerHTML:'',

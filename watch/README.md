@@ -1,23 +1,9 @@
-# InkDeck for Apple Watch — 1.1.0 beta 5
+# InkDeck Watch app — 1.1.0 beta 6
 
-Native SwiftUI/Canvas games for watchOS 9 or newer: Pong, brick breaking, Ink Blocks, Space Invaders, Ink Flight, MultiplicatingKid training and Snake. The games run on the watch without an active iPhone/internet connection after installation. Digital Crown controls paddles, the ship, block movement or Snake turns; touch/buttons provide additional controls. Leaving the game or backgrounding the watch pauses it. Records are stored on that watch, independently of iOS.
+The native SwiftUI app targets watchOS 9 or newer and is built as part of the iPhone/iPad IPA. It is embedded at `Payload/InkDeck.app/Watch/InkDeckWatch.app`; there is no standalone Watch ZIP in the release artifact.
 
-Ink Blocks has seven shuffled figures, rotation with wall kicks, hold, ghost, next-piece previews, soft gravity, hard drop, line/combo points and rising speed. MultiplicatingKid offers 20-question practice, a 60-second sprint and a three-life challenge at ranges 1–10/12/20, with retries of mistakes and local answer counters. Full website accounts/classes/rankings are available in the iOS online view, not on watchOS.
+The app offers Pong, brick breaking, Ink Blocks, Space Invaders, Ink Flight, MultiplicatingKid practice and Snake. Games run offline once installed, use Digital Crown/touch controls and save records on the Watch. It does not contain the full website, accounts, classes or multiplayer.
 
-## Packages and installation
+To install, sideload and sign the combined IPA on the paired iPhone, using the same Apple Developer team for both app bundles. Then install InkDeck from the Apple Watch app on iPhone under **Mój zegarek → Dostępne aplikacje**. The iOS app's **Ustawienia → Dodaj do Apple Watcha** button shows these steps. Apple controls installation onto the Watch, and the iPad cannot pair with a Watch.
 
-The `InkDeck-Apple-Watch-beta` Actions artifact contains:
-
-- `InkDeck-iPhone-Watch-1.1.0-beta5-unsigned.ipa`: iOS companion with the embedded `Watch/InkDeckWatch.app`.
-- `InkDeckWatch-1.1.0-beta5.app.zip`: the native watch app for development installation.
-- SHA-256 checksum of the IPA.
-
-These are unsigned development/sideload artifacts, not TestFlight packages. The iPhone companion still requires iOS 15; pairing with a watch running watchOS 9 also depends on Apple's iPhone/watch pairing requirements. A watch cannot be paired with an iPad. Use the ordinary iOS artifact for iPad Air 2.
-
-A signing/installation tool must preserve and sign the nested watch application and its identifiers. Installing just the iPhone portion in an arbitrary IPA tool does not guarantee watch installation. The supported development route is Xcode with your Apple Developer team and a registered/paired watch: generate `ios/InkDeck.xcodeproj` and `watch/InkDeckWatch.xcodeproj` using XcodeGen, enable signing, select the watch and run the watch scheme. For TestFlight, archive a correctly signed companion with its embedded watch app and upload through App Store Connect; no signing credentials are included here.
-
-## Validation
-
-`Shared/GameCore.swift` has no UI dependencies. CI concatenates it with `tests/core-test.swift`, executes the rule checks with Swift, and builds Release for a physical watch destination without launching a simulator. The deployment target and companion identifiers are checked in the produced bundle. Crown feel, tiny-screen layout, energy usage and actual installation require a physical Apple Watch test; building is not evidence of those checks.
-
-The Kindle branch/source and iOS 15 support are preserved. Legacy iPad 2 / 32-bit support is outside this update.
+The IPA is an unsigned development build, not a TestFlight package. The CI verifies the nested app, watchOS 9 minimum and iPhone companion identifier, and builds the Watch target without a simulator. Physical installation still requires signing that preserves the embedded Watch app and has not yet been verified on hardware.

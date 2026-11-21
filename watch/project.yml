@@ -19,7 +19,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: pl.inkdeck.mobile.watchkitapp
         MARKETING_VERSION: '1.1.0'
-        CURRENT_PROJECT_VERSION: '5'
+        CURRENT_PROJECT_VERSION: '6'
         TARGETED_DEVICE_FAMILY: '4'
         SDKROOT: watchos
         GENERATE_INFOPLIST_FILE: YES
